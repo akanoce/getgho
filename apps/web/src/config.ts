@@ -9,8 +9,8 @@ declare module "wagmi" {
 }
 
 const envConfig = {
-  alchemyId: import.meta.env.ALCHEMY_KEY,
-  walletConnectProjectId: import.meta.env.WALLET_CONNECT_PROJECT_ID,
+  alchemyId: import.meta.env.VITE_ALCHEMY_KEY,
+  walletConnectProjectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
 };
 
 console.log({ envConfig });

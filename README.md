@@ -1,34 +1,43 @@
-# `Turborepo` Vite starter
+## LFDelegate Monorepo
 
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest -e with-vite
+```
+888      8888888888 8888888b.           888                            888
+888      888        888  "Y88b          888                            888
+888      888        888    888          888                            888
+888      8888888    888    888  .d88b.  888  .d88b.   .d88b.   8888b.  888888 .d88b.
+888      888        888    888 d8P  Y8b 888 d8P  Y8b d88P"88b     "88b 888   d8P  Y8b
+888      888        888    888 88888888 888 88888888 888  888 .d888888 888   88888888
+888      888        888  .d88P Y8b.     888 Y8b.     Y88b 888 888  888 Y88b. Y8b.
+88888888 888        8888888P"   "Y8888  888  "Y8888   "Y88888 "Y888888  "Y888 "Y8888
+                                                          888
+                                                     Y8b d88P
+                                                      "Y88P"
 ```
 
-## What's inside?
+### Run the project
 
-This Turborepo includes the following packages and apps:
+#### Generate the required api keys
 
-### Apps and Packages
+Create a new `.env` from template using
 
-- `docs`: a vanilla [vite](https://vitejs.dev) ts app
-- `web`: another vanilla [vite](https://vitejs.dev) ts app
-- `ui`: a stub component & utility library shared by both `web` and `docs` applications
-- `eslint-config-custom`: shared `eslint` configurations
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+```
+cp .env.example .env
+```
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+Generate the required api keys for the sepolia network from
 
-### Utilities
+https://dashboard.alchemy.com/apps
+https://cloud.walletconnect.com/sign-in
 
-This Turborepo has some additional tools already setup for you:
+and insert them in the new `.env`
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+```
+VITE_ALCHEMY_KEY=
+VITE_WALLET_CONNECT_PROJECT_ID=
+```
+
+#### Run the project
+
+```
+yarn dev
+```
