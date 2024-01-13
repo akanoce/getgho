@@ -7,6 +7,18 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
+"@aave/contract-helpers@1.21.1":
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/@aave/contract-helpers/-/contract-helpers-1.21.1.tgz#7157ec7e7fe83f3fb5be1a5f4a1dfbfdfaa592a1"
+  integrity sha512-sp5m0KZ0lInlBfTfZnbR7yh0jG1Q+5wvM42H7JBMOdjxb1jWKWkAWg0DFQJzXlDsBo+bk6BS/sBHa4Eql0IA8A==
+  dependencies:
+    isomorphic-unfetch "^3.1.0"
+
+"@aave/math-utils@1.21.1":
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/@aave/math-utils/-/math-utils-1.21.1.tgz#b72b85e0ef6d98ac28121cac383c985122b08bd4"
+  integrity sha512-oFZafJ5MeNtiqgJBEsmvvGlFtdFauWX0wI9B+wikqT//LVc0PYS0IX49UItv6yoTcd0I7IDq3Zv8V47e3lhBOw==
+
 "@adraffy/ens-normalize@1.10.0":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
@@ -3260,7 +3272,7 @@ isomorphic-timers-promises@^1.0.1:
   resolved "https://registry.yarnpkg.com/isomorphic-timers-promises/-/isomorphic-timers-promises-1.0.1.tgz#e4137c24dbc54892de8abae3a4b5c1ffff381598"
   integrity sha512-u4sej9B1LPSxTGKB/HiuzvEQnXH0ECYkSVQU39koSwmFAxhlEAFl9RdTvLv4TOTQUgBS5O3O5fwUxk6byBZ+IQ==
 
-isomorphic-unfetch@3.1.0:
+isomorphic-unfetch@3.1.0, isomorphic-unfetch@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/isomorphic-unfetch/-/isomorphic-unfetch-3.1.0.tgz#87341d5f4f7b63843d468438128cb087b7c3e98f"
   integrity sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==
