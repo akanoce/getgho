@@ -3,24 +3,28 @@ import {
     TurnkeySubOrganization,
 } from "@alchemy/aa-signers/turnkey";
 import { WebauthnStamper } from "@turnkey/webauthn-stamper";
-import { http } from "viem";
+import { HttpTransport, http } from "viem";
 import { createSubOrgAndWallet } from "./api/turnkey";
-// import { AlchemyProvider } from "@alchemy/aa-alchemy";
-// import {
-//     LightSmartContractAccount,
-//     getDefaultLightAccountFactoryAddress,
-// } from "@alchemy/aa-accounts";
-// import { sepolia } from "viem/chains";
+import { TPasskeysConfig } from "./model";
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import {
+    LightSmartContractAccount,
+    getDefaultLightAccountFactoryAddress,
+} from "@alchemy/aa-accounts";
 
-export const createTurnkeySigner = async () => {
+const createTurnkeySigner = async ({ config }: { config: TPasskeysConfig }) => {
     const turnkeySigner = new TurnkeySigner({
-        apiUrl: "https://api.turnkey.com",
+        apiUrl: config.VITE_TURNKEY_API_BASE_URL,
         stamper: new WebauthnStamper({
             rpId: "localhost", // TODO: change to your domain
         }),
     });
 
-    const subOrgResponse = await createSubOrgAndWallet();
+    console.log("turnkeySigner", turnkeySigner);
+
+    const subOrgResponse = await createSubOrgAndWallet({ config });
+    console.log("subOrgResponse", subOrgResponse);
+
     if (!subOrgResponse) return;
 
     await turnkeySigner.authenticate({
@@ -31,34 +35,42 @@ export const createTurnkeySigner = async () => {
             });
         },
         transport: http(
-            `https://eth-sepolia.g.alchemy.com/v2/6bXQIUdwCDCv0j5LccKvKFVHGNR_ODrs`
+            `https://eth-sepolia.g.alchemy.com/v2/${config.VITE_ALCHEMY_KEY}`
         ),
     });
 
-    return {
-        turnkeySigner,
-        wallet: subOrgResponse.address,
-        subOrgId: subOrgResponse.subOrgId,
-    };
+    return turnkeySigner;
 };
 
 // DOCS
 // https://accountkit.alchemy.com/smart-accounts/signers/guides/turnkey.html
 
-// const chain = sepolia;
+type TProviderWithSigner = AlchemyProvider & {
+    account: LightSmartContractAccount<HttpTransport>;
+};
 
-// const provider = new AlchemyProvider({
-//     apiKey: process.env.ALCHEMY_API_KEY,
-//     chain,
-// }).connect(
-//     (rpcClient) =>
-//         new LightSmartContractAccount({
-//             entryPointAddress,
-//             chain: rpcClient.chain,
-//             owner: await createTurnkeySigner(),
-//             factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-//             rpcClient,
-//         })
-// );
+export const getProviderWithSigner = async ({
+    config,
+}: {
+    config: TPasskeysConfig;
+}): Promise<TProviderWithSigner | undefined> => {
+    const signer = await createTurnkeySigner({ config });
+    if (!signer) return;
 
-// console.log("PROVIDER", provider);
+    return new AlchemyProvider({
+        apiKey: config.VITE_ALCHEMY_KEY,
+        chain: config.CHAIN,
+    }).connect(
+        (rpcClient) =>
+            new LightSmartContractAccount({
+                chain: rpcClient.chain,
+                owner: signer,
+                factoryAddress: getDefaultLightAccountFactoryAddress(
+                    config.CHAIN
+                ),
+                rpcClient,
+            })
+    );
+};
+
+export type { TPasskeysConfig, TProviderWithSigner };

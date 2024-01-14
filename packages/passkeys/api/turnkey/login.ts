@@ -22,8 +22,6 @@ export async function turnkeyLogin(signedRequest: TSignedRequest) {
             );
         }
 
-        console.log(whoamiResponse.data);
-
         const subOrgId = whoamiResponse.data.organizationId;
 
         const walletsResponse = await turnkeyClient.getWallets({

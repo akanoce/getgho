@@ -1,32 +1,45 @@
 import { ShimmerButton } from '../components';
-import { useTurnkey } from '../hooks';
-// import { useCallback, useState } from 'react';
-// import { createTurnkeySigner } from 'passkeys';
+import { useCallback, useState } from 'react';
+import {
+    TPasskeysConfig,
+    TProviderWithSigner,
+    getProviderWithSigner
+} from 'passkeys';
+import { sepolia } from 'viem/chains';
+
+const config: TPasskeysConfig = {
+    VITE_ORGANIZATION_ID: import.meta.env.VITE_ORGANIZATION_ID!,
+    VITE_TURNKEY_API_BASE_URL: import.meta.env.VITE_TURNKEY_API_BASE_URL!,
+    VITE_API_PUBLIC_KEY: import.meta.env.VITE_API_PUBLIC_KEY!,
+    VITE_API_PRIVATE_KEY: import.meta.env.VITE_API_PRIVATE_KEY!,
+    VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY!,
+    CHAIN: sepolia
+};
 
 export const Home = () => {
-    const { wallet, login, createSubOrgAndWallet } = useTurnkey();
-    console.log(wallet);
+    const [wallet, setWallet] = useState<string | undefined>();
+    const [providerWithSigner, setProviderWithSigner] = useState<
+        TProviderWithSigner | undefined
+    >();
 
-    /*
-         We should change the hook with the package sdk
-    */
-    // const [wallet, setWallet] = useState<string | undefined>();
-    // const [subOrgId, setSubOrgId] = useState<string | undefined>();
+    const getTurnkeysAndSigner = useCallback(async () => {
+        const provider = await getProviderWithSigner({ config });
+        if (!provider) return console.log('No response form turnkeys');
 
-    // const getTurnkeysAndSigner = useCallback(async () => {
-    //     const res = await createTurnkeySigner();
-    //     if (!res) return console.log('No response form turnkeys');
-    //     const { turnkeySigner, wallet, subOrgId } = res;
-    //     console.log({ turnkeySigner, wallet, subOrgId });
+        const adderss = await provider.getAddress();
+        setProviderWithSigner(provider);
+        setWallet(adderss);
+    }, []);
 
-    //     setSubOrgId(subOrgId);
-    //     setWallet(wallet);
-    // }, []);
+    console.log({ providerWithSigner });
 
     return (
         <div className="flex justify-center items-center h-[100vh]">
-            <a>{JSON.stringify(wallet) ?? ''}</a>
-            {/* <a>{JSON.stringify(subOrgId) ?? ''}</a> */}
+            {wallet && (
+                <div className="flex flex-col gap-y-4">
+                    <a>Wallet Address : {JSON.stringify(wallet) ?? ''}</a>
+                </div>
+            )}
 
             <div className="flex flex-col gap-y-4">
                 {!wallet && (
@@ -36,8 +49,8 @@ export const Home = () => {
                             shimmerColor="purple"
                             shimmerSize="0.1em"
                             background="white"
-                            onClick={createSubOrgAndWallet}
-                            // onClick={getTurnkeysAndSigner}
+                            // onClick={createSubOrgAndWallet}
+                            onClick={getTurnkeysAndSigner}
                         >
                             <span className="px-1 text-center font-bold leading-none">
                                 Get a wallet
@@ -49,7 +62,7 @@ export const Home = () => {
                             shimmerColor="purple"
                             shimmerSize="0.1em"
                             background="white"
-                            onClick={login}
+                            // onClick={login}
                         >
                             <span className="px-1 text-center font-bold leading-none">
                                 Have a wallet?
