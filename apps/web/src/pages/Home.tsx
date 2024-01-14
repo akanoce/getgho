@@ -1,6 +1,12 @@
 import { ShimmerButton } from '../components';
 
-export const Home = ({ wallet }) => {
+export const Home = ({
+    wallet,
+    setWallet
+}: {
+    wallet?: string;
+    setWallet: React.Dispatch<React.SetStateAction<string | undefined>>;
+}) => {
     console.log('home wallet', wallet);
     return (
         <div className="flex justify-center items-center h-[100vh]">
@@ -12,7 +18,7 @@ export const Home = ({ wallet }) => {
                         shimmerColor="purple"
                         shimmerSize="0.1em"
                         background="white"
-                        onClick={() => {}}
+                        onClick={() => setWallet(undefined)}
                     >
                         <span className="px-1 text-center font-bold leading-none">
                             Logout

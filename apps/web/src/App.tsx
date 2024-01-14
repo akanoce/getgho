@@ -5,7 +5,6 @@ import { TProviderWithSigner } from 'passkeys';
 
 export const App = () => {
     const [wallet, setWallet] = useState<string | undefined>();
-    console.log('app wallet', wallet);
 
     const [providerWithSigner, setProviderWithSigner] = useState<
         TProviderWithSigner | undefined
@@ -13,7 +12,7 @@ export const App = () => {
 
     const loggedIn = !!wallet;
     return loggedIn ? (
-        <Home wallet={wallet} />
+        <Home wallet={wallet} setWallet={setWallet} />
     ) : (
         <Onboarding
             setProviderWithSigner={setProviderWithSigner}
