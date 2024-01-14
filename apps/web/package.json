@@ -25,7 +25,8 @@
         "viem": "1.21.4",
         "vite-tsconfig-paths": "^4.2.3",
         "wagmi": "1.4.13",
-        "zustand": "^4.4.7"
+        "zustand": "^4.4.7",
+        "@repo/config": "*"
     },
     "devDependencies": {
         "@turnkey/api-key-stamper": "^0.3.1",

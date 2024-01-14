@@ -65,7 +65,7 @@ export const login = async ({ config }: { config: TPasskeysConfig }) => {
         const signedRequest = await passkeyHttpClient({
             config
         }).stampGetWhoami({
-            organizationId: config.VITE_ORGANIZATION_ID
+            organizationId: config.turnkeyOrganizationId
         });
 
         console.log(signedRequest);

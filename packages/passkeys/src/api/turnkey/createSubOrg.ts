@@ -18,7 +18,7 @@ export async function turnkeyCreateUser(
         const completedActivity = await activityPoller({
             type: 'ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4',
             timestampMs: String(Date.now()),
-            organizationId: subOrgRequest.config.VITE_ORGANIZATION_ID,
+            organizationId: subOrgRequest.config.turnkeyOrganizationId,
             parameters: {
                 subOrganizationName: subOrgRequest.subOrgName,
                 rootQuorumThreshold: 1,
