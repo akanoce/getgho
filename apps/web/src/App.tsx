@@ -1,7 +1,7 @@
-import { useTurnkeySigner } from 'passkeys';
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
-import { TPasskeysConfig } from 'passkeys/model';
+import { useTurnkeySigner } from '@repo/passkeys';
+import { TPasskeysConfig } from '@repo/passkeys/model';
 
 const config: TPasskeysConfig = {
     VITE_ORGANIZATION_ID: import.meta.env.VITE_ORGANIZATION_ID!,
