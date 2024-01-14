@@ -1,5 +1,5 @@
 import { ShimmerButton } from '../components';
-import { useWallet } from '../hooks';
+import { useWallet } from '../store';
 
 export const Home = () => {
     const { setWallet, wallet } = useWallet();

@@ -6,7 +6,7 @@ import {
     getProviderWithSigner
 } from 'passkeys';
 import { sepolia } from 'viem/chains';
-import { useWallet } from '../hooks';
+import { useWallet } from '../store';
 
 const config: TPasskeysConfig = {
     VITE_ORGANIZATION_ID: import.meta.env.VITE_ORGANIZATION_ID!,
