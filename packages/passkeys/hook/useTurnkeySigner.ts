@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { TWalletDetails } from '../model';
+import { TPasskeysConfig, TWalletDetails } from '../model';
 import {
     base64UrlEncode,
     generateRandomBuffer,
@@ -7,15 +7,29 @@ import {
 } from '../util';
 import { getWebAuthnAttestation } from '@turnkey/http';
 import { passkeyHttpClient } from '../const';
-import { turnkeyCreateUser, turnkeyLogin } from '../api';
+import { turnkeyCreateUser, turnkeyLogin } from '../api/turnkey';
+import { createAccount } from '@turnkey/viem';
+import { WalletClient, createWalletClient, http } from 'viem';
+import { sepolia } from 'viem/chains';
+
+type UseTurnkeySignerReturn = {
+    wallet: TWalletDetails | undefined;
+    signer: WalletClient | undefined; // Replace with the correct type from viem
+    createSubOrgAndWallet: () => Promise<void>;
+    login: () => Promise<void>;
+    logout: () => Promise<void>;
+};
 
 /**
  * Custom hook for Turnkey Viem+Passkey.
  *
- * @returns {wallet, createSubOrgAndWallet, login}
+ * @returns {wallet, signer, createSubOrgAndWallet, login}
  */
-export const useTurnkey = () => {
+export const useTurnkeySigner = (
+    config: TPasskeysConfig
+): UseTurnkeySignerReturn => {
     const [wallet, setWallet] = useState<TWalletDetails>();
+    const [signer, setSigner] = useState<WalletClient>(); // TODO: replace with type from viem
 
     const createSubOrgAndWallet = async () => {
         try {
@@ -51,7 +65,8 @@ export const useTurnkey = () => {
             const res = await turnkeyCreateUser({
                 subOrgName: subOrgName,
                 attestation,
-                challenge: base64UrlEncode(challenge)
+                challenge: base64UrlEncode(challenge),
+                config: config
             });
 
             setWallet(res);
@@ -66,8 +81,10 @@ export const useTurnkey = () => {
     const login = async () => {
         try {
             // We use the parent org ID, which we know at all times...
-            const signedRequest = await passkeyHttpClient.stampGetWhoami({
-                organizationId: import.meta.env.VITE_ORGANIZATION_ID!
+            const signedRequest = await passkeyHttpClient({
+                config
+            }).stampGetWhoami({
+                organizationId: config.VITE_ORGANIZATION_ID!
             });
 
             // ...to get the sub-org ID, which we don't know at this point because we don't
@@ -75,9 +92,25 @@ export const useTurnkey = () => {
             // credential ID from the users WebAuthn stamp.
             // In our login endpoint we also fetch wallet details after we get the sub-org ID
             // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
-            const res = await turnkeyLogin(signedRequest);
+            const res = await turnkeyLogin({ signedRequest, config });
 
             setWallet(res);
+
+            const viemAccount = await createAccount({
+                client: passkeyHttpClient({ config }),
+                organizationId: res.subOrgId,
+                signWith: res.address,
+                ethereumAddress: res.address
+            });
+
+            // Viem Client (https://viem.sh/docs/ethers-migration#signers--accounts)
+            const viemClient = createWalletClient({
+                account: viemAccount,
+                chain: sepolia,
+                transport: http()
+            });
+
+            setSigner(viemClient);
         } catch (e) {
             const message = `caught error: ${(e as Error).message}`;
             console.error(message);
@@ -87,7 +120,8 @@ export const useTurnkey = () => {
 
     const logout = useCallback(async () => {
         setWallet(undefined);
+        setSigner(undefined);
     }, []);
 
-    return { wallet, createSubOrgAndWallet, login, logout };
+    return { wallet, signer, createSubOrgAndWallet, login, logout };
 };
