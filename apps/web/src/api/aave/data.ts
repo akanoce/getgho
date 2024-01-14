@@ -1,66 +1,86 @@
 import {
-    ChainId,
     UiIncentiveDataProvider,
     UiPoolDataProvider
 } from '@aave/contract-helpers';
-import { AaveV3Ethereum, AaveV3Sepolia } from '@bgd-labs/aave-address-book';
-import { providers } from 'ethers';
+import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
 
 /**
- *  Fetches all data needed for the Aave V3 dashboard demo
- * @param provider  The ethers provider
- * @param user  The user's ethereum address
+ * Fetches pool reserves and market base currency data from the Aave V3 UI Pool Data Provider contract
+ * @param poolDataProviderContract   The Aave V3 UI Pool Data Provider contract
+ * @param chainAddressBook  The Aave V3 address book for the current chain
+ * @returns  Object containing array of pool reserves and market base currency data
  */
-export const fetchContractData = async (
-    provider: providers.Provider,
-    user: string
+export const getReserves = async (
+    poolDataProviderContract: UiPoolDataProvider,
+    chainAddressBook: typeof AaveV3Sepolia
 ) => {
-    // View contract used to fetch all reserves data (including market base currency data), and user reserves
-    // Using Aave V3 Eth Mainnet address for demo
-    const poolDataProviderContract = new UiPoolDataProvider({
-        uiPoolDataProviderAddress: AaveV3Sepolia.UI_POOL_DATA_PROVIDER,
-        provider,
-        chainId: ChainId.sepolia
-    });
-
-    // View contract used to fetch all reserve incentives (APRs), and user incentives
-    // Using Aave V3 Eth Mainnet address for demo
-    const incentiveDataProviderContract = new UiIncentiveDataProvider({
-        uiIncentiveDataProviderAddress:
-            AaveV3Sepolia.UI_INCENTIVE_DATA_PROVIDER,
-        provider,
-        chainId: ChainId.sepolia
-    });
-
     // Object containing array of pool reserves and market base currency data
     // { reservesArray, baseCurrencyData }
     const reserves = await poolDataProviderContract.getReservesHumanized({
-        lendingPoolAddressProvider: AaveV3Sepolia.POOL_ADDRESSES_PROVIDER
+        lendingPoolAddressProvider: chainAddressBook.POOL_ADDRESSES_PROVIDER
     });
+    return reserves;
+};
 
+/**
+ * Fetches user reserves and active eMode category from the Aave V3 UI Pool Data Provider contract
+ * @param poolDataProviderContract  The Aave V3 UI Pool Data Provider contract
+ * @param chainAddressBook  The Aave V3 address book for the current chain
+ * @param user  The user's ethereum address
+ * @returns  Object containing array of pool reserves and market base currency data
+ */
+export const getUserReserves = async (
+    poolDataProviderContract: UiPoolDataProvider,
+    chainAddressBook: typeof AaveV3Sepolia,
+    user: string
+) => {
     // Object containing array or users aave positions and active eMode category
     // { userReserves, userEmodeCategoryId }
-    const userReserves =
-        await poolDataProviderContract.getUserReservesHumanized({
-            lendingPoolAddressProvider: AaveV3Sepolia.POOL_ADDRESSES_PROVIDER,
-            user
-        });
+    const reserves = await poolDataProviderContract.getUserReservesHumanized({
+        lendingPoolAddressProvider: chainAddressBook.POOL_ADDRESSES_PROVIDER,
+        user
+    });
+    return reserves;
+};
 
+/**
+ *
+ * @param incentiveDataProviderContract  The Aave V3 UI Incentive Data Provider contract
+ * @param chainAddressBook  The Aave V3 address book for the current chain
+ * @returns
+ */
+export const getReservesIncentives = async (
+    incentiveDataProviderContract: UiIncentiveDataProvider,
+    chainAddressBook: typeof AaveV3Sepolia
+) => {
     // Array of incentive tokens with price feed and emission APR
-    const reserveIncentives =
+    const reserves =
         await incentiveDataProviderContract.getReservesIncentivesDataHumanized({
-            lendingPoolAddressProvider: AaveV3Sepolia.POOL_ADDRESSES_PROVIDER
+            lendingPoolAddressProvider: chainAddressBook.POOL_ADDRESSES_PROVIDER
         });
+    return reserves;
+};
 
+/**
+ *
+ * @param incentiveDataProviderContract  The Aave V3 UI Incentive Data Provider contract
+ * @param chainAddressBook  The Aave V3 address book for the current chain
+ * @param user  The user's ethereum address
+ * @returns
+ */
+export const getUserReservesIncentives = async (
+    incentiveDataProviderContract: UiIncentiveDataProvider,
+    chainAddressBook: typeof AaveV3Sepolia,
+    user: string
+) => {
     // Dictionary of claimable user incentives
-    const userIncentives =
+    const reserves =
         await incentiveDataProviderContract.getUserReservesIncentivesDataHumanized(
             {
                 lendingPoolAddressProvider:
-                    AaveV3Sepolia.POOL_ADDRESSES_PROVIDER,
+                    chainAddressBook.POOL_ADDRESSES_PROVIDER,
                 user
             }
         );
-
-    console.log({ reserves, userReserves, reserveIncentives, userIncentives });
+    return reserves;
 };
