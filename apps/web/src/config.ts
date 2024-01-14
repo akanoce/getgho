@@ -13,8 +13,6 @@ const envConfig = {
     walletConnectProjectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
 };
 
-console.log({ envConfig });
-
 export const config = createConfig(
     getDefaultConfig({
         // Required API Keys

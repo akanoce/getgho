@@ -1,57 +1,55 @@
 import { getWebAuthnAttestation } from "@turnkey/http";
 import {
-    base64UrlEncode,
-    generateRandomBuffer,
-    humanReadableDateTime,
+  base64UrlEncode,
+  generateRandomBuffer,
+  humanReadableDateTime,
 } from "../../util";
 import { turnkeyCreateUser } from ".";
 
 export const createSubOrgAndWallet = async () => {
-    try {
-        const challenge = generateRandomBuffer();
-        const subOrgName = `Passkey Demo - ${humanReadableDateTime()}`;
-        const authenticatorUserId = generateRandomBuffer();
+  try {
+    const challenge = generateRandomBuffer();
+    const subOrgName = `Passkey Demo - ${humanReadableDateTime()}`;
+    const authenticatorUserId = generateRandomBuffer();
 
-        const attestation = await getWebAuthnAttestation({
-            publicKey: {
-                rp: {
-                    id: "localhost",
-                    name: "Passkey demo", //TODO: Can be replaced with more descriptive name
-                },
-                challenge,
-                pubKeyCredParams: [
-                    {
-                        type: "public-key",
-                        alg: -7,
-                    },
-                    {
-                        type: "public-key",
-                        alg: -257,
-                    },
-                ],
-                user: {
-                    id: authenticatorUserId,
-                    name: subOrgName,
-                    displayName: subOrgName,
-                },
-            },
-        });
+    const attestation = await getWebAuthnAttestation({
+      publicKey: {
+        rp: {
+          id: "localhost",
+          name: "Passkey demo", //TODO: Can be replaced with more descriptive name
+        },
+        challenge,
+        pubKeyCredParams: [
+          {
+            type: "public-key",
+            alg: -7,
+          },
+          {
+            type: "public-key",
+            alg: -257,
+          },
+        ],
+        user: {
+          id: authenticatorUserId,
+          name: subOrgName,
+          displayName: subOrgName,
+        },
+      },
+    });
 
-        const res = await turnkeyCreateUser({
-            subOrgName: subOrgName,
-            attestation,
-            challenge: base64UrlEncode(challenge),
-        });
+    const res = await turnkeyCreateUser({
+      subOrgName: subOrgName,
+      attestation,
+      challenge: base64UrlEncode(challenge),
+    });
 
-        return res;
-
-        console.log({ res });
-    } catch (e) {
-        //TODO: add toast library
-        const message = `caught error: ${(e as Error).message}`;
-        console.error(message);
-        alert(message); // TODO: replace with toast library
-    }
+    return res;
+  } catch (e) {
+    //TODO: add toast library
+    const message = `caught error: ${(e as Error).message}`;
+    console.error(message);
+    alert(message); // TODO: replace with toast library
+  }
 };
 
 // const login = async () => {

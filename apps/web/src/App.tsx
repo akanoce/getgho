@@ -1,14 +1,10 @@
-import { WagmiConfig } from 'wagmi';
-import { ConnectKitProvider } from 'connectkit';
 import { Home } from './pages/Home';
-import { config } from './config';
+import { Onboarding } from './pages/Onboarding';
+import { useTurnkey } from './hooks';
 
 export const App = () => {
-    return (
-        <WagmiConfig config={config}>
-            <ConnectKitProvider>
-                <Home />
-            </ConnectKitProvider>
-        </WagmiConfig>
-    );
+    const { wallet } = useTurnkey();
+    console.log('wallet', wallet);
+    const loggedIn = !!wallet;
+    return loggedIn ? <Home /> : <Onboarding />;
 };
