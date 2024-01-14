@@ -15,12 +15,13 @@ export const fetchContractData = async (
     provider: providers.Provider,
     user: string
 ) => {
+    console.log({ user });
     // View contract used to fetch all reserves data (including market base currency data), and user reserves
     // Using Aave V3 Eth Mainnet address for demo
     const poolDataProviderContract = new UiPoolDataProvider({
         uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
         provider,
-        chainId: ChainId.mainnet
+        chainId: ChainId.sepolia
     });
 
     // View contract used to fetch all reserve incentives (APRs), and user incentives
@@ -29,7 +30,7 @@ export const fetchContractData = async (
         uiIncentiveDataProviderAddress:
             AaveV3Ethereum.UI_INCENTIVE_DATA_PROVIDER,
         provider,
-        chainId: ChainId.mainnet
+        chainId: ChainId.sepolia
     });
 
     // Object containing array of pool reserves and market base currency data
