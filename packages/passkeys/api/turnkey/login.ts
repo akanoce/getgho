@@ -1,9 +1,15 @@
 import axios from "axios";
 import { TSignedRequest } from "@turnkey/http";
-// import { ApiKeyStamper } from '@turnkey/api-key-stamper';
 import { turnkeyClient } from "../../const";
+import { TPasskeysConfig } from "../..";
 
-export async function turnkeyLogin(signedRequest: TSignedRequest) {
+export async function turnkeyLogin({
+    signedRequest,
+    config,
+}: {
+    signedRequest: TSignedRequest;
+    config: TPasskeysConfig;
+}) {
     try {
         const whoamiResponse = await axios.post(
             signedRequest.url,
@@ -24,11 +30,13 @@ export async function turnkeyLogin(signedRequest: TSignedRequest) {
 
         const subOrgId = whoamiResponse.data.organizationId;
 
-        const walletsResponse = await turnkeyClient.getWallets({
+        const walletsResponse = await turnkeyClient({ config }).getWallets({
             organizationId: subOrgId,
         });
 
-        const accountsResponse = await turnkeyClient.getWalletAccounts({
+        const accountsResponse = await turnkeyClient({
+            config,
+        }).getWalletAccounts({
             organizationId: subOrgId,
             walletId: walletsResponse.wallets[0].walletId,
         });

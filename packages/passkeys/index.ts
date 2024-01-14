@@ -4,7 +4,7 @@ import {
 } from "@alchemy/aa-signers/turnkey";
 import { WebauthnStamper } from "@turnkey/webauthn-stamper";
 import { HttpTransport, http } from "viem";
-import { createSubOrgAndWallet } from "./api/turnkey";
+import { createSubOrgAndWallet, login } from "./api/turnkey";
 import { TPasskeysConfig } from "./model";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import {
@@ -12,7 +12,13 @@ import {
     getDefaultLightAccountFactoryAddress,
 } from "@alchemy/aa-accounts";
 
-const createTurnkeySigner = async ({ config }: { config: TPasskeysConfig }) => {
+const createTurnkeySigner = async ({
+    config,
+    type,
+}: {
+    config: TPasskeysConfig;
+    type: "login" | "signup";
+}) => {
     const turnkeySigner = new TurnkeySigner({
         apiUrl: config.VITE_TURNKEY_API_BASE_URL,
         stamper: new WebauthnStamper({
@@ -20,10 +26,19 @@ const createTurnkeySigner = async ({ config }: { config: TPasskeysConfig }) => {
         }),
     });
 
-    console.log("turnkeySigner", turnkeySigner);
+    let subOrgResponse:
+        | {
+              id: string;
+              address: string;
+              subOrgId: string;
+          }
+        | undefined;
 
-    const subOrgResponse = await createSubOrgAndWallet({ config });
-    console.log("subOrgResponse", subOrgResponse);
+    if (type === "login") {
+        subOrgResponse = await login({ config });
+    } else if (type === "signup") {
+        subOrgResponse = await createSubOrgAndWallet({ config });
+    }
 
     if (!subOrgResponse) return;
 
@@ -51,10 +66,12 @@ type TProviderWithSigner = AlchemyProvider & {
 
 export const getProviderWithSigner = async ({
     config,
+    type,
 }: {
     config: TPasskeysConfig;
+    type: "login" | "signup";
 }): Promise<TProviderWithSigner | undefined> => {
-    const signer = await createTurnkeySigner({ config });
+    const signer = await createTurnkeySigner({ config, type });
     if (!signer) return;
 
     return new AlchemyProvider({
