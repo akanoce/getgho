@@ -1,5 +1,5 @@
 import { ShimmerButton } from '@/components';
-import { TWalletDetails } from 'passkeys/model';
+import { TWalletDetails } from '@repo/passkeys/model';
 
 type Props = {
     wallet: TWalletDetails;
