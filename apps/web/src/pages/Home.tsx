@@ -1,24 +1,25 @@
 import { ShimmerButton } from '../components';
+import { TWalletDetails } from 'passkeys/model';
 
-export const Home = ({
-    wallet,
-    setWallet
-}: {
-    wallet?: string;
-    setWallet: React.Dispatch<React.SetStateAction<string | undefined>>;
-}) => {
-    console.log('home wallet', wallet);
+type Props = {
+    wallet: TWalletDetails;
+    logout: () => void;
+};
+
+export const Home = ({ wallet, logout }: Props) => {
     return (
         <div className="flex justify-center items-center h-[100vh]">
             {wallet && (
                 <div className="flex flex-col gap-y-4">
-                    <a>Wallet Address : {JSON.stringify(wallet) ?? ''}</a>
+                    <a>
+                        Wallet Address : {JSON.stringify(wallet.address) ?? ''}
+                    </a>
                     <ShimmerButton
                         className="h-14 shadow-2xl"
                         shimmerColor="purple"
                         shimmerSize="0.1em"
                         background="white"
-                        onClick={() => setWallet(undefined)}
+                        onClick={logout}
                     >
                         <span className="px-1 text-center font-bold leading-none">
                             Logout

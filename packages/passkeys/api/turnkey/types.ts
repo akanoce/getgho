@@ -1,7 +1,7 @@
-import { TurnkeyApiTypes } from "@turnkey/http";
-import { TPasskeysConfig } from "../..";
+import { TurnkeyApiTypes } from '@turnkey/http';
+import { TPasskeysConfig } from '../../model';
 
-type TAttestation = TurnkeyApiTypes["v1Attestation"];
+type TAttestation = TurnkeyApiTypes['v1Attestation'];
 
 type CreateSubOrgWithPrivateKeyRequest = {
     subOrgName: string;

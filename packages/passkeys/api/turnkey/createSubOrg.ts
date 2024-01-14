@@ -1,7 +1,7 @@
-import { createActivityPoller } from "@turnkey/http";
-import { ETHEREUM_WALLET_DEFAULT_PATH, turnkeyClient } from "../../const";
-import { CreateSubOrgWithPrivateKeyRequest } from "./types";
-import { refineNonNull } from "./helpers";
+import { createActivityPoller } from '@turnkey/http';
+import { ETHEREUM_WALLET_DEFAULT_PATH, turnkeyClient } from '../../const';
+import { CreateSubOrgWithPrivateKeyRequest } from './types';
+import { refineNonNull } from './helpers';
 
 export async function turnkeyCreateUser(
     subOrgRequest: CreateSubOrgWithPrivateKeyRequest
@@ -10,13 +10,13 @@ export async function turnkeyCreateUser(
         const client = turnkeyClient({ config: subOrgRequest.config });
         const activityPoller = createActivityPoller({
             client,
-            requestFn: client.createSubOrganization,
+            requestFn: client.createSubOrganization
         });
 
         const walletName = `Default ETH Wallet`;
 
         const completedActivity = await activityPoller({
-            type: "ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4",
+            type: 'ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4',
             timestampMs: String(Date.now()),
             organizationId: subOrgRequest.config.VITE_ORGANIZATION_ID,
             parameters: {
@@ -24,29 +24,29 @@ export async function turnkeyCreateUser(
                 rootQuorumThreshold: 1,
                 rootUsers: [
                     {
-                        userName: "New user",
+                        userName: 'New user',
                         apiKeys: [],
                         authenticators: [
                             {
-                                authenticatorName: "Passkey",
+                                authenticatorName: 'Passkey',
                                 challenge: subOrgRequest.challenge,
-                                attestation: subOrgRequest.attestation,
-                            },
-                        ],
-                    },
+                                attestation: subOrgRequest.attestation
+                            }
+                        ]
+                    }
                 ],
                 wallet: {
                     walletName: walletName,
                     accounts: [
                         {
-                            curve: "CURVE_SECP256K1",
-                            pathFormat: "PATH_FORMAT_BIP32",
+                            curve: 'CURVE_SECP256K1',
+                            pathFormat: 'PATH_FORMAT_BIP32',
                             path: ETHEREUM_WALLET_DEFAULT_PATH,
-                            addressFormat: "ADDRESS_FORMAT_ETHEREUM",
-                        },
-                    ],
-                },
-            },
+                            addressFormat: 'ADDRESS_FORMAT_ETHEREUM'
+                        }
+                    ]
+                }
+            }
         });
 
         const subOrgId = refineNonNull(
@@ -62,7 +62,7 @@ export async function turnkeyCreateUser(
         return {
             id: walletId,
             address: walletAddress,
-            subOrgId: subOrgId,
+            subOrgId: subOrgId
         };
     } catch (e) {
         console.error(e);
