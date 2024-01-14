@@ -21,7 +21,8 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "viem": "1.21.4",
-        "wagmi": "1.4.13"
+        "wagmi": "1.4.13",
+        "passkeys": "workspace:*"
     },
     "devDependencies": {
         "@turnkey/api-key-stamper": "^0.3.1",
