@@ -4,9 +4,15 @@ import {
   generateRandomBuffer,
   humanReadableDateTime,
 } from "../../util";
-import { turnkeyCreateUser } from ".";
+import { turnkeyCreateUser, turnkeyLogin } from ".";
+import { TPasskeysConfig } from "../..";
+import { passkeyHttpClient } from "../../const";
 
-export const createSubOrgAndWallet = async () => {
+export const createSubOrgAndWallet = async ({
+  config,
+}: {
+  config: TPasskeysConfig;
+}) => {
   try {
     const challenge = generateRandomBuffer();
     const subOrgName = `Passkey Demo - ${humanReadableDateTime()}`;
@@ -41,6 +47,7 @@ export const createSubOrgAndWallet = async () => {
       subOrgName: subOrgName,
       attestation,
       challenge: base64UrlEncode(challenge),
+      config,
     });
 
     return res;
@@ -52,26 +59,26 @@ export const createSubOrgAndWallet = async () => {
   }
 };
 
-// const login = async () => {
-//     try {
-//         // We use the parent org ID, which we know at all times...
-//         const signedRequest = await passkeyHttpClient.stampGetWhoami({
-//             organizationId: import.meta.env.VITE_ORGANIZATION_ID!,
-//         });
+export const login = async ({ config }: { config: TPasskeysConfig }) => {
+  try {
+    // We use the parent org ID, which we know at all times...
+    const signedRequest = await passkeyHttpClient({
+      config,
+    }).stampGetWhoami({
+      organizationId: config.VITE_ORGANIZATION_ID,
+    });
 
-//         console.log(signedRequest);
+    console.log(signedRequest);
 
-//         // ...to get the sub-org ID, which we don't know at this point because we don't
-//         // have a DB. Note that we are able to perform this lookup by using the
-//         // credential ID from the users WebAuthn stamp.
-//         // In our login endpoint we also fetch wallet details after we get the sub-org ID
-//         // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
-//         const res = await turnkeyLogin(signedRequest);
-
-//         setWallet(res);
-//     } catch (e) {
-//         const message = `caught error: ${(e as Error).message}`;
-//         console.error(message);
-//         alert(message); // TODO: replace with toast library
-//     }
-// };
+    // ...to get the sub-org ID, which we don't know at this point because we don't
+    // have a DB. Note that we are able to perform this lookup by using the
+    // credential ID from the users WebAuthn stamp.
+    // In our login endpoint we also fetch wallet details after we get the sub-org ID
+    // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
+    return await turnkeyLogin({ signedRequest, config });
+  } catch (e) {
+    const message = `caught error: ${(e as Error).message}`;
+    console.error(message);
+    alert(message); // TODO: replace with toast library
+  }
+};
