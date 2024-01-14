@@ -16,9 +16,7 @@ export const passkeyHttpClient = new TurnkeyClient(
 export const turnkeyClient = new TurnkeyClient(
     { baseUrl: "https://api.turnkey.com" },
     new ApiKeyStamper({
-        apiPublicKey:
-            "020f4ffa7b14d281b84b978c51f4cc32b5eded50c8af64a8b996d038e57c01f46c",
-        apiPrivateKey:
-            "2b64359c0726d32f69bad34994195c5de6ccb86beb5288ff92197df4e8822b80",
+        apiPublicKey: "VITE_API_PUBLIC_KEY", // TODO replace with real api public key
+        apiPrivateKey: "VITE_API_PRIVATE_KEY", // TODO replace with real api private key
     })
 );

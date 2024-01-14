@@ -17,7 +17,7 @@ export async function turnkeyCreateUser(
         const completedActivity = await activityPoller({
             type: "ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4",
             timestampMs: String(Date.now()),
-            organizationId: "3829e4ce-1c47-44ba-bf2f-69877fee91dd",
+            organizationId: "VITE_ORGANIZATION_ID", // TODO: Replace with real org id
             parameters: {
                 subOrganizationName: subOrgRequest.subOrgName,
                 rootQuorumThreshold: 1,

@@ -7,6 +7,9 @@ export const Home = () => {
     const { wallet, login, createSubOrgAndWallet } = useTurnkey();
     console.log(wallet);
 
+    /*
+         We should change the hook with the package sdk
+    */
     // const [wallet, setWallet] = useState<string | undefined>();
     // const [subOrgId, setSubOrgId] = useState<string | undefined>();
 
