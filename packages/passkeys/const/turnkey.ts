@@ -7,12 +7,13 @@ const stamper = new WebauthnStamper({
     rpId: "localhost",
 });
 
-export const passkeyHttpClient = new TurnkeyClient(
-    {
-        baseUrl: "https://api.turnkey.com", // TODO replace with value passed from user if sdk
-    },
-    stamper
-);
+export const passkeyHttpClient = ({ config }: { config: TPasskeysConfig }) =>
+    new TurnkeyClient(
+        {
+            baseUrl: config.VITE_TURNKEY_API_BASE_URL,
+        },
+        stamper
+    );
 
 export const turnkeyClient = ({ config }: { config: TPasskeysConfig }) =>
     new TurnkeyClient(

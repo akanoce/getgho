@@ -22,14 +22,17 @@ export const Home = () => {
         TProviderWithSigner | undefined
     >();
 
-    const getTurnkeysAndSigner = useCallback(async () => {
-        const provider = await getProviderWithSigner({ config });
-        if (!provider) return console.log('No response form turnkeys');
+    const getTurnkeysAndSigner = useCallback(
+        async ({ type }: { type: 'login' | 'signup' }) => {
+            const provider = await getProviderWithSigner({ config, type });
+            if (!provider) return console.log('No response form turnkeys');
 
-        const adderss = await provider.getAddress();
-        setProviderWithSigner(provider);
-        setWallet(adderss);
-    }, []);
+            const adderss = await provider.getAddress();
+            setProviderWithSigner(provider);
+            setWallet(adderss);
+        },
+        []
+    );
 
     console.log({ providerWithSigner });
 
@@ -49,8 +52,9 @@ export const Home = () => {
                             shimmerColor="purple"
                             shimmerSize="0.1em"
                             background="white"
-                            // onClick={createSubOrgAndWallet}
-                            onClick={getTurnkeysAndSigner}
+                            onClick={() =>
+                                getTurnkeysAndSigner({ type: 'signup' })
+                            }
                         >
                             <span className="px-1 text-center font-bold leading-none">
                                 Get a wallet
@@ -62,7 +66,9 @@ export const Home = () => {
                             shimmerColor="purple"
                             shimmerSize="0.1em"
                             background="white"
-                            // onClick={login}
+                            onClick={() =>
+                                getTurnkeysAndSigner({ type: 'login' })
+                            }
                         >
                             <span className="px-1 text-center font-bold leading-none">
                                 Have a wallet?
