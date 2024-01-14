@@ -8456,6 +8456,11 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
+"passkeys@workspace:*":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passkeys/-/passkeys-1.0.0.tgz#218eda44b5596e28350bb93bd25b5ba64d89d307"
+  integrity sha512-3WC7tzNnDi2NWmtRh+NxcVZKGd6mFepQUydrO2lIG2CY1k/37Eon3gOA6L4o2X+wlprU4QUHXx3hGwzppYPnxA==
+
 path-browserify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"

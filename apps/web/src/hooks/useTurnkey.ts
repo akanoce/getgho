@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { TWalletDetails } from '../model';
 import {
     base64UrlEncode,
@@ -70,8 +70,6 @@ export const useTurnkey = () => {
                 organizationId: import.meta.env.VITE_ORGANIZATION_ID!
             });
 
-            console.log(signedRequest);
-
             // ...to get the sub-org ID, which we don't know at this point because we don't
             // have a DB. Note that we are able to perform this lookup by using the
             // credential ID from the users WebAuthn stamp.
@@ -87,5 +85,9 @@ export const useTurnkey = () => {
         }
     };
 
-    return { wallet, createSubOrgAndWallet, login };
+    const logout = useCallback(async () => {
+        setWallet(undefined);
+    }, []);
+
+    return { wallet, createSubOrgAndWallet, login, logout };
 };

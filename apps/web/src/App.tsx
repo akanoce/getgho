@@ -1,14 +1,22 @@
-import { WagmiConfig } from 'wagmi';
-import { ConnectKitProvider } from 'connectkit';
+import { useState } from 'react';
 import { Home } from './pages/Home';
-import { config } from './config';
+import { Onboarding } from './pages/Onboarding';
+import { TProviderWithSigner } from 'passkeys';
 
 export const App = () => {
-    return (
-        <WagmiConfig config={config}>
-            <ConnectKitProvider>
-                <Home />
-            </ConnectKitProvider>
-        </WagmiConfig>
+    const [wallet, setWallet] = useState<string | undefined>();
+
+    const [providerWithSigner, setProviderWithSigner] = useState<
+        TProviderWithSigner | undefined
+    >();
+
+    const loggedIn = !!wallet;
+    return loggedIn ? (
+        <Home wallet={wallet} setWallet={setWallet} />
+    ) : (
+        <Onboarding
+            setProviderWithSigner={setProviderWithSigner}
+            setWallet={setWallet}
+        />
     );
 };
