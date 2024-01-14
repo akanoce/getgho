@@ -1,17 +1,50 @@
-import { ConnectKitButton } from "connectkit";
-import { useAccount, useDisconnect, useNetwork } from "wagmi";
-// import { createTurnkeySigner } from "passkeys";
-import { useCallback } from "react";
+import { ShimmerButton } from '../components';
+import { useTurnkey } from '../hooks';
 
 export const Home = () => {
+    const { wallet, login, createSubOrgAndWallet } = useTurnkey();
+
+    console.log(wallet);
+
+    return (
+        <div className="flex justify-center items-center h-[100vh]">
+            <a>{JSON.stringify(wallet) ?? ''}</a>
+            <div className="flex flex-col gap-y-4">
+                {!wallet && (
+                    <>
+                        <ShimmerButton
+                            className="h-14 shadow-2xl"
+                            shimmerColor="purple"
+                            shimmerSize="0.1em"
+                            background="white"
+                            onClick={createSubOrgAndWallet}
+                        >
+                            <span className="px-1 text-center font-bold leading-none">
+                                Get a wallet
+                            </span>
+                        </ShimmerButton>
+                        <ShimmerButton
+                            className="h-14 shadow-2xl"
+                            shimmerColor="purple"
+                            shimmerSize="0.1em"
+                            background="white"
+                            onClick={login}
+                        >
+                            <span className="px-1 text-center font-bold leading-none">
+                                Have a wallet?
+                            </span>
+                        </ShimmerButton>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+
+    // ConnectKit should be used when depositing instead of logging in
+    /* 
     const { address, isConnected } = useAccount();
     const { disconnect } = useDisconnect();
     const { chain } = useNetwork();
-
-    const turnKeySinger = useCallback(async () => {
-        // const signer = await createTurnkeySigner();
-        // console.log({ signer });
-    }, []);
 
     if (!isConnected) return <ConnectKitButton />;
 
@@ -21,7 +54,6 @@ export const Home = () => {
             <p>Connected network: {chain?.name}</p>
             <p>Address: {address}</p>
             <button onClick={() => disconnect()}>Disconnect</button>
-            <button onClick={turnKeySinger}>Turnkey</button>
         </div>
-    );
+    ); */
 };
