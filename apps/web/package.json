@@ -18,10 +18,11 @@
         "@turnkey/webauthn-stamper": "0.4.2",
         "connectkit": "^1.6.0",
         "ethers": "5.7.2",
-        "passkeys": "*",
+        "@repo/passkeys": "*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "viem": "1.21.4",
+        "vite-tsconfig-paths": "^4.2.3",
         "wagmi": "1.4.13",
         "zustand": "^4.4.7"
     },

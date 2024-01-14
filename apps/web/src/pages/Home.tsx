@@ -1,4 +1,4 @@
-import { ShimmerButton } from '../components';
+import { ShimmerButton } from '@/components';
 import { TWalletDetails } from 'passkeys/model';
 
 type Props = {
