@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { TPasskeysConfig, TWalletDetails } from '../model';
+import { TWalletDetails, TPasskeysConfig } from '../model';
 import {
     base64UrlEncode,
     generateRandomBuffer,
@@ -115,7 +115,7 @@ export const useTurnkeySigner = (
             const signedRequest = await passkeyHttpClient({
                 config
             }).stampGetWhoami({
-                organizationId: config.VITE_ORGANIZATION_ID
+                organizationId: config.turnkeyOrganizationId
             });
 
             // ...to get the sub-org ID, which we don't know at this point because we don't
@@ -138,7 +138,7 @@ export const useTurnkeySigner = (
             const transport = http(`${sepolia.rpcUrls.alchemy.http[0]}`, {
                 fetchOptions: {
                     headers: {
-                        Authorization: `Bearer ${config.VITE_ALCHEMY_KEY}`
+                        Authorization: `Bearer ${config.alchemyApiKey}`
                     }
                 }
             });

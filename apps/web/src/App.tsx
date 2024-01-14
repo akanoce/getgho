@@ -2,16 +2,8 @@ import { useEffect } from 'react';
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
 import { useTurnkeySigner } from '@repo/passkeys';
-import { TPasskeysConfig } from '@repo/passkeys/model';
 import { fetchContractData } from './api/aave';
-
-const config: TPasskeysConfig = {
-    VITE_ORGANIZATION_ID: import.meta.env.VITE_ORGANIZATION_ID!,
-    VITE_TURNKEY_API_BASE_URL: import.meta.env.VITE_TURNKEY_API_BASE_URL!,
-    VITE_API_PUBLIC_KEY: import.meta.env.VITE_API_PUBLIC_KEY!,
-    VITE_API_PRIVATE_KEY: import.meta.env.VITE_API_PRIVATE_KEY!,
-    VITE_ALCHEMY_KEY: import.meta.env.VITE_ALCHEMY_KEY!
-};
+import { config } from '@repo/config';
 
 export const App = () => {
     const {

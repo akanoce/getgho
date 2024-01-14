@@ -10,16 +10,16 @@ const stamper = new WebauthnStamper({
 export const passkeyHttpClient = ({ config }: { config: TPasskeysConfig }) =>
     new TurnkeyClient(
         {
-            baseUrl: config.VITE_TURNKEY_API_BASE_URL
+            baseUrl: config.turnkeyApiBaseUrl
         },
         stamper
     );
 
 export const turnkeyClient = ({ config }: { config: TPasskeysConfig }) =>
     new TurnkeyClient(
-        { baseUrl: config.VITE_TURNKEY_API_BASE_URL },
+        { baseUrl: config.turnkeyApiBaseUrl },
         new ApiKeyStamper({
-            apiPublicKey: config.VITE_API_PUBLIC_KEY,
-            apiPrivateKey: config.VITE_API_PRIVATE_KEY
+            apiPublicKey: config.turnkeyApiPublicKey,
+            apiPrivateKey: config.turnkeyApiPrivateKey
         })
     );
