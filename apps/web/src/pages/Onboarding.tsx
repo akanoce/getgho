@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { ShimmerButton } from '../components';
 import {
     TPasskeysConfig,
@@ -6,6 +6,7 @@ import {
     getProviderWithSigner
 } from 'passkeys';
 import { sepolia } from 'viem/chains';
+import { useWallet } from '../hooks';
 
 const config: TPasskeysConfig = {
     VITE_ORGANIZATION_ID: import.meta.env.VITE_ORGANIZATION_ID!,
@@ -16,15 +17,12 @@ const config: TPasskeysConfig = {
     CHAIN: sepolia
 };
 
-export const Onboarding = ({
-    setProviderWithSigner,
-    setWallet
-}: {
-    setProviderWithSigner: React.Dispatch<
-        React.SetStateAction<TProviderWithSigner | undefined>
-    >;
-    setWallet: React.Dispatch<React.SetStateAction<string | undefined>>;
-}) => {
+export const Onboarding = () => {
+    const { setWallet } = useWallet();
+
+    const [providerWithSigner, setProviderWithSigner] = useState<
+        TProviderWithSigner | undefined
+    >();
     const getTurnkeysAndSigner = useCallback(
         async ({ type }: { type: 'login' | 'signup' }) => {
             const provider = await getProviderWithSigner({ config, type });
@@ -34,7 +32,7 @@ export const Onboarding = ({
             setProviderWithSigner(provider);
             setWallet(adderss);
         },
-        []
+        [setProviderWithSigner, setWallet]
     );
 
     return (
