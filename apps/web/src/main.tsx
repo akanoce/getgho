@@ -8,9 +8,8 @@ import { App } from './App';
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <WagmiConfig config={config}>
-            <ConnectKitProvider>
-                <App />
-            </ConnectKitProvider>
+            {/* <ConnectKitProvider > */}
+            <App />
         </WagmiConfig>
     </React.StrictMode>
 );
