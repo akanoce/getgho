@@ -5,8 +5,13 @@ import {
     humanReadableDateTime,
 } from "../../util";
 import { turnkeyCreateUser } from ".";
+import { TPasskeysConfig } from "../..";
 
-export const createSubOrgAndWallet = async () => {
+export const createSubOrgAndWallet = async ({
+    config,
+}: {
+    config: TPasskeysConfig;
+}) => {
     try {
         const challenge = generateRandomBuffer();
         const subOrgName = `Passkey Demo - ${humanReadableDateTime()}`;
@@ -41,6 +46,7 @@ export const createSubOrgAndWallet = async () => {
             subOrgName: subOrgName,
             attestation,
             challenge: base64UrlEncode(challenge),
+            config,
         });
 
         return res;

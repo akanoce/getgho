@@ -7,9 +7,10 @@ export async function turnkeyCreateUser(
     subOrgRequest: CreateSubOrgWithPrivateKeyRequest
 ) {
     try {
+        const client = turnkeyClient({ config: subOrgRequest.config });
         const activityPoller = createActivityPoller({
-            client: turnkeyClient,
-            requestFn: turnkeyClient.createSubOrganization,
+            client,
+            requestFn: client.createSubOrganization,
         });
 
         const walletName = `Default ETH Wallet`;
@@ -17,7 +18,7 @@ export async function turnkeyCreateUser(
         const completedActivity = await activityPoller({
             type: "ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4",
             timestampMs: String(Date.now()),
-            organizationId: "VITE_ORGANIZATION_ID", // TODO: Replace with real org id
+            organizationId: subOrgRequest.config.VITE_ORGANIZATION_ID,
             parameters: {
                 subOrganizationName: subOrgRequest.subOrgName,
                 rootQuorumThreshold: 1,
