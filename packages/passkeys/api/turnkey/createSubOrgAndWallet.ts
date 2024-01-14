@@ -68,8 +68,6 @@ export const login = async ({ config }: { config: TPasskeysConfig }) => {
       organizationId: config.VITE_ORGANIZATION_ID,
     });
 
-    console.log(signedRequest);
-
     // ...to get the sub-org ID, which we don't know at this point because we don't
     // have a DB. Note that we are able to perform this lookup by using the
     // credential ID from the users WebAuthn stamp.
