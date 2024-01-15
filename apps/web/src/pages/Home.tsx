@@ -1,8 +1,8 @@
 import { ShimmerButton } from '@/components';
-import { TWalletDetails } from '@repo/passkeys/model';
+import { LocalAccount } from 'viem';
 
 type Props = {
-    wallet: TWalletDetails;
+    wallet: LocalAccount;
     logout: () => void;
 };
 

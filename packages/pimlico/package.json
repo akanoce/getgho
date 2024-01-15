@@ -1,0 +1,25 @@
+{
+    "name": "@repo/pimlico",
+    "version": "1.0.0",
+    "main": "index.js",
+    "description": "",
+    "type": "module",
+    "license": "ISC",
+    "author": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "permissionless": "^0.0.26",
+        "@repo/passkeys": "*"
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "*",
+        "@repo/typescript-config": "*",
+        "axios": "^1.6.5",
+        "typescript": "^5.3.3"
+    }
+}
