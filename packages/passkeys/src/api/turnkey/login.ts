@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { TSignedRequest } from '@turnkey/http';
 import { turnkeyClient } from '../../const';
-import { TPasskeysConfig } from '../../model';
+import { AppConfig } from '@repo/config';
 
 export async function turnkeyLogin({
     signedRequest,
     config
 }: {
     signedRequest: TSignedRequest;
-    config: TPasskeysConfig;
+    config: AppConfig;
 }) {
     try {
         const whoamiResponse = await axios.post(

@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { TWalletDetails, TPasskeysConfig } from '../model';
 import {
     base64UrlEncode,
     generateRandomBuffer,
@@ -7,12 +6,17 @@ import {
 } from '../util';
 import { getWebAuthnAttestation } from '@turnkey/http';
 import { passkeyHttpClient } from '../const';
-import { turnkeyCreateUser, turnkeyLogin } from '../api/turnkey';
-import { createAccount } from '@turnkey/viem';
-import { Transport, WalletClient, createWalletClient, http } from 'viem';
-import { sepolia } from 'viem/chains';
-import { useWallet, useSigner } from '../store';
+import {
+    turnkeyCreateUser,
+    turnkeyLogin,
+    createViemSigner,
+    createViemAccount
+} from '../api/turnkey';
+import { LocalAccount, Transport, WalletClient } from 'viem';
+import { useWallet, useSigner, useCounterFactualAddress } from '../store';
 import { ethers } from 'ethers';
+import { usePimlico } from '@repo/pimlico';
+import { AppConfig } from '@repo/config';
 
 export function clientToProvider(client: WalletClient) {
     const { chain, transport } = client;
@@ -36,7 +40,7 @@ export function clientToProvider(client: WalletClient) {
 }
 
 type UseTurnkeySignerReturn = {
-    wallet: TWalletDetails | undefined;
+    wallet: LocalAccount | undefined;
     signer: WalletClient | undefined; // Replace with the correct type from viem
     createSubOrgAndWallet: () => Promise<void>;
     login: () => Promise<void>;
@@ -51,11 +55,13 @@ type UseTurnkeySignerReturn = {
  *
  * @returns {wallet, signer, createSubOrgAndWallet, login}
  */
-export const useTurnkeySigner = (
-    config: TPasskeysConfig
-): UseTurnkeySignerReturn => {
+export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
     const { wallet, setWallet } = useWallet();
     const { signer, setSigner } = useSigner();
+    const { setAdressRecords } = useCounterFactualAddress();
+
+    const { determineCounterfactualAddresses, createSmartWallets } =
+        usePimlico(setAdressRecords);
 
     const ethersProvider = useMemo(() => {
         if (!signer) return undefined;
@@ -100,7 +106,29 @@ export const useTurnkeySigner = (
                 config: config
             });
 
-            setWallet(res);
+            // THIS WILL CAUSE TO DOUBLE PROMPT FOR PASSKEYS - IT IS NECCESSARY TO CREATE AN ACCOUNT TO CONNECT TO THE SIGNER TO SIGN TRANSACTIONS FOR PIMLICO CONTRACT FACTORY TO DEPLOY THE SMART WALLET
+            const viemAccount = await createViemAccount({
+                config,
+                turnkeyRes: res
+            });
+
+            const viemSigner = await createViemSigner({
+                config,
+                viemAccount
+            });
+
+            await determineCounterfactualAddresses({
+                config,
+                viemAccount
+            });
+
+            await createSmartWallets({
+                config,
+                viemAccount
+            });
+
+            setSigner(viemSigner);
+            setWallet(viemAccount);
         } catch (e) {
             //TODO: add toast library
             const message = `caught error: ${(e as Error).message}`;
@@ -125,32 +153,20 @@ export const useTurnkeySigner = (
             // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
             const res = await turnkeyLogin({ signedRequest, config });
 
-            setWallet(res);
-
-            const viemAccount = await createAccount({
-                client: passkeyHttpClient({ config }),
-                organizationId: res.subOrgId,
-                signWith: res.address,
-                ethereumAddress: res.address
+            const viemAccount = await createViemAccount({
+                config,
+                turnkeyRes: res
             });
 
-            //authenticate to alchemy rpc
-            const transport = http(`${sepolia.rpcUrls.alchemy.http[0]}`, {
-                fetchOptions: {
-                    headers: {
-                        Authorization: `Bearer ${config.alchemyApiKey}`
-                    }
-                }
+            const viemSigner = await createViemSigner({
+                config,
+                viemAccount
             });
 
-            // Viem Client (https://viem.sh/docs/ethers-migration#signers--accounts)
-            const viemClient = createWalletClient({
-                account: viemAccount,
-                chain: sepolia,
-                transport: transport
-            });
+            await determineCounterfactualAddresses({ config, viemAccount });
 
-            setSigner(viemClient);
+            setWallet(viemAccount);
+            setSigner(viemSigner);
         } catch (e) {
             const message = `caught error: ${(e as Error).message}`;
             console.error(message);

@@ -6,12 +6,12 @@ import {
 } from '../../util';
 import { turnkeyCreateUser, turnkeyLogin } from '.';
 import { passkeyHttpClient } from '../../const';
-import { TPasskeysConfig } from '../../model';
+import { AppConfig } from '@repo/config';
 
 export const createSubOrgAndWallet = async ({
     config
 }: {
-    config: TPasskeysConfig;
+    config: AppConfig;
 }) => {
     try {
         const challenge = generateRandomBuffer();
@@ -59,7 +59,7 @@ export const createSubOrgAndWallet = async ({
     }
 };
 
-export const login = async ({ config }: { config: TPasskeysConfig }) => {
+export const login = async ({ config }: { config: AppConfig }) => {
     try {
         // We use the parent org ID, which we know at all times...
         const signedRequest = await passkeyHttpClient({

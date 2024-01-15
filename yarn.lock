@@ -8537,6 +8537,11 @@ penpal@^6.0.1:
   resolved "https://registry.yarnpkg.com/penpal/-/penpal-6.2.2.tgz#20a0a0592881a959e8c87116d854f9528b1aa601"
   integrity sha512-RQD7hTx14/LY7QoS3tQYO3/fzVtwvZI+JeS5udgsu7FPaEDjlvfK9HBcme9/ipzSPKnrxSgacI9PI7154W62YQ==
 
+permissionless@^0.0.26:
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/permissionless/-/permissionless-0.0.26.tgz#40eb851731f4952cbbe8fe6b8c27c84391e869e1"
+  integrity sha512-IwtuFxSbWY+mDMDfuu9toY6jnwa72v40i3N/BYYbcKN52/lDCEnSceKjFMTLrpH06aPqVd+YW8lsOtjHUi/pUw==
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"

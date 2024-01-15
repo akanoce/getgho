@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { TWalletDetails } from '../model';
+import { LocalAccount } from 'viem';
 
 interface WalletState {
-    wallet: TWalletDetails | undefined;
-    setWallet: (wallet: TWalletDetails | undefined) => void;
+    wallet: LocalAccount | undefined;
+    setWallet: (wallet: LocalAccount | undefined) => void;
 }
 
 export const useWallet = create<WalletState>()(
     persist(
         (set) => ({
             wallet: undefined,
-            setWallet: (wallet: TWalletDetails | undefined) => set({ wallet })
+            setWallet: (wallet: LocalAccount | undefined) => set({ wallet })
         }),
         { name: 'lfgho/wallet' }
     )
