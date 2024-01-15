@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { TPasskeysConfig } from '../model';
 import {
     base64UrlEncode,
     generateRandomBuffer,
@@ -14,9 +13,10 @@ import {
     createViemAccount
 } from '../api/turnkey';
 import { LocalAccount, Transport, WalletClient } from 'viem';
-import { useWallet, useSigner } from '../store';
+import { useWallet, useSigner, useCounterFactualAddress } from '../store';
 import { ethers } from 'ethers';
 import { usePimlico } from '@repo/pimlico';
+import { AppConfig } from '@repo/config';
 
 export function clientToProvider(client: WalletClient) {
     const { chain, transport } = client;
@@ -55,13 +55,13 @@ type UseTurnkeySignerReturn = {
  *
  * @returns {wallet, signer, createSubOrgAndWallet, login}
  */
-export const useTurnkeySigner = (
-    config: TPasskeysConfig
-): UseTurnkeySignerReturn => {
+export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
     const { wallet, setWallet } = useWallet();
     const { signer, setSigner } = useSigner();
+    const { setAdressRecords } = useCounterFactualAddress();
 
-    const { determineCounterfactualAddresses } = usePimlico();
+    const { determineCounterfactualAddresses, createSmartWallets } =
+        usePimlico(setAdressRecords);
 
     const ethersProvider = useMemo(() => {
         if (!signer) return undefined;
@@ -117,7 +117,15 @@ export const useTurnkeySigner = (
                 viemAccount
             });
 
-            determineCounterfactualAddresses(viemAccount);
+            await determineCounterfactualAddresses({
+                config,
+                viemAccount
+            });
+
+            await createSmartWallets({
+                config,
+                viemAccount
+            });
 
             setSigner(viemSigner);
             setWallet(viemAccount);
@@ -155,7 +163,7 @@ export const useTurnkeySigner = (
                 viemAccount
             });
 
-            determineCounterfactualAddresses(viemAccount);
+            await determineCounterfactualAddresses({ config, viemAccount });
 
             setWallet(viemAccount);
             setSigner(viemSigner);

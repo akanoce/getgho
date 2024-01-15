@@ -1,13 +1,13 @@
 import { createAccount } from '@turnkey/viem';
 import { passkeyHttpClient } from '../../const';
-import { TPasskeysConfig } from '../../model';
 import { LocalAccount } from 'viem';
+import { AppConfig } from '@repo/config';
 
 export const createViemAccount = async ({
     config,
     turnkeyRes
 }: {
-    config: TPasskeysConfig;
+    config: AppConfig;
     turnkeyRes: {
         id: string;
         address: string;

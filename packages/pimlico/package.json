@@ -13,8 +13,7 @@
         ".": "./src/index.ts"
     },
     "dependencies": {
-        "permissionless": "^0.0.26",
-        "@repo/passkeys": "*"
+        "permissionless": "^0.0.26"
     },
     "devDependencies": {
         "@repo/eslint-config": "*",

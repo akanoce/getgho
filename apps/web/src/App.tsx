@@ -26,7 +26,12 @@ export const App = () => {
     }, [ethersProvider, signer]);
 
     return loggedIn ? (
-        <Home wallet={wallet} logout={logout} />
+        <Home
+            wallet={wallet}
+            logout={logout}
+            ethersProvider={ethersProvider}
+            signer={signer}
+        />
     ) : (
         <Onboarding login={login} create={createSubOrgAndWallet} />
     );

@@ -1,12 +1,5 @@
 import { useRef } from 'react';
-import { TWalletDetails } from '@repo/passkeys/model';
-import {
-    avalancheFuji,
-    baseGoerli,
-    optimismGoerli,
-    arbitrumSepolia,
-    polygonMumbai
-} from 'viem/chains';
+import { sepolia } from 'viem/chains';
 import {
     buildUserOperation,
     generateInitCode,
@@ -22,94 +15,105 @@ import {
     http,
     createPublicClient,
     encodeFunctionData,
-    labelhash,
-    namehash,
     LocalAccount
 } from 'viem';
 import { PimlicoPaymasterClient } from 'permissionless/clients/pimlico';
-import { useCounterFactualAddress } from '../../../passkeys/src/store';
-import {
-    fifsRegistrarCcipABI,
-    fifsRegistrarCcipAddress,
-    publicResolverCcipAddress,
-    reverseRegistrarCcipAddress,
-    simpleAccountABI
-} from '../../util';
+import { simpleAccountABI } from '../../util';
+import { AppConfig } from '@repo/config';
 
-const hubChain = arbitrumSepolia;
+const hubChain = sepolia;
 
-const publicClient = createPublicClient({
-    transport: http(hubChain.rpcUrls.alchemy.http[0]),
-    chain: hubChain
-});
+const publicClient = (alchemyApiKey: string) =>
+    createPublicClient({
+        transport: http(hubChain.rpcUrls.alchemy.http[0], {
+            fetchOptions: {
+                headers: {
+                    Authorization: `Bearer ${alchemyApiKey}`
+                }
+            }
+        }),
+        chain: hubChain
+    });
 
-export const usePimlico = () => {
-    const { addressRecords, setAdressRecords } = useCounterFactualAddress();
-
+export const usePimlico = (
+    setAddressRecords: (
+        AddressRecords: Record<string, `0x${string}`> | undefined
+    ) => void
+) => {
     const initCodeRef = useRef<Hex>();
     const hubBundlerClientRef = useRef<BundlerClient>();
     const hubPaymasterClientRef = useRef<PimlicoPaymasterClient>();
     const hubEntryPointRef = useRef<Hex>();
     const hubSenderRef = useRef<Hex>();
 
-    const determineCounterfactualAddresses = async (
-        viemAccount: LocalAccount
-    ) => {
-        const chains = [
-            avalancheFuji,
-            polygonMumbai,
-            optimismGoerli,
-            arbitrumSepolia,
-            baseGoerli
-        ];
+    const determineCounterfactualAddresses = async ({
+        config,
+        viemAccount
+    }: {
+        config: AppConfig;
+        viemAccount: LocalAccount;
+    }) => {
+        // can add more chains here - follow unwallet examples for more info es. [sepolia, avalancheFuji, baseGoerli, optimismGoerli, arbitrumSepolia, polygonMumbai]
+        const chain = sepolia;
 
-        for (const chain of chains) {
-            const initCode = generateInitCode(
-                getFactoryAddress(),
-                viemAccount.address as Address
+        const initCode = generateInitCode(
+            getFactoryAddress(),
+            viemAccount.address as Address
+        );
+
+        const bundlerClient = await getPimlicoBundlerClient({ chain, config });
+
+        // Get entry point address
+        const entryPoint = (await bundlerClient.supportedEntryPoints())?.[0];
+
+        console.log(
+            `Entry point for '${chain.name}' (${chain.id}):`,
+            entryPoint
+        );
+
+        if (!entryPoint)
+            throw new Error(
+                `No entry point found for '${chain.name}' (${chain.id})`
             );
-            const bundlerClient = await getPimlicoBundlerClient(chain);
 
-            // Get entry point address
-            const entryPoint = (
-                await bundlerClient.supportedEntryPoints()
-            )?.[0];
-
-            console.log(
-                `Entry point for '${chain.name}' (${chain.id}):`,
-                entryPoint
-            );
-
-            if (!entryPoint)
-                throw new Error(
-                    `No entry point found for '${chain.name}' (${chain.id})`
-                );
-
-            // Calculate counterfactual address
-            const sender = await getSenderAddress(publicClient, {
+        // Calculate counterfactual address
+        const sender = await getSenderAddress(
+            publicClient(config.alchemyApiKey),
+            {
                 initCode,
                 entryPoint
-            });
-
-            console.log(
-                `Counterfactual address on '${chain.name}' (${chain.id}): ${sender}`
-            );
-
-            setAdressRecords({ [chain.id]: sender });
-
-            // Store state for performance reasons
-            if (chain.id === hubChain.id) {
-                initCodeRef.current = initCode;
-                hubBundlerClientRef.current = bundlerClient;
-                hubPaymasterClientRef.current =
-                    await getPimlicoPaymasterClient(hubChain);
-                hubEntryPointRef.current = entryPoint;
-                hubSenderRef.current = sender;
             }
+        );
+
+        console.log(
+            `Counterfactual address on '${chain.name}' (${chain.id}): ${sender}`
+        );
+
+        // Save counterfactual address to store
+        setAddressRecords({ [chain.id]: sender });
+
+        const hubPaymasterClient = await getPimlicoPaymasterClient({
+            chain,
+            config
+        });
+
+        // Store state for performance reasons
+        if (chain.id === hubChain.id) {
+            initCodeRef.current = initCode;
+            hubBundlerClientRef.current = bundlerClient;
+            hubPaymasterClientRef.current = hubPaymasterClient;
+            hubEntryPointRef.current = entryPoint;
+            hubSenderRef.current = sender;
         }
     };
 
-    const createSmartWallets = async (viemAccount: LocalAccount) => {
+    const createSmartWallets = async ({
+        config,
+        viemAccount
+    }: {
+        config: AppConfig;
+        viemAccount: LocalAccount;
+    }) => {
         if (
             !viemAccount ||
             !initCodeRef.current ||
@@ -121,62 +125,14 @@ export const usePimlico = () => {
             return;
 
         try {
-            // Build callData for domain registration & set-addresses
+            const to = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // vitalik
+            const value = 0n;
+            const data = '0x68656c6c6f'; // "hello" encoded to utf-8 bytes
+
             const callData = encodeFunctionData({
                 abi: simpleAccountABI,
-                functionName: 'executeBatch',
-                args: [
-                    [
-                        fifsRegistrarCcipAddress[
-                            hubChain.id as keyof typeof fifsRegistrarCcipAddress
-                        ],
-                        publicResolverCcipAddress[
-                            hubChain.id as keyof typeof publicResolverCcipAddress
-                        ],
-                        reverseRegistrarCcipAddress[
-                            hubChain.id as keyof typeof reverseRegistrarCcipAddress
-                        ],
-                        ...Object.keys(determineCounterfactualAddresses).map(
-                            () =>
-                                publicResolverCcipAddress[
-                                    hubChain.id as keyof typeof publicResolverCcipAddress
-                                ]
-                        )
-                    ],
-                    [
-                        encodeFunctionData({
-                            abi: fifsRegistrarCcipABI,
-                            functionName: 'register',
-                            args: [labelhash(domainName), hubSenderRef.current]
-                        }),
-                        encodeFunctionData({
-                            abi: publicResolverCcipABI,
-                            functionName: 'setAddr',
-                            args: [namehash(domain), hubSenderRef.current]
-                        }),
-                        encodeFunctionData({
-                            abi: reverseRegistrarCcipABI,
-                            functionName: 'setName',
-                            args: [domain]
-                        }),
-                        ...Object.entries(counterfactualAddresses).map(
-                            ([chainId, address]) =>
-                                encodeFunctionData({
-                                    abi: publicResolverCcipABI,
-                                    functionName: 'setAddr',
-                                    args: [
-                                        namehash(domain),
-                                        BigInt(
-                                            convertEVMChainIdToCoinType(
-                                                parseInt(chainId)
-                                            )
-                                        ),
-                                        address
-                                    ]
-                                })
-                        )
-                    ]
-                ]
+                functionName: 'execute',
+                args: [to, value, data]
             });
 
             console.log(
@@ -190,7 +146,7 @@ export const usePimlico = () => {
                 entryPoint: hubEntryPointRef.current,
                 callData,
                 bundlerClient: hubBundlerClientRef.current,
-                publicClient,
+                publicClient: publicClient(config.alchemyApiKey),
                 initCode: initCodeRef.current
             })) as UserOperation;
 
@@ -202,7 +158,16 @@ export const usePimlico = () => {
                     userOperation,
                     entryPoint: hubEntryPointRef.current
                 });
-            userOperation = { ...userOperation, ...sponsorParams };
+
+            userOperation = {
+                ...userOperation,
+                ...sponsorParams,
+                preVerificationGas: sponsorParams.preVerificationGas,
+                verificationGasLimit: sponsorParams.verificationGasLimit,
+                callGasLimit: sponsorParams.callGasLimit,
+                paymasterAndData: sponsorParams.paymasterAndData
+            };
+
             console.log('Sponsored userOperation:', userOperation);
 
             // Sign the useroperation
@@ -215,6 +180,7 @@ export const usePimlico = () => {
             });
 
             userOperation = { ...userOperation, signature };
+
             console.log('Signed userOperation:', userOperation);
 
             // Send the useroperation
@@ -234,10 +200,9 @@ export const usePimlico = () => {
 
             const txHash = receipt.receipt.transactionHash;
 
-            console.log(`Transaction hash: ${txHash}`);
-
-            // Set domain context & edirect to dashboard on success
-            // setDomainContext({ domain, domainName, domainTld });
+            console.log(
+                `Transaction hash: https://sepolia.etherscan.io/tx/${txHash}`
+            );
         } catch (error) {
             console.error(error);
         }
@@ -245,7 +210,6 @@ export const usePimlico = () => {
 
     return {
         determineCounterfactualAddresses,
-        addressRecords,
         createSmartWallets
     };
 };

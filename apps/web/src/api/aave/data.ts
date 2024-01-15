@@ -62,5 +62,10 @@ export const fetchContractData = async (
             }
         );
 
-    console.log({ reserves, userReserves, reserveIncentives, userIncentives });
+    console.log('Aave data :: ', {
+        reserves,
+        userReserves,
+        reserveIncentives,
+        userIncentives
+    });
 };

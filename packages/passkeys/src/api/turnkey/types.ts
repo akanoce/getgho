@@ -1,5 +1,5 @@
+import { AppConfig } from '@repo/config';
 import { TurnkeyApiTypes } from '@turnkey/http';
-import { TPasskeysConfig } from '../../model';
 
 type TAttestation = TurnkeyApiTypes['v1Attestation'];
 
@@ -7,7 +7,7 @@ type CreateSubOrgWithPrivateKeyRequest = {
     subOrgName: string;
     challenge: string;
     attestation: TAttestation;
-    config: TPasskeysConfig;
+    config: AppConfig;
 };
 
 type ErrorMessage = {

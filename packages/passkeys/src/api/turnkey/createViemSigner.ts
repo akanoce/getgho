@@ -1,12 +1,12 @@
+import { AppConfig } from '@repo/config';
 import { http, createWalletClient, LocalAccount, WalletClient } from 'viem';
 import { sepolia } from 'viem/chains';
-import { TPasskeysConfig } from '../../model';
 
 export const createViemSigner = async ({
     config,
     viemAccount
 }: {
-    config: TPasskeysConfig;
+    config: AppConfig;
     viemAccount: LocalAccount;
 }): Promise<WalletClient> => {
     //authenticate to alchemy rpc
