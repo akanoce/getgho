@@ -13,6 +13,7 @@
         "@aave/contract-helpers": "1.21.1",
         "@aave/math-utils": "1.21.1",
         "@bgd-labs/aave-address-book": "^2.15.0",
+        "@repo/config": "*",
         "@repo/passkeys": "*",
         "@tanstack/react-query": "^5.17.9",
         "@turnkey/http": "2.4.2",
@@ -25,10 +26,10 @@
         "viem": "1.21.4",
         "vite-tsconfig-paths": "^4.2.3",
         "wagmi": "1.4.13",
-        "zustand": "^4.4.7",
-        "@repo/config": "*"
+        "zustand": "^4.4.7"
     },
     "devDependencies": {
+        "@tanstack/react-query-devtools": "^5.17.10",
         "@turnkey/api-key-stamper": "^0.3.1",
         "@types/react": "^18.2.43",
         "@types/react-dom": "^18.2.17",

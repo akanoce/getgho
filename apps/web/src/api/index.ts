@@ -27,3 +27,4 @@ import {
 // };
 
 export * from './turnkey';
+export * from './aave';
