@@ -2,7 +2,11 @@ import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
 import { useTurnkeySigner } from '@repo/passkeys';
 import { config } from '@repo/config';
-import { useReserves, useReservesIncentives } from './api';
+import {
+    useReserves,
+    useReservesIncentives,
+    useUserReservesIncentives
+} from './api';
 
 export const App = () => {
     const {
@@ -14,11 +18,12 @@ export const App = () => {
         ethersProvider
     } = useTurnkeySigner(config);
 
-    const { data: reserves } = useReserves();
-    const { data: incentives } = useReservesIncentives();
+    const { data: userReservesIncentives } = useUserReservesIncentives(
+        wallet?.address
+    );
     const loggedIn = !!wallet;
 
-    console.log({ reserves, incentives });
+    console.log({ userReservesIncentives });
 
     return loggedIn ? (
         <Home
