@@ -28,3 +28,4 @@ import {
 
 export * from './turnkey';
 export * from './aave';
+export * from './hooks';
