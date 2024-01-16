@@ -20,6 +20,7 @@
         "@turnkey/webauthn-stamper": "0.4.2",
         "bignumber.js": "^9.1.2",
         "connectkit": "^1.6.0",
+        "dayjs": "^1.11.10",
         "ethers": "5.7.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
