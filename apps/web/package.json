@@ -28,7 +28,8 @@
         "viem": "1.21.4",
         "vite-tsconfig-paths": "^4.2.3",
         "wagmi": "1.4.13",
-        "zustand": "^4.4.7"
+        "zustand": "^4.4.7",
+        "@repo/lfgho-sdk": "*"
     },
     "devDependencies": {
         "@tanstack/react-query-devtools": "^5.17.10",
