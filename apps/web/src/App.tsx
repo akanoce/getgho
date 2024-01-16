@@ -2,11 +2,7 @@ import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
 import { useTurnkeySigner } from '@repo/passkeys';
 import { config } from '@repo/config';
-import {
-    useReserves,
-    useReservesIncentives,
-    useUserReservesIncentives
-} from './api';
+import { useUserReservesIncentives } from './api';
 
 export const App = () => {
     const {
