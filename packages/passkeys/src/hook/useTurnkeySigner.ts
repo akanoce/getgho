@@ -13,7 +13,7 @@ import {
     createViemAccount
 } from '../api/turnkey';
 import { LocalAccount, Transport, WalletClient } from 'viem';
-import { useWallet, useSigner, useCounterFactualAddress } from '../store';
+import { useWallet, useViemSigner, useCounterFactualAddress } from '../store';
 import { ethers } from 'ethers';
 import { usePimlico } from '@repo/pimlico';
 import { AppConfig } from '@repo/config';
@@ -41,7 +41,7 @@ export function clientToProvider(client: WalletClient) {
 
 type UseTurnkeySignerReturn = {
     wallet: LocalAccount | undefined;
-    signer: WalletClient | undefined; // Replace with the correct type from viem
+    viemSigner: WalletClient | undefined; // Replace with the correct type from viem
     createSubOrgAndWallet: () => Promise<void>;
     login: () => Promise<void>;
     logout: () => Promise<void>;
@@ -57,16 +57,16 @@ type UseTurnkeySignerReturn = {
  */
 export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
     const { wallet, setWallet } = useWallet();
-    const { signer, setSigner } = useSigner();
+    const { viemSigner, setViemSigner } = useViemSigner();
     const { setAdressRecords } = useCounterFactualAddress();
 
     const { determineCounterfactualAddresses, createSmartWallets } =
         usePimlico(setAdressRecords);
 
     const ethersProvider = useMemo(() => {
-        if (!signer) return undefined;
-        return clientToProvider(signer);
-    }, [signer]);
+        if (!viemSigner) return undefined;
+        return clientToProvider(viemSigner);
+    }, [viemSigner]);
 
     const createSubOrgAndWallet = async () => {
         try {
@@ -128,7 +128,7 @@ export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
                 viemAccount
             });
 
-            setSigner(viemSigner);
+            setViemSigner(viemSigner);
             setWallet(viemAccount);
         } catch (e) {
             //TODO: add toast library
@@ -167,7 +167,7 @@ export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
             await determineCounterfactualAddresses({ config, viemAccount });
 
             setWallet(viemAccount);
-            setSigner(viemSigner);
+            setViemSigner(viemSigner);
         } catch (e) {
             const message = `caught error: ${(e as Error).message}`;
             console.error(message);
@@ -177,12 +177,12 @@ export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
 
     const logout = useCallback(async () => {
         setWallet(undefined);
-        setSigner(undefined);
+        setViemSigner(undefined);
     }, []);
 
     return {
         wallet,
-        signer,
+        viemSigner,
         createSubOrgAndWallet,
         login,
         logout,

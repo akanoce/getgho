@@ -5,7 +5,7 @@ import {
     generateInitCode,
     getFactoryAddress,
     getPimlicoBundlerClient,
-    getPimlicoPaymasterClient,
+    pimpim,
     signUserOperationWithPasskey
 } from '..';
 import { BundlerClient, UserOperation, getSenderAddress } from 'permissionless';
@@ -15,7 +15,8 @@ import {
     http,
     createPublicClient,
     encodeFunctionData,
-    LocalAccount
+    LocalAccount,
+    WalletClient
 } from 'viem';
 import { PimlicoPaymasterClient } from 'permissionless/clients/pimlico';
 import { simpleAccountABI } from '../../util';
@@ -97,7 +98,7 @@ export const usePimlico = (
         // TODO - it should not save the same address twice
         setAddressRecords({ [chain.id]: sender });
 
-        const hubPaymasterClient = await getPimlicoPaymasterClient({
+        const hubPaymasterClient: PimlicoPaymasterClient = pimpim({
             chain,
             config
         });

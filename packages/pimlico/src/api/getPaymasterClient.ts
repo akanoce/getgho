@@ -4,7 +4,7 @@ import { Chain, createClient, http } from 'viem';
 import { getPimlicoNetworkId } from './getNetworkID';
 import { AppConfig } from '@repo/config';
 
-export const getPimlicoPaymasterClient = async ({
+export const pimpim = ({
     chain,
     config
 }: {

@@ -1,15 +1,14 @@
 {
-    "name": "@repo/passkeys",
+    "name": "@repo/lfgho-sdk",
     "version": "1.0.0",
     "description": "",
     "type": "module",
-    "main": "index.ts",
+    "main": "index.js",
+    "exports": {
+        ".": "./src/index.ts"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "exports": {
-        ".": "./src/index.ts",
-        "./model": "./src/model/index.ts"
     },
     "author": "",
     "license": "ISC",
@@ -19,8 +18,8 @@
         "ethers": "5.7.2",
         "viem": "^1.21.4",
         "zustand": "^4.4.7",
-        "@repo/config": "*",
-        "@repo/pimlico": "*"
+        "permissionless": "^0.0.26",
+        "@repo/config": "*"
     },
     "devDependencies": {
         "@repo/eslint-config": "*",

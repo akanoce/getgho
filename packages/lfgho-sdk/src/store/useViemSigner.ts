@@ -14,6 +14,6 @@ export const useViemSigner = create<SignerState>()(
             setViemSigner: (viemSigner: WalletClient | undefined) =>
                 set({ viemSigner })
         }),
-        { name: 'lfgho/signer' }
+        { name: 'lfgho/ViemSigner' }
     )
 );
