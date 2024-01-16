@@ -3,6 +3,7 @@ import { LocalAccount } from 'viem';
 import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { useEffect, useState } from 'react';
 import { UserSummary } from '@/components/UserSummary';
+import { ReservesIncentives } from '@/components/ReservesIncentives';
 
 type Props = {
     wallet: LocalAccount;
@@ -28,6 +29,7 @@ export const Home = ({ wallet, logout, ethersProvider, signer }: Props) => {
         <div className="flex justify-center items-center h-[100vh]">
             {wallet && (
                 <div className="flex flex-col gap-y-4">
+                    <ReservesIncentives />
                     <UserSummary address={wallet.address} />
                     <a>
                         Wallet Address : {JSON.stringify(wallet.address) ?? ''}
