@@ -5,14 +5,8 @@ import { config } from '@repo/config';
 import { useUserReservesIncentives } from './api';
 
 export const App = () => {
-    const {
-        wallet,
-        signer,
-        login,
-        createSubOrgAndWallet,
-        logout,
-        ethersProvider
-    } = useTurnkeySigner(config);
+    const { wallet, login, createSubOrgAndWallet, logout } =
+        useTurnkeySigner(config);
 
     const { data: userReservesIncentives } = useUserReservesIncentives(
         wallet?.address
@@ -22,12 +16,7 @@ export const App = () => {
     console.log({ userReservesIncentives });
 
     return loggedIn ? (
-        <Home
-            wallet={wallet}
-            logout={logout}
-            ethersProvider={ethersProvider}
-            signer={signer}
-        />
+        <Home wallet={wallet} logout={logout} />
     ) : (
         <Onboarding login={login} create={createSubOrgAndWallet} />
     );

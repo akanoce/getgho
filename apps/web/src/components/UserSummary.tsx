@@ -3,6 +3,7 @@ import React from 'react';
 import { Spinner } from './Spinner';
 import { useTurnkeySigner } from '@repo/passkeys';
 import { config } from '@repo/config';
+import { Card } from '.';
 
 type Props = {
     address: string;
@@ -21,14 +22,14 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     if (!formattedSummary)
         return (
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center gap-y-2 h-52">
+            <Card additionalClasses="justify-center items-center h-52">
                 <span className="text-2xl font-bold">User Summary</span>
                 <Spinner />
-            </div>
+            </Card>
         );
 
     return (
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100  flex flex-col gap-y-2">
+        <Card>
             <div className="flex flex-row justify-between">
                 <span className="text-2xl font-bold">User Summary (AA)</span>
                 <span className="bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded flex flex-row justify-center items-center">
@@ -71,6 +72,6 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                     {formattedSummary.totalCollateralUSD} USD
                 </span>
             </div>
-        </div>
+        </Card>
     );
 };
