@@ -15,8 +15,6 @@ export const Home = ({ wallet, logout }: Props) => {
                 <div className="flex flex-col gap-y-4">
                     <ReservesIncentives />
                     <UserSummary address={wallet} />
-                    <a>Wallet Address : {JSON.stringify(wallet) ?? ''}</a>
-
                     <Deposit />
 
                     <ShimmerButton

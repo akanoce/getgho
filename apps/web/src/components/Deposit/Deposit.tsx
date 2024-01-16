@@ -9,7 +9,7 @@ export const Deposit = () => {
     const wallet = addressRecords?.[sepolia.id];
 
     const { isConnected } = useAccount();
-    const { sendTransaction } = useSendTransaction();
+    const { sendTransaction, isLoading } = useSendTransaction();
     const [amount, setAmount] = useState('');
 
     const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
