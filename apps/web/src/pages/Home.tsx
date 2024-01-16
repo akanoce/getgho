@@ -1,4 +1,4 @@
-import { ShimmerButton } from '@/components';
+import { Deposit, ShimmerButton } from '@/components';
 import { LocalAccount } from 'viem';
 import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { useEffect, useState } from 'react';
@@ -30,9 +30,8 @@ export const Home = ({ wallet, logout, ethersProvider, signer }: Props) => {
                     <a>
                         Wallet Address : {JSON.stringify(wallet.address) ?? ''}
                     </a>
-
                     <a className="gap-y-2">Wallet balance : {balance}</a>
-
+                    <Deposit />
                     <ShimmerButton
                         className="h-14 shadow-2xl"
                         shimmerColor="purple"
