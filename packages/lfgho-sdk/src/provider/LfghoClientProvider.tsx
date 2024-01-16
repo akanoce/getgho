@@ -1,11 +1,10 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
-import { ethers } from 'ethers';
 import {
     PimlicoBundlerClient,
     PimlicoPaymasterClient
 } from 'permissionless/clients/pimlico';
 import { PublicClient, WalletClient } from 'viem';
-import { useEthersProvider, useViemSigner } from '../store';
+import { useViemSigner } from '../store';
 import { getViemPublicClient } from '../_viem';
 import {
     getPimlicoBundlerClient,
@@ -16,9 +15,6 @@ type LfghoContextProviderProps = { children: React.ReactNode };
 
 export type LfghoContextType = {
     viemSigner: WalletClient;
-    ethersProvider:
-        | ethers.providers.FallbackProvider
-        | ethers.providers.JsonRpcProvider;
     viemPublicClient: PublicClient;
     pimlicoBundler: PimlicoBundlerClient;
     pimlicoPaymaster: PimlicoPaymasterClient;
@@ -30,7 +26,6 @@ export const LfghoContext = React.createContext<LfghoContextType | undefined>(
 
 const LfghoContextProvider = ({ children }: LfghoContextProviderProps) => {
     const { viemSigner } = useViemSigner();
-    const { ethersProvider } = useEthersProvider();
 
     const [viemPublicClient, setViemPublicClient] = useState<
         PublicClient | undefined
@@ -45,14 +40,12 @@ const LfghoContextProvider = ({ children }: LfghoContextProviderProps) => {
     const value = useMemo(() => {
         if (
             viemSigner &&
-            ethersProvider &&
             viemPublicClient &&
             pimlicoBundler &&
             pimlicoPaymaster
         ) {
             return {
                 viemSigner,
-                ethersProvider,
                 viemPublicClient,
                 pimlicoBundler,
                 pimlicoPaymaster

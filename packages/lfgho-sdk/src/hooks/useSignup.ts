@@ -4,14 +4,21 @@ import {
     createUserSubOrg,
     generateRandomBuffer
 } from '../_turnkey';
-import { useLocalAccount, useViemSigner } from '../store';
-import { config } from '@repo/config';
+import {
+    useCounterFactualAddress,
+    useLocalAccount,
+    useViemSigner
+} from '../store';
 import { createViemAccount, createViemSigner } from '../_viem';
-import { getCounterfactualAddresses } from '../_pimlico';
+import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
+import { useLfghoClients } from '.';
 
 export const useSignup = () => {
     const { setLocalAccount } = useLocalAccount();
     const { setViemSigner } = useViemSigner();
+    const { setAddressRecords } = useCounterFactualAddress();
+    const { viemPublicClient, pimlicoBundler, pimlicoPaymaster } =
+        useLfghoClients();
 
     const signup = async (walletName: string) => {
         const challenge = generateRandomBuffer();
@@ -59,18 +66,27 @@ export const useSignup = () => {
         });
 
         // returns the address of the smart account that would be created fron the contract factory
-        await getCounterfactualAddresses({
-            viemAccount
-        });
+        const { sender, entryPoint, initCode } =
+            await getCounterfactualAddresses({
+                viemAccount,
+                viemPublicClient,
+                pimlicoBundler,
+                setAddressRecords
+            });
 
-        await createSmartWallets({
-            config,
-            viemAccount
+        await createSmartWallet({
+            viemAccount,
+            sender,
+            entryPoint,
+            viemPublicClient,
+            pimlicoBundler,
+            initCode,
+            pimlicoPaymaster
         });
 
         setViemSigner(viemSigner);
         setLocalAccount(viemAccount);
     };
 
-    return signup;
+    return { signup };
 };

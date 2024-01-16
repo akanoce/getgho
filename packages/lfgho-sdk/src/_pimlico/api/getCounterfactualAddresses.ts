@@ -1,14 +1,24 @@
-import { Address, LocalAccount } from 'viem';
+import { Address, LocalAccount, PublicClient } from 'viem';
 import { sepolia } from 'viem/chains';
-import { config } from '@repo/config';
 import { generateInitCode } from './generateInitCode';
 import { FACTORY_ADDRESS } from '../const';
 import { getSenderAddress } from 'permissionless';
+import { PimlicoBundlerClient } from 'permissionless/clients/pimlico';
+
+type AddressRecords = (
+    addressRecords: Record<string, `0x${string}`> | undefined
+) => void;
 
 export const getCounterfactualAddresses = async ({
-    viemAccount
+    viemAccount,
+    viemPublicClient,
+    pimlicoBundler,
+    setAddressRecords
 }: {
     viemAccount: LocalAccount;
+    viemPublicClient: PublicClient;
+    pimlicoBundler: PimlicoBundlerClient;
+    setAddressRecords: AddressRecords;
 }) => {
     const initCode = generateInitCode(
         // most chains already have deployed a SimpleAccountFactory.sol contract, that is able to easily deploy new SimpleAccount instances via the createAccount function
@@ -16,10 +26,8 @@ export const getCounterfactualAddresses = async ({
         viemAccount.address as Address
     );
 
-    const bundlerClient = await getPimlicoBundlerClient({ sepolia });
-
     // a contract that receives UserOperations from bundlers, validates them, pays for gas, and executes them.
-    const entryPoint = (await bundlerClient.supportedEntryPoints())?.[0];
+    const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
 
     console.log(
         `Entry point for '${sepolia.name}' (${sepolia.id}):`,
@@ -34,7 +42,7 @@ export const getCounterfactualAddresses = async ({
     // the address the SimpleAccount will be deployed to
     // the address which will handle the verification and execution steps of the UserOperation
     // the address of the smart wallet
-    const sender = await getSenderAddress(publicClient(config.alchemyApiKey), {
+    const sender = await getSenderAddress(viemPublicClient, {
         initCode,
         entryPoint
     });
@@ -48,12 +56,5 @@ export const getCounterfactualAddresses = async ({
     // TODO - it should not save the same address twice
     setAddressRecords({ [sepolia.id]: sender });
 
-    // Store state for performance reasons
-    if (chain.id === hubChain.id) {
-        initCodeRef.current = initCode;
-        hubBundlerClientRef.current = bundlerClient;
-        hubPaymasterClientRef.current = hubPaymasterClient;
-        hubEntryPointRef.current = entryPoint;
-        hubSenderRef.current = sender;
-    }
+    return { sender, entryPoint, initCode };
 };

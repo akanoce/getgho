@@ -4,9 +4,10 @@ import {
     UiPoolDataProvider
 } from '@aave/contract-helpers';
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
-import { useTurnkeySigner } from '@repo/passkeys';
-import { createContext, useContext, useMemo } from 'react';
-import { config } from '@repo/config';
+import { createContext, useCallback, useContext, useMemo } from 'react';
+import { useLfghoClients } from '@repo/lfgho-sdk';
+import { Transport, WalletClient } from 'viem';
+import { ethers } from 'ethers';
 
 interface CurrentUserContextType {
     poolDataProviderContract: UiPoolDataProvider | null;
@@ -21,8 +22,37 @@ export const AaveContractsProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const { ethersProvider } = useTurnkeySigner(config);
-    //TODO: support multiple chains
+    const { viemSigner } = useLfghoClients();
+
+    const clientToProvider = useCallback((client: WalletClient) => {
+        const { chain, transport } = client;
+        if (!chain) throw new Error('Chain not found');
+        const network = {
+            chainId: chain.id,
+            name: chain.name,
+            ensAddress: chain.contracts?.ensRegistry?.address
+        };
+        if (transport.type === 'fallback')
+            return new ethers.providers.FallbackProvider(
+                (transport.transports as ReturnType<Transport>[]).map(
+                    ({ value }) =>
+                        new ethers.providers.JsonRpcProvider(
+                            value?.url,
+                            network
+                        )
+                )
+            );
+        return new ethers.providers.JsonRpcProvider(
+            { url: transport.url, headers: transport.fetchOptions.headers },
+            network
+        );
+    }, []);
+
+    const ethersProvider = useMemo(
+        () => clientToProvider(viemSigner),
+        [clientToProvider, viemSigner]
+    );
+
     const chainAddressBook = useMemo(() => AaveV3Sepolia, []);
 
     // View contract used to fetch all reserves data (including market base currency data), and user reserves

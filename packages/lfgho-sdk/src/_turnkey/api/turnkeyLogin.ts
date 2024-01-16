@@ -1,14 +1,11 @@
 import axios from 'axios';
 import { TSignedRequest } from '@turnkey/http';
-import { turnkeyClient } from '../../const';
-import { AppConfig } from '@repo/config';
+import { turnkeyAuthClient } from '.';
 
 export async function turnkeyLogin({
-    signedRequest,
-    config
+    signedRequest
 }: {
     signedRequest: TSignedRequest;
-    config: AppConfig;
 }) {
     try {
         const whoamiResponse = await axios.post(
@@ -30,13 +27,11 @@ export async function turnkeyLogin({
 
         const subOrgId = whoamiResponse.data.organizationId;
 
-        const walletsResponse = await turnkeyClient({ config }).getWallets({
+        const walletsResponse = await turnkeyAuthClient().getWallets({
             organizationId: subOrgId
         });
 
-        const accountsResponse = await turnkeyClient({
-            config
-        }).getWalletAccounts({
+        const accountsResponse = await turnkeyAuthClient().getWalletAccounts({
             organizationId: subOrgId,
             walletId: walletsResponse.wallets[0].walletId
         });

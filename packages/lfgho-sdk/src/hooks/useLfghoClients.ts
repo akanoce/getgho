@@ -5,7 +5,7 @@ export const useLfghoClients = () => {
     const context = React.useContext(LfghoContext);
     if (!context) {
         throw new Error(
-            'useThorContext must be used within a UserContextProvider'
+            'useLfghoClients must be used within a UserContextProvider'
         );
     }
 

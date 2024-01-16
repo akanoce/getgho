@@ -1,11 +1,13 @@
-import { useWallet } from '@repo/passkeys';
+import { useCounterFactualAddress } from '@repo/lfgho-sdk';
 import { ConnectKitButton } from 'connectkit';
 import { ChangeEvent, useState } from 'react';
 import { parseEther } from 'viem';
-import { useAccount, useSendTransaction } from 'wagmi';
+import { sepolia, useAccount, useSendTransaction } from 'wagmi';
 
 export const Deposit = () => {
-    const { wallet } = useWallet();
+    const { addressRecords } = useCounterFactualAddress();
+    const wallet = addressRecords?.[sepolia.id];
+
     const { isConnected } = useAccount();
     const { sendTransaction } = useSendTransaction();
     const [amount, setAmount] = useState('');
@@ -34,7 +36,7 @@ export const Deposit = () => {
                         disabled={!Number(amount)}
                         onClick={() =>
                             sendTransaction({
-                                to: wallet?.address as `0x${string}`,
+                                to: wallet as `0x${string}`,
                                 value: parseEther(amount)
                             })
                         }
