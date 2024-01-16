@@ -1,5 +1,6 @@
 import { Deposit, ShimmerButton } from '@/components';
 import { Address } from 'viem';
+import { UserSummary } from '@/components/UserSummary';
 
 type Props = {
     wallet: Address;
@@ -11,9 +12,11 @@ export const Home = ({ wallet, logout }: Props) => {
         <div className="flex justify-center items-center h-[100vh]">
             {wallet && (
                 <div className="flex flex-col gap-y-4">
+                    <UserSummary address={wallet} />
                     <a>Wallet Address : {JSON.stringify(wallet) ?? ''}</a>
 
                     <Deposit />
+
                     <ShimmerButton
                         className="h-14 shadow-2xl"
                         shimmerColor="purple"
