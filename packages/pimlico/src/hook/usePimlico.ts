@@ -57,13 +57,14 @@ export const usePimlico = (
         const chain = sepolia;
 
         const initCode = generateInitCode(
+            // most chains already have deployed a SimpleAccountFactory.sol contract, that is able to easily deploy new SimpleAccount instances via the createAccount function
             getFactoryAddress(),
             viemAccount.address as Address
         );
 
         const bundlerClient = await getPimlicoBundlerClient({ chain, config });
 
-        // Get entry point address
+        // a contract that receives UserOperations from bundlers, validates them, pays for gas, and executes them.
         const entryPoint = (await bundlerClient.supportedEntryPoints())?.[0];
 
         console.log(
@@ -76,7 +77,9 @@ export const usePimlico = (
                 `No entry point found for '${chain.name}' (${chain.id})`
             );
 
-        // Calculate counterfactual address
+        // the address the SimpleAccount will be deployed to
+        // the address which will handle the verification and execution steps of the UserOperation
+        // the address of the smart wallet
         const sender = await getSenderAddress(
             publicClient(config.alchemyApiKey),
             {
@@ -89,7 +92,9 @@ export const usePimlico = (
             `Counterfactual address on '${chain.name}' (${chain.id}): ${sender}`
         );
 
-        // Save counterfactual address to store
+        // Saves smart wallet address to store
+        // TODO - this is called every time the user logs in, but it should only be called once OR
+        // TODO - it should not save the same address twice
         setAddressRecords({ [chain.id]: sender });
 
         const hubPaymasterClient = await getPimlicoPaymasterClient({
@@ -141,6 +146,7 @@ export const usePimlico = (
             );
 
             // Build useroperation
+            // pseudo-transaction objects that are used to execute transactions with contract accounts. They contain information such as nonce, gas limit, gas price, initCode or target, data, signature, etc.
             let userOperation = (await buildUserOperation({
                 sender: hubSenderRef.current,
                 entryPoint: hubEntryPointRef.current,

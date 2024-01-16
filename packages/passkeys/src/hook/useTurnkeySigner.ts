@@ -117,6 +117,7 @@ export const useTurnkeySigner = (config: AppConfig): UseTurnkeySignerReturn => {
                 viemAccount
             });
 
+            // returns the address of the smart account that would be created fron the contract factory
             await determineCounterfactualAddresses({
                 config,
                 viemAccount
