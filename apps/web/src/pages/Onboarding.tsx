@@ -7,7 +7,7 @@ type Props = {
 
 export const Onboarding = ({ login, signup }: Props) => {
     return (
-        <div className="flex justify-center items-center h-[100vh]">
+        <div className="flex justify-center items-center">
             <div className="flex flex-col gap-y-4">
                 <ShimmerButton
                     className="h-14 shadow-2xl"
