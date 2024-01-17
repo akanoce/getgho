@@ -1,10 +1,10 @@
 import { Deposit, ShimmerButton } from '@/components';
-import { LocalAccount } from 'viem';
+import { Address } from 'viem';
 import { UserSummary } from '@/components/UserSummary';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 
 type Props = {
-    wallet: LocalAccount;
+    wallet: Address;
     logout: () => void;
 };
 
@@ -13,9 +13,10 @@ export const Home = ({ wallet, logout }: Props) => {
         <div className="flex justify-center items-center h-[100vh]">
             {wallet && (
                 <div className="flex flex-col gap-y-4">
-                    <ReservesIncentives address={wallet.address} />
-                    <UserSummary address={wallet.address} />
+                    <ReservesIncentives address={wallet} />
+                    <UserSummary address={wallet} />
                     <Deposit />
+
                     <ShimmerButton
                         className="h-14 shadow-2xl"
                         shimmerColor="purple"
