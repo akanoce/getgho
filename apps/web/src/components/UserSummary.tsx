@@ -1,15 +1,14 @@
 import { useBalance, useUserReservesIncentives } from '@/api';
 import React from 'react';
 import { Spinner } from './Spinner';
-import { useTurnkeySigner } from '@repo/passkeys';
-import { config } from '@repo/config';
 import { Card } from '.';
+import { useLfghoClients } from '@repo/lfgho-sdk';
 
 type Props = {
     address: string;
 };
 export const UserSummary: React.FC<Props> = ({ address }) => {
-    const { ethersProvider } = useTurnkeySigner(config);
+    const { ethersProvider } = useLfghoClients();
 
     const { data: balance } = useBalance(ethersProvider, address);
     const { data: userReservesIncentives } = useUserReservesIncentives(address);

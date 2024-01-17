@@ -1,0 +1,30 @@
+{
+    "name": "@repo/lfgho-sdk",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "main": "index.js",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@turnkey/http": "^2.6.2",
+        "@turnkey/viem": "^0.4.7",
+        "ethers": "5.7.2",
+        "viem": "^1.21.4",
+        "zustand": "^4.4.7",
+        "permissionless": "^0.0.26",
+        "@repo/config": "*"
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "*",
+        "@repo/typescript-config": "*",
+        "axios": "^1.6.5",
+        "typescript": "^5.3.3"
+    }
+}

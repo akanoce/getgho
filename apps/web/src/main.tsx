@@ -5,7 +5,6 @@ import { config } from './config';
 import { App } from './App';
 import { AaveContractsProvider } from './providers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ConnectKitProvider } from 'connectkit';
 
 const queryClient = new QueryClient({
