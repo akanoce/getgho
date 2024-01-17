@@ -6,7 +6,7 @@ import { PIMLICO_BASE_URL } from '../const';
 import { PimlicoPaymasterClient } from 'permissionless/clients/pimlico';
 
 export const getPimlicoPaymasterClient = () => {
-    const pimlicoNetwork = sepolia.id;
+    const pimlicoNetwork = sepolia.network;
 
     const paymasterClient = createClient({
         chain: sepolia,

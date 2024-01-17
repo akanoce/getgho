@@ -22,7 +22,7 @@ export const AaveContractsProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const { viemSigner } = useLfghoClients();
+    const { viemPublicClient } = useLfghoClients();
 
     const clientToProvider = useCallback((client: WalletClient) => {
         const { chain, transport } = client;
@@ -49,8 +49,9 @@ export const AaveContractsProvider = ({
     }, []);
 
     const ethersProvider = useMemo(
-        () => clientToProvider(viemSigner),
-        [clientToProvider, viemSigner]
+        //@ts-expect-error TODO - Check why TS complains
+        () => clientToProvider(viemPublicClient!), // TODO - Check why TS complains
+        [clientToProvider, viemPublicClient]
     );
 
     const chainAddressBook = useMemo(() => AaveV3Sepolia, []);

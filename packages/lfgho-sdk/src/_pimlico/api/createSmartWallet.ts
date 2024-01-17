@@ -56,11 +56,14 @@ export const createSmartWallet = async ({
 
         console.log('Built userOperation:', userOperation);
 
+        // TODO - this one fails with "Gas Limit values (preVerificationGas, verificationGasLimit, callGasLimit) must be set"
         // Sponsor the useroperation
         const sponsorParams = await pimlicoPaymaster.sponsorUserOperation({
             userOperation,
             entryPoint
         });
+
+        console.log('Got sponsorParams:', sponsorParams);
 
         userOperation = {
             ...userOperation,

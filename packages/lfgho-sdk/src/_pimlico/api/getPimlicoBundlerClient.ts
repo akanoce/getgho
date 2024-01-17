@@ -5,7 +5,7 @@ import { sepolia } from 'viem/chains';
 import { PIMLICO_BASE_URL } from '../const';
 
 export const getPimlicoBundlerClient = () => {
-    const pimlicoNetwork = sepolia.id;
+    const pimlicoNetwork = sepolia.network;
 
     const bundlerClient = createPimlicoBundlerClient({
         chain: sepolia,
