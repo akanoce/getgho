@@ -3,7 +3,7 @@ import { Spinner } from './Spinner';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
-
+import { isNil } from 'lodash';
 type Props = {
     address: string;
 };
@@ -24,6 +24,22 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
             })
         )
     });
+
+    const renderUnderLyingAssetBalance = (assetIndex: number) => {
+        const reserveIncentive = formattedReservesIncentives?.[assetIndex];
+        const balance = result?.data?.[assetIndex] as bigint;
+
+        return (
+            <div className="flex flex-row items-center justify-center gap-1">
+                <span className="text-sm font-semibold">
+                    {isNil(balance) ? 'N/A' : formatUnits(balance, 18)}
+                </span>
+                <span className="text-sm font-medium">
+                    {reserveIncentive ? reserveIncentive.symbol : 'Loading...'}
+                </span>
+            </div>
+        );
+    };
 
     if (!formattedReservesIncentives)
         return (
@@ -99,7 +115,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {formatUnits(result?.data?.[index], 18)}
+                                        {renderUnderLyingAssetBalance(index)}
                                     </td>
                                 </tr>
                             )

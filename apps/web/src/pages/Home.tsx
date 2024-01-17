@@ -10,7 +10,7 @@ type Props = {
 
 export const Home = ({ wallet, logout }: Props) => {
     return (
-        <div className="flex justify-center items-center h-[100vh]">
+        <div className="flex justify-center items-center">
             {wallet && (
                 <div className="flex flex-col gap-y-4">
                     <ReservesIncentives address={wallet} />
