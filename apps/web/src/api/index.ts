@@ -11,12 +11,15 @@ export const submitTransaction = async ({
     signer,
     txs // The transaction to be signed
 }: SubmitTransactionParamsType) => {
+    console.log({ signer });
     for (const tx of txs) {
+        const txGas = await tx.gas();
+        console.log('txGas', txGas);
         const extendedTxData = await tx.tx();
-        const { from, ...txData } = extendedTxData;
+        const txData = extendedTxData;
         const txResponse = await signer.sendTransaction({
             ...txData,
-            value: txData.value ? BigNumber.from(txData.value) : undefined
+            value: BigNumber.from(txData.value).toBigInt()
         });
         return txResponse;
     }
