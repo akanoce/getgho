@@ -4,17 +4,14 @@ import {
     getUserOperationHash
 } from 'permissionless';
 import { Address, encodeFunctionData } from 'viem';
-import { useLfghoClients } from '.';
-import { useCounterFactualAddress, useLocalAccount } from '..';
+import { useLfghoClients, useTurnkeyViem } from '.';
+import { useCounterFactualAddress } from '..';
 import { sepolia } from 'viem/chains';
-import {
-    ERC_20_PAYMASTER_ADDRESS,
-    signUserOperationWithPasskey
-} from '../_pimlico';
+import { ERC_20_PAYMASTER_ADDRESS } from '../_pimlico';
 
 export const useSponsoredTransaction = () => {
     const { viemPublicClient, pimlicoBundler, viemSigner } = useLfghoClients();
-    const { localAccount } = useLocalAccount();
+    const { getViemInstance } = useTurnkeyViem();
     const { addressRecords } = useCounterFactualAddress();
     const sender = addressRecords?.[sepolia.id] as Address;
 
@@ -65,6 +62,9 @@ export const useSponsoredTransaction = () => {
             chainId: sepolia.id,
             entryPoint
         });
+
+        //TODO: correct?
+        const localAccount = await (await getViemInstance()).account;
 
         if (!localAccount) {
             throw new Error('No local account found');
