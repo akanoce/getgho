@@ -32,7 +32,12 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         return (
             <div className="flex flex-row items-center justify-center gap-1">
                 <span className="text-sm font-semibold">
-                    {isNil(balance) ? 'N/A' : formatUnits(balance, 18)}
+                    {isNil(balance)
+                        ? 'N/A'
+                        : formatUnits(
+                              balance,
+                              reserveIncentive?.decimals ?? 18
+                          )}
                 </span>
                 <span className="text-sm font-medium">
                     {reserveIncentive ? reserveIncentive.symbol : 'Loading...'}
