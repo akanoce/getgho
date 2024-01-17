@@ -1,7 +1,7 @@
 import { useBalance, useERC20Balance, useUserReservesIncentives } from '@/api';
 import React from 'react';
 import { Spinner } from './Spinner';
-import { Card } from '.';
+import { AddressButton, Card } from '.';
 import { useLfghoClients } from '@repo/lfgho-sdk';
 import { ethers } from 'ethers';
 
@@ -17,10 +17,6 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     const formattedSummary = userReservesIncentives?.formattedUserSummary;
 
-    const humanizeAddress = (address: string) => {
-        return `${address.slice(0, 6)}...${address.slice(-4)}`;
-    };
-
     if (!formattedSummary)
         return (
             <Card additionalClasses="justify-center items-center h-52">
@@ -33,9 +29,7 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
         <Card>
             <div className="flex flex-row justify-between">
                 <span className="text-2xl font-bold">User Summary (AA)</span>
-                <span className="bg-gray-100 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded flex flex-row justify-center items-center">
-                    {humanizeAddress(address)}
-                </span>
+                <AddressButton address={address} withCopy={true} />
             </div>
             <div className="flex flex-row justify-between items-center">
                 <span className="text-xl">ETH Balance</span>
