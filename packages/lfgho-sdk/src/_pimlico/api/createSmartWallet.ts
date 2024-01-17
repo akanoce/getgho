@@ -1,5 +1,4 @@
-import { Address, LocalAccount, PublicClient, encodeFunctionData } from 'viem';
-import { simpleAccountABI } from '../util';
+import { Address, LocalAccount, PublicClient } from 'viem';
 import { buildUserOperation } from './buildUserOperation';
 import {
     PimlicoBundlerClient,
@@ -8,6 +7,7 @@ import {
 import { UserOperation } from 'permissionless';
 import { signUserOperationWithPasskey } from './signUserOperationWithPasskey';
 import { sepolia } from 'viem/chains';
+import { approveERC20Paymaster } from '.';
 
 export const createSmartWallet = async ({
     viemAccount,
@@ -27,16 +27,8 @@ export const createSmartWallet = async ({
     pimlicoPaymaster: PimlicoPaymasterClient;
 }) => {
     try {
-        const to = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // vitalik
-        const value = 0n;
-        const data = '0x68656c6c6f'; // "hello" encoded to utf-8 bytes
-
         // create mock call data
-        const callData = encodeFunctionData({
-            abi: simpleAccountABI,
-            functionName: 'execute',
-            args: [to, value, data]
-        });
+        const callData = approveERC20Paymaster();
 
         console.log(
             'Generated domain registration & set-address batch callData:',

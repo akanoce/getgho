@@ -17,10 +17,12 @@ export const signUserOperationWithPasskey = async ({
         chainId: chain.id,
         entryPoint
     });
+
     const signature = await viemAccount.signMessage({
         message: {
             raw: userOperationHash
         }
     });
+
     return signature;
 };
