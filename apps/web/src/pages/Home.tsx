@@ -10,9 +10,9 @@ type Props = {
 
 export const Home = ({ wallet, logout }: Props) => {
     return (
-        <div className="flex justify-center items-center">
+        <>
             {wallet && (
-                <div className="flex flex-col gap-y-4">
+                <div className="flex flex-col gap-y-4 w-full">
                     <ReservesIncentives address={wallet} />
                     <UserSummary address={wallet} />
                     <Deposit />
@@ -31,6 +31,6 @@ export const Home = ({ wallet, logout }: Props) => {
                     </ShimmerButton>
                 </div>
             )}
-        </div>
+        </>
     );
 };

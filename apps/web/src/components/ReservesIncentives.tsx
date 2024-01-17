@@ -4,6 +4,7 @@ import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
 import { isNil } from 'lodash';
+import { AddressButton } from '.';
 type Props = {
     address: string;
 };
@@ -32,7 +33,12 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         return (
             <div className="flex flex-row items-center justify-center gap-1">
                 <span className="text-sm font-semibold">
-                    {isNil(balance) ? 'N/A' : formatUnits(balance, 18)}
+                    {isNil(balance)
+                        ? 'N/A'
+                        : formatUnits(
+                              balance,
+                              reserveIncentive?.decimals ?? 18
+                          )}
                 </span>
                 <span className="text-sm font-medium">
                     {reserveIncentive ? reserveIncentive.symbol : 'Loading...'}
@@ -58,6 +64,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                         <tr>
                             <th scope="col" className="px-6 py-3">
                                 Token
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Address
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Price
@@ -86,6 +95,14 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                     >
                                         {reserveIncentive.name}
                                     </th>
+                                    <td className="px-6 py-4">
+                                        <AddressButton
+                                            address={
+                                                reserveIncentive.underlyingAsset
+                                            }
+                                            withCopy={true}
+                                        />
+                                    </td>
                                     <td className="px-6 py-4">
                                         {new Intl.NumberFormat('it-IT', {
                                             style: 'currency',
