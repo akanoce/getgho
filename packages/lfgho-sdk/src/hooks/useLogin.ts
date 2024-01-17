@@ -1,18 +1,14 @@
 import { config } from '@repo/config';
 import { turnkeyLogin, turnkeyPasskeyClient } from '../_turnkey';
-import { createViemAccount, createViemSigner } from '../_viem';
 import { getCounterfactualAddresses } from '../_pimlico';
 import { useLfghoClients } from '.';
-import {
-    useCounterFactualAddress,
-    useLocalAccount,
-    useViemSigner
-} from '../store';
+import { useCounterFactualAddress, useViemSigner } from '../store';
+import { useTurnkeyViem } from '../hooks';
 
 export const useLogin = () => {
     const { viemPublicClient, pimlicoBundler } = useLfghoClients();
     const { setAddressRecords } = useCounterFactualAddress();
-    const { setLocalAccount } = useLocalAccount();
+    const { createViemInstance } = useTurnkeyViem();
     const { setViemSigner } = useViemSigner();
 
     const login = async () => {
@@ -29,13 +25,8 @@ export const useLogin = () => {
             // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
             const res = await turnkeyLogin({ signedRequest });
 
-            const viemAccount = await createViemAccount({
-                turnkeyRes: res
-            });
-
-            const viemSigner = await createViemSigner({
-                viemAccount
-            });
+            const { account: viemAccount, signer: viemSigner } =
+                await createViemInstance(res);
 
             await getCounterfactualAddresses({
                 viemAccount,
@@ -44,7 +35,6 @@ export const useLogin = () => {
                 setAddressRecords
             });
 
-            setLocalAccount(viemAccount);
             setViemSigner(viemSigner);
         } catch (e) {
             const message = `caught error: ${(e as Error).message}`;

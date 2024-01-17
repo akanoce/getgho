@@ -4,17 +4,13 @@ import {
     createUserSubOrg,
     generateRandomBuffer
 } from '../_turnkey';
-import {
-    useCounterFactualAddress,
-    useLocalAccount,
-    useViemSigner
-} from '../store';
-import { createViemAccount, createViemSigner } from '../_viem';
+import { useCounterFactualAddress, useViemSigner } from '../store';
+import { useTurnkeyViem } from '../hooks';
 import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
 import { useLfghoClients } from '.';
 
 export const useSignup = () => {
-    const { setLocalAccount } = useLocalAccount();
+    const { createViemInstance } = useTurnkeyViem();
     const { setViemSigner } = useViemSigner();
     const { setAddressRecords } = useCounterFactualAddress();
     const { viemPublicClient, pimlicoBundler, pimlicoPaymaster } =
@@ -56,14 +52,8 @@ export const useSignup = () => {
             challenge: base64UrlEncode(challenge)
         });
 
-        // THIS WILL CAUSE TO DOUBLE PROMPT FOR PASSKEYS - IT IS NECCESSARY TO CREATE AN ACCOUNT TO CONNECT TO THE SIGNER TO SIGN TRANSACTIONS FOR PIMLICO CONTRACT FACTORY TO DEPLOY THE SMART WALLET
-        const viemAccount = await createViemAccount({
-            turnkeyRes: res
-        });
-
-        const viemSigner = await createViemSigner({
-            viemAccount
-        });
+        const { account: viemAccount, signer: viemSigner } =
+            await createViemInstance(res);
 
         // returns the address of the smart account that would be created fron the contract factory
         const { sender, entryPoint, initCode } =
@@ -85,7 +75,6 @@ export const useSignup = () => {
         });
 
         setViemSigner(viemSigner);
-        setLocalAccount(viemAccount);
     };
 
     return { signup };

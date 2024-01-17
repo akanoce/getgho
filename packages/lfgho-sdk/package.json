@@ -13,13 +13,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@repo/config": "*",
         "@turnkey/http": "^2.6.2",
         "@turnkey/viem": "^0.4.7",
         "ethers": "5.7.2",
-        "viem": "^1.21.4",
-        "zustand": "^4.4.7",
         "permissionless": "^0.0.26",
-        "@repo/config": "*"
+        "react": "^18.2.0",
+        "viem": "^1.21.4",
+        "zustand": "^4.4.7"
     },
     "devDependencies": {
         "@repo/eslint-config": "*",
