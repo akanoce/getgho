@@ -1,33 +1,29 @@
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
-import { useTurnkeySigner } from '@repo/passkeys';
-import { config } from '@repo/config';
-import { useReserves, useReservesIncentives } from './api';
+import { useUserReservesIncentives } from './api';
+import {
+    useCounterFactualAddress,
+    useLogin,
+    useLogout,
+    useSignup
+} from '@repo/lfgho-sdk';
+import { sepolia } from 'wagmi';
 
 export const App = () => {
-    const {
-        wallet,
-        signer,
-        login,
-        createSubOrgAndWallet,
-        logout,
-        ethersProvider
-    } = useTurnkeySigner(config);
+    const { signup } = useSignup();
+    const { login } = useLogin();
+    const logout = useLogout();
+    const { addressRecords } = useCounterFactualAddress();
+    const loggedIn = !!addressRecords?.[sepolia.id];
+    const wallet = addressRecords?.[sepolia.id];
 
-    const { data: reserves } = useReserves();
-    const { data: incentives } = useReservesIncentives();
-    const loggedIn = !!wallet;
+    const { data: userReservesIncentives } = useUserReservesIncentives(wallet);
 
-    console.log({ reserves, incentives });
+    console.log({ userReservesIncentives });
 
     return loggedIn ? (
-        <Home
-            wallet={wallet}
-            logout={logout}
-            ethersProvider={ethersProvider}
-            signer={signer}
-        />
+        <Home wallet={wallet!} logout={logout} />
     ) : (
-        <Onboarding login={login} create={createSubOrgAndWallet} />
+        <Onboarding login={login} signup={signup} />
     );
 };

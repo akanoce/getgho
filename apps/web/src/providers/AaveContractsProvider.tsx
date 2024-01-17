@@ -4,9 +4,8 @@ import {
     UiPoolDataProvider
 } from '@aave/contract-helpers';
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
-import { useTurnkeySigner } from '@repo/passkeys';
 import { createContext, useContext, useMemo } from 'react';
-import { config } from '@repo/config';
+import { useLfghoClients } from '@repo/lfgho-sdk';
 
 interface CurrentUserContextType {
     poolDataProviderContract: UiPoolDataProvider | null;
@@ -21,8 +20,8 @@ export const AaveContractsProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const { ethersProvider } = useTurnkeySigner(config);
-    //TODO: support multiple chains
+    const { ethersProvider } = useLfghoClients();
+
     const chainAddressBook = useMemo(() => AaveV3Sepolia, []);
 
     // View contract used to fetch all reserves data (including market base currency data), and user reserves

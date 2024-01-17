@@ -14,12 +14,14 @@ import {
 export const useReserves = () => {
     const { poolDataProviderContract, chainAddressBook } = useAaveContracts();
 
+    const enabled = !!poolDataProviderContract && !!chainAddressBook;
     return useQuery({
         queryKey: ['aave', 'reserves'],
         queryFn: async () =>
-            !!poolDataProviderContract &&
-            (await getReserves(poolDataProviderContract, chainAddressBook)),
-        enabled: !!poolDataProviderContract && !!chainAddressBook
+            enabled
+                ? await getReserves(poolDataProviderContract, chainAddressBook)
+                : null,
+        enabled
     });
 };
 
@@ -31,17 +33,25 @@ export const useReserves = () => {
 export const useUserReserves = (user?: string) => {
     const { poolDataProviderContract, chainAddressBook } = useAaveContracts();
 
+    const { data: reserves } = useReserves();
+
+    const enabled =
+        !!poolDataProviderContract &&
+        !!chainAddressBook &&
+        !!user &&
+        !!reserves;
     return useQuery({
         queryKey: ['aave', 'reserves', user],
         queryFn: async () =>
-            !!poolDataProviderContract &&
-            user &&
-            (await getUserReserves(
-                poolDataProviderContract,
-                chainAddressBook,
-                user
-            )),
-        enabled: !!poolDataProviderContract && !!chainAddressBook && !!user
+            enabled
+                ? await getUserReserves(
+                      poolDataProviderContract,
+                      chainAddressBook,
+                      user,
+                      reserves
+                  )
+                : null,
+        enabled
     });
 };
 
@@ -53,15 +63,22 @@ export const useReservesIncentives = () => {
     const { incentiveDataProviderContract, chainAddressBook } =
         useAaveContracts();
 
+    const { data: reserves } = useReserves();
+
+    const enabled =
+        !!incentiveDataProviderContract && !!chainAddressBook && !!reserves;
+
     return useQuery({
         queryKey: ['aave', 'reserves', 'incentives'],
         queryFn: async () =>
-            !!incentiveDataProviderContract &&
-            (await getReservesIncentives(
-                incentiveDataProviderContract,
-                chainAddressBook
-            )),
-        enabled: !!incentiveDataProviderContract && !!chainAddressBook
+            enabled
+                ? await getReservesIncentives(
+                      incentiveDataProviderContract,
+                      chainAddressBook,
+                      reserves
+                  )
+                : null,
+        enabled
     });
 };
 
@@ -74,16 +91,31 @@ export const useUserReservesIncentives = (user?: string) => {
     const { incentiveDataProviderContract, chainAddressBook } =
         useAaveContracts();
 
+    const { data: reserves } = useReserves();
+    const { data: reservesIncentives } = useReservesIncentives();
+    const { data: userReserves } = useUserReserves(user);
+
+    const enabled =
+        !!incentiveDataProviderContract &&
+        !!chainAddressBook &&
+        !!user &&
+        !!reserves &&
+        !!reservesIncentives &&
+        !!userReserves;
+
     return useQuery({
         queryKey: ['aave', 'reserves', 'incentives', user],
         queryFn: async () =>
-            !!incentiveDataProviderContract &&
-            user &&
-            (await getUserReservesIncentives(
-                incentiveDataProviderContract,
-                chainAddressBook,
-                user
-            )),
-        enabled: !!incentiveDataProviderContract && !!chainAddressBook && !!user
+            enabled
+                ? await getUserReservesIncentives(
+                      incentiveDataProviderContract,
+                      chainAddressBook,
+                      user,
+                      reserves,
+                      reservesIncentives,
+                      userReserves
+                  )
+                : null,
+        enabled
     });
 };
