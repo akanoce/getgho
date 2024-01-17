@@ -3,17 +3,12 @@ import { Spinner } from './Spinner';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
-import BigNumber from 'bignumber.js';
 
 type Props = {
     address: string;
 };
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives } = useReservesIncentives();
-
-    console.log({ reservesIncentives });
-
-    console.log({ address });
 
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
@@ -29,8 +24,6 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
             })
         )
     });
-
-    // console.log({ result });
 
     if (!formattedReservesIncentives)
         return (
