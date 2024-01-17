@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ethers } from 'ethers';
+import { USDC_SEPOLIA_ADDRESS, useLfghoClients } from '@repo/lfgho-sdk';
+import { Address } from 'viem';
 
 /**
  * Get the balance of an address from a provider
@@ -19,5 +21,32 @@ export const useBalance = (
             return formatted;
         },
         enabled: !!provider && !!address
+    });
+};
+
+export const useERC20Balance = (address?: string) => {
+    const { viemPublicClient } = useLfghoClients();
+
+    return useQuery({
+        queryKey: ['erc20Balance', address],
+        queryFn: async () => {
+            const senderUsdcBalance = await viemPublicClient.readContract({
+                abi: [
+                    {
+                        inputs: [{ name: '_owner', type: 'address' }],
+                        name: 'balanceOf',
+                        outputs: [{ name: 'balance', type: 'uint256' }],
+                        type: 'function',
+                        stateMutability: 'view'
+                    }
+                ],
+                address: USDC_SEPOLIA_ADDRESS,
+                functionName: 'balanceOf',
+                args: [address as Address]
+            });
+
+            return senderUsdcBalance;
+        },
+        enabled: !!address
     });
 };
