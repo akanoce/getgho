@@ -5,6 +5,7 @@ import {
     BaseDebtToken,
     ERC20Service
 } from '@aave/contract-helpers';
+import { LPSupplyParamsType } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book'; // import specific pool
 import { providers } from 'ethers';
@@ -43,6 +44,30 @@ export const createBorrowTxs = async (
         onBehalfOf,
         referralCode
     });
+    return txs;
+};
+
+/**
+ *  Create supply txs for Aave V3 pool
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ */
+export const createSupplyTxs = async (
+    provider: providers.Provider,
+    data: LPSupplyParamsType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    const pool = new Pool(provider, {
+        POOL: AaveV3Sepolia.POOL, // Goerli GHO market
+        WETH_GATEWAY: AaveV3Sepolia.WETH_GATEWAY // Goerli GHO market
+    });
+    /*
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+    const txs: EthereumTransactionTypeExtended[] = await pool.supply(data);
     return txs;
 };
 
