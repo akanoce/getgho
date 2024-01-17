@@ -1,13 +1,13 @@
-import { useCounterFactualAddress, useLocalAccount, useViemSigner } from '..';
+import { useCounterFactualAddress, useTurnkeyViem, useViemSigner } from '..';
 
 export const useLogout = () => {
     const { setAddressRecords } = useCounterFactualAddress();
-    const { setLocalAccount } = useLocalAccount();
+    const { deleteViemAccount } = useTurnkeyViem();
     const { setViemSigner } = useViemSigner();
 
     const logout = () => {
+        deleteViemAccount();
         setAddressRecords(undefined);
-        setLocalAccount(undefined);
         setViemSigner(undefined);
     };
 
