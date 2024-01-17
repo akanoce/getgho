@@ -4,10 +4,8 @@ import {
     UiPoolDataProvider
 } from '@aave/contract-helpers';
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { useLfghoClients } from '@repo/lfgho-sdk';
-import { Transport, WalletClient } from 'viem';
-import { ethers } from 'ethers';
 
 interface CurrentUserContextType {
     poolDataProviderContract: UiPoolDataProvider | null;
@@ -22,37 +20,7 @@ export const AaveContractsProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const { viemPublicClient } = useLfghoClients();
-
-    const clientToProvider = useCallback((client: WalletClient) => {
-        const { chain, transport } = client;
-        if (!chain) throw new Error('Chain not found');
-        const network = {
-            chainId: chain.id,
-            name: chain.name,
-            ensAddress: chain.contracts?.ensRegistry?.address
-        };
-        if (transport.type === 'fallback')
-            return new ethers.providers.FallbackProvider(
-                (transport.transports as ReturnType<Transport>[]).map(
-                    ({ value }) =>
-                        new ethers.providers.JsonRpcProvider(
-                            value?.url,
-                            network
-                        )
-                )
-            );
-        return new ethers.providers.JsonRpcProvider(
-            { url: transport.url, headers: transport.fetchOptions.headers },
-            network
-        );
-    }, []);
-
-    const ethersProvider = useMemo(
-        //@ts-expect-error TODO - Check why TS complains
-        () => clientToProvider(viemPublicClient!), // TODO - Check why TS complains
-        [clientToProvider, viemPublicClient]
-    );
+    const { ethersProvider } = useLfghoClients();
 
     const chainAddressBook = useMemo(() => AaveV3Sepolia, []);
 

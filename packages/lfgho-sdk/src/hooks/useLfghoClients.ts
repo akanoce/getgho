@@ -1,5 +1,5 @@
 import { getViemPublicClient } from '../_viem';
-import { PublicClient, WalletClient } from 'viem';
+import { PublicClient, Transport, WalletClient } from 'viem';
 import {
     PimlicoBundlerClient,
     PimlicoPaymasterClient
@@ -9,12 +9,14 @@ import {
     getPimlicoBundlerClient,
     getPimlicoPaymasterClient
 } from '../_pimlico';
+import { ethers } from 'ethers';
 
 export type LfghoContextType = {
     viemSigner: WalletClient | undefined;
     viemPublicClient: PublicClient;
     pimlicoBundler: PimlicoBundlerClient;
     pimlicoPaymaster: PimlicoPaymasterClient;
+    ethersProvider: EtherCustomProvider;
 };
 
 export const useLfghoClients = (): LfghoContextType => {
@@ -32,7 +34,17 @@ export const useLfghoClients = (): LfghoContextType => {
     const pimlicoPaymaster =
         pimlicoPaymasterClientSingleton.getLibraryInstance();
 
-    return { viemSigner, viemPublicClient, pimlicoBundler, pimlicoPaymaster };
+    const ethersProviderSingleton =
+        EthersProviderSingleton.getInstance(viemPublicClient);
+    const ethersProvider = ethersProviderSingleton.getLibraryInstance();
+
+    return {
+        viemSigner,
+        viemPublicClient,
+        pimlicoBundler,
+        pimlicoPaymaster,
+        ethersProvider
+    };
 };
 
 class PublicClientSingleton {
@@ -99,3 +111,54 @@ class PimlicoPaymasterClientSingleton {
         return this.libraryInstance;
     }
 }
+
+export type EtherCustomProvider =
+    | ethers.providers.FallbackProvider
+    | ethers.providers.JsonRpcProvider;
+
+class EthersProviderSingleton {
+    private static instance: EthersProviderSingleton;
+    private libraryInstance: EtherCustomProvider;
+
+    private constructor(client: PublicClient) {
+        this.libraryInstance = clientToProvider(client);
+    }
+
+    public static getInstance(client: PublicClient): EthersProviderSingleton {
+        if (!EthersProviderSingleton.instance) {
+            EthersProviderSingleton.instance = new EthersProviderSingleton(
+                client
+            );
+        }
+        return EthersProviderSingleton.instance;
+    }
+
+    public getLibraryInstance(): EtherCustomProvider {
+        return this.libraryInstance;
+    }
+}
+
+const clientToProvider = (client: PublicClient) => {
+    const { chain, transport } = client;
+
+    if (!chain) throw new Error('Chain not found');
+
+    const network = {
+        chainId: chain.id,
+        name: chain.name,
+        ensAddress: chain.contracts?.ensRegistry?.address
+    };
+
+    if (transport.type === 'fallback')
+        return new ethers.providers.FallbackProvider(
+            (transport.transports as ReturnType<Transport>[]).map(
+                ({ value }) =>
+                    new ethers.providers.JsonRpcProvider(value?.url, network)
+            )
+        );
+
+    return new ethers.providers.JsonRpcProvider(
+        { url: transport.url, headers: transport.fetchOptions.headers },
+        network
+    );
+};
