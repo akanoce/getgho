@@ -21,9 +21,13 @@ export const App = () => {
 
     console.log({ userReservesIncentives });
 
-    return loggedIn ? (
-        <Home wallet={wallet!} logout={logout} />
-    ) : (
-        <Onboarding login={login} signup={signup} />
+    return (
+        <div className="w-full flex justify-center items-center max-w-6xl px-16 py-8 mx-auto">
+            {loggedIn ? (
+                <Home wallet={wallet!} logout={logout} />
+            ) : (
+                <Onboarding login={login} signup={signup} />
+            )}
+        </div>
     );
 };
