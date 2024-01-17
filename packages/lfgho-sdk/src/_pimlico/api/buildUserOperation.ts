@@ -23,10 +23,13 @@ export const buildUserOperation = async ({
     const gasPriceResult = await bundlerClient.getUserOperationGasPrice();
     const nonce = await getAccountNonce(publicClient, { entryPoint, sender });
 
-    if (nonce !== 0n)
+    if (nonce !== 0n) {
         console.log(
             'Deployment UserOperation previously submitted, skipping...'
         );
+
+        return;
+    }
 
     const userOperation: Partial<UserOperation> = {
         sender,
