@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
+import { useMemo } from 'react';
 import { FaCheck, FaCopy } from 'react-icons/fa6';
 
 type Props = {
@@ -12,15 +13,9 @@ export const AddressButton = ({ address, onClick, withCopy = true }: Props) => {
         return `${address.slice(0, 6)}...${address.slice(-4)}`;
     };
 
-    const [isCopied, setIsCopied] = useState(false);
+    const { isCopied, copy } = useCopyToClipboard();
 
-    const copyAddress = () => {
-        navigator.clipboard.writeText(address);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 1000);
-    };
-
-    const handleOnClick = () => (withCopy ? copyAddress() : onClick?.());
+    const handleOnClick = () => (withCopy ? copy(address) : onClick?.());
 
     const icon = useMemo(() => {
         if (!isCopied) return <FaCopy />;

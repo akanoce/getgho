@@ -4,6 +4,7 @@ import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
 import { isNil } from 'lodash';
+import { AddressButton } from '.';
 type Props = {
     address: string;
 };
@@ -65,6 +66,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                 Token
                             </th>
                             <th scope="col" className="px-6 py-3">
+                                Address
+                            </th>
+                            <th scope="col" className="px-6 py-3">
                                 Price
                             </th>
                             <th scope="col" className="px-6 py-3">
@@ -91,6 +95,14 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                     >
                                         {reserveIncentive.name}
                                     </th>
+                                    <td className="px-6 py-4">
+                                        <AddressButton
+                                            address={
+                                                reserveIncentive.underlyingAsset
+                                            }
+                                            withCopy={true}
+                                        />
+                                    </td>
                                     <td className="px-6 py-4">
                                         {new Intl.NumberFormat('it-IT', {
                                             style: 'currency',
