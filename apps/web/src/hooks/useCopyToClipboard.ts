@@ -9,7 +9,6 @@ export const useCopyToClipboard = (resetStateAfterTimeout: number = 1000) => {
 
     useEffect(() => {
         if (isCopied && resetStateAfterTimeout) {
-            console.log({ isCopied });
             const timeout = setTimeout(
                 () => setIsCopied(false),
                 resetStateAfterTimeout

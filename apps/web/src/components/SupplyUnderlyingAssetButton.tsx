@@ -4,6 +4,7 @@ import { useLfghoClients, useTurnkeyViem } from '@repo/lfgho-sdk';
 import { parseEther } from 'viem';
 import { useMutation } from 'wagmi';
 import { Spinner } from './Spinner';
+import { useEffect } from 'react';
 
 type Props = {
     amount: string;
@@ -36,7 +37,11 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
     const { data, isLoading, error, mutate } = useMutation({
         mutationFn: onClick
     });
-    console.log({ error, data });
+
+    useEffect(() => {
+        console.log({ error, data });
+    }, [error, data]);
+
     return (
         <button
             className="border-2 border-black rounded-xl px-2 py-1 ml-2 disabled:opacity-50 disabled:cursor-not-allowed"

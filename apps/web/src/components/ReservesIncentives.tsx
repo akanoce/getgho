@@ -12,6 +12,8 @@ type Props = {
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives } = useReservesIncentives();
 
+    console.log({ reservesIncentives });
+
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
 
@@ -145,7 +147,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                     <td className="px-6 py-4">
                                         <SupplyUnderlyingAssetButton
                                             reserve={
-                                                reserveIncentive.aTokenAddress
+                                                reserveIncentive.underlyingAsset
                                             }
                                             amount={
                                                 getUserBalance(
