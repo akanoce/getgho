@@ -1,7 +1,8 @@
-import { Deposit, ShimmerButton, SendSponsoredTx } from '@/components';
+import { Deposit, SendSponsoredTx } from '@/components';
 import { Address } from 'viem';
 import { UserSummary } from '@/components/UserSummary';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
+import { Button } from '@chakra-ui/react';
 
 type Props = {
     wallet: Address;
@@ -18,17 +19,11 @@ export const Home = ({ wallet, logout }: Props) => {
                     <Deposit />
                     <SendSponsoredTx />
 
-                    <ShimmerButton
-                        className="h-14 shadow-2xl"
-                        shimmerColor="purple"
-                        shimmerSize="0.1em"
-                        background="white"
-                        onClick={logout}
-                    >
+                    <Button background="white" onClick={logout}>
                         <span className="px-1 text-center font-bold leading-none">
                             Logout
                         </span>
-                    </ShimmerButton>
+                    </Button>
                 </div>
             )}
         </>
