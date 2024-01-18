@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { Spinner } from './Spinner';
 
 import { useSupplyAsset } from '@/hooks/useSupplyAsset';
+import { Button } from '@chakra-ui/react';
 type Props = {
     amount: string;
     reserve: string;
@@ -20,12 +20,15 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
     }, [supplyTxError, supplyTxResult]);
 
     return (
-        <button
-            className="border-2 border-black rounded-xl px-2 py-1 ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        <Button
+            size={'sm'}
+            colorScheme="green"
+            variant={'outline'}
             disabled={!Number(amount)}
             onClick={() => mutate()}
+            isLoading={isLoading}
         >
-            {isLoading ? <Spinner /> : 'Supply'}
-        </button>
+            Supply
+        </Button>
     );
 };
