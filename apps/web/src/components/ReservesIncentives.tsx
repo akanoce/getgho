@@ -8,6 +8,24 @@ import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
 import { BigNumber } from 'ethers';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
+import {
+    Badge,
+    Card,
+    CardBody,
+    CardHeader,
+    HStack,
+    Heading,
+    Table,
+    TableCaption,
+    TableContainer,
+    Tag,
+    Tbody,
+    Td,
+    Text,
+    Th,
+    Thead,
+    Tr
+} from '@chakra-ui/react';
 type Props = {
     address: string;
 };
@@ -40,20 +58,20 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         const reserveIncentive = formattedReservesIncentives?.[assetIndex];
         const balance = getUserBalance(assetIndex);
 
+        const textBalance = isNil(balance)
+            ? 'N/A'
+            : formatUnits(balance, reserveIncentive?.decimals ?? 18);
         return (
-            <div className="flex flex-row items-center justify-center gap-1">
-                <span className="text-sm font-semibold">
-                    {isNil(balance)
-                        ? 'N/A'
-                        : formatUnits(
-                              balance,
-                              reserveIncentive?.decimals ?? 18
-                          )}
-                </span>
-                <span className="text-sm font-medium">
-                    {reserveIncentive ? reserveIncentive.symbol : 'Loading...'}
-                </span>
-            </div>
+            <Tag>
+                <HStack spacing={1}>
+                    <Text fontWeight={'semibold'}>{textBalance}</Text>
+                    <Text>
+                        {reserveIncentive
+                            ? reserveIncentive.symbol
+                            : 'Loading...'}
+                    </Text>
+                </HStack>
+            </Tag>
         );
     };
 
@@ -66,140 +84,142 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         );
 
     return (
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100  flex flex-col gap-y-2">
-            <span className="text-2xl font-bold">Reserves Incentives</span>
-            <div className="relative overflow-x-auto">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Token
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Address
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Price
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Available liquidity
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Total debt
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Your balance
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {formattedReservesIncentives.map(
-                            (reserveIncentive, index) => (
-                                <tr
-                                    key={reserveIncentive.id}
-                                    className="text-gray-900"
-                                >
-                                    <th
-                                        scope="row"
-                                        className="px-6 py-4 font-semibold text-gray-900  whitespace-nowrap"
-                                    >
-                                        {reserveIncentive.name}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        <AddressButton
-                                            address={
-                                                reserveIncentive.underlyingAsset
-                                            }
-                                            withCopy={true}
-                                        />
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(reserveIncentive.priceInUSD)
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(
-                                                reserveIncentive.availableLiquidityUSD
-                                            )
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(
-                                                reserveIncentive.totalDebtUSD
-                                            )
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {renderUnderLyingAssetBalance(index)}
-                                    </td>
-                                    <td className="px-6 py-4 flex gap-4 flex-row items-center">
-                                        <SupplyUnderlyingAssetButton
-                                            reserve={
-                                                reserveIncentive.underlyingAsset
-                                            }
-                                            amount={(() => {
-                                                const balance =
-                                                    getUserBalance(index);
-                                                if (!balance) return '0';
+        <Card>
+            <CardHeader>
+                <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+            </CardHeader>
+            <CardBody>
+                <TableContainer>
+                    <Table variant="simple">
+                        <TableCaption>
+                            {formattedReservesIncentives.length} reserves
+                            incentives
+                        </TableCaption>
+                        <Thead>
+                            <Tr>
+                                <Th>Token</Th>
+                                <Th>Address</Th>
+                                <Th>Price</Th>
+                                <Th>Available liquidity</Th>
+                                <Th>Total debt</Th>
+                                <Th>Your balance</Th>
+                                <Th>Actions</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {formattedReservesIncentives.map(
+                                (reserveIncentive, index) => (
+                                    <Tr key={reserveIncentive.id}>
+                                        <Td>
+                                            <Tag colorScheme="blue">
+                                                {reserveIncentive.name}
+                                            </Tag>
+                                        </Td>
+                                        <Td>
+                                            <AddressButton
+                                                address={
+                                                    reserveIncentive.underlyingAsset
+                                                }
+                                                withCopy={true}
+                                            />
+                                        </Td>
+                                        <Td>
+                                            {new Intl.NumberFormat('it-IT', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(
+                                                Number(
+                                                    reserveIncentive.priceInUSD
+                                                )
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            {new Intl.NumberFormat('it-IT', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(
+                                                Number(
+                                                    reserveIncentive.availableLiquidityUSD
+                                                )
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            {new Intl.NumberFormat('it-IT', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(
+                                                Number(
+                                                    reserveIncentive.totalDebtUSD
+                                                )
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            {renderUnderLyingAssetBalance(
+                                                index
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            <HStack spacing={2}>
+                                                <SupplyUnderlyingAssetButton
+                                                    reserve={
+                                                        reserveIncentive.underlyingAsset
+                                                    }
+                                                    amount={(() => {
+                                                        const balance =
+                                                            getUserBalance(
+                                                                index
+                                                            );
+                                                        if (!balance)
+                                                            return '0';
 
-                                                const parsedBalance =
-                                                    formatUnits(
-                                                        balance,
-                                                        reserveIncentive.decimals ??
-                                                            18
-                                                    );
-                                                const smallBalance =
-                                                    BigNumber.from(
-                                                        parsedBalance
-                                                    ).div(10);
-                                                return smallBalance.toString();
-                                            })()}
-                                        />
+                                                        const parsedBalance =
+                                                            formatUnits(
+                                                                balance,
+                                                                reserveIncentive.decimals ??
+                                                                    18
+                                                            );
+                                                        const smallBalance =
+                                                            BigNumber.from(
+                                                                parsedBalance
+                                                            ).div(10);
+                                                        return smallBalance.toString();
+                                                    })()}
+                                                />
 
-                                        <BorrowUnderlyingAssetButton
-                                            reserve={
-                                                reserveIncentive.underlyingAsset
-                                            }
-                                            amount={(() => {
-                                                const balance =
-                                                    getUserBalance(index);
-                                                if (!balance) return '0';
+                                                <BorrowUnderlyingAssetButton
+                                                    reserve={
+                                                        reserveIncentive.underlyingAsset
+                                                    }
+                                                    amount={(() => {
+                                                        const balance =
+                                                            getUserBalance(
+                                                                index
+                                                            );
+                                                        if (!balance)
+                                                            return '0';
 
-                                                const parsedBalance =
-                                                    formatUnits(
-                                                        balance,
-                                                        reserveIncentive.decimals ??
-                                                            18
-                                                    );
-                                                const smallBalance =
-                                                    BigNumber.from(
-                                                        parsedBalance
-                                                    ).div(10);
-                                                return smallBalance.toString();
-                                            })()}
-                                        />
-                                    </td>
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                                        const parsedBalance =
+                                                            formatUnits(
+                                                                balance,
+                                                                reserveIncentive.decimals ??
+                                                                    18
+                                                            );
+                                                        const smallBalance =
+                                                            BigNumber.from(
+                                                                parsedBalance
+                                                            ).div(10);
+                                                        return smallBalance.toString();
+                                                    })()}
+                                                />
+                                            </HStack>
+                                        </Td>
+                                    </Tr>
+                                )
+                            )}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </CardBody>
+        </Card>
     );
 };

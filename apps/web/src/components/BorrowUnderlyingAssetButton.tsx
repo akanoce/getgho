@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Spinner } from './Spinner';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
+import { Button } from '@chakra-ui/react';
 
 type Props = {
     amount: string;
@@ -20,12 +20,15 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
     }, [supplyTxError, supplyTxResult]);
 
     return (
-        <button
-            className="border-2 border-black rounded-xl px-2 py-1 ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        <Button
+            colorScheme="orange"
+            variant={'outline'}
+            size={'sm'}
             disabled={!Number(amount)}
             onClick={() => mutate()}
+            isLoading={isLoading}
         >
-            {isLoading ? <Spinner /> : 'Borrow'}
-        </button>
+            Borrow
+        </Button>
     );
 };
