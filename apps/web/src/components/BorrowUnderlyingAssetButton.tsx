@@ -1,17 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import { Button } from '@chakra-ui/react';
+import { ReserveDataHumanized } from '@aave/contract-helpers';
+import {
+    FormatReserveUSDResponse,
+    FormatUserSummaryAndIncentivesResponse
+} from '@aave/math-utils';
+import { BigNumber } from 'bignumber.js';
 
 type Props = {
-    amount: string;
-    reserve: string;
+    reserve: ReserveDataHumanized & FormatReserveUSDResponse;
+    formattedUserSummary?: FormatUserSummaryAndIncentivesResponse<
+        ReserveDataHumanized & FormatReserveUSDResponse
+    >;
 };
 export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
     reserve,
-    amount
+    formattedUserSummary
 }) => {
+    const availableToBorrowUsd = new BigNumber(
+        formattedUserSummary?.availableBorrowsUSD ?? 0
+    );
+    const reservePriceInUsd = new BigNumber(reserve.priceInUSD ?? 0);
+    const availableToBorrowInReserve = useMemo(() => {
+        if (!availableToBorrowUsd || !reservePriceInUsd) return 0;
+        return availableToBorrowUsd.div(reservePriceInUsd).toNumber();
+    }, [availableToBorrowUsd, reservePriceInUsd]);
+
     const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
-        useBorrowAsset({ reserve, amount });
+        useBorrowAsset({
+            reserve: reserve.underlyingAsset,
+            amount: availableToBorrowInReserve.toString()
+        });
 
     const isLoading = isSupplyTxLoading;
 
@@ -24,7 +44,7 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
             colorScheme="orange"
             variant={'outline'}
             size={'sm'}
-            disabled={!Number(amount)}
+            isDisabled={!Number(availableToBorrowInReserve)}
             onClick={() => mutate()}
             isLoading={isLoading}
         >

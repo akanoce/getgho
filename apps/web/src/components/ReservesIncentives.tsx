@@ -1,4 +1,4 @@
-import { useReservesIncentives } from '@/api';
+import { useReservesIncentives, useUserReservesIncentives } from '@/api';
 import { Spinner } from './Spinner';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
@@ -6,10 +6,8 @@ import { formatUnits } from 'viem';
 import { isNil } from 'lodash';
 import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
-import { BigNumber } from 'ethers';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
-    Badge,
     Card,
     CardBody,
     CardHeader,
@@ -37,6 +35,10 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
 
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
+
+    const { data: userReservesIncentives } = useUserReservesIncentives(address);
+
+    const formattedUserSummary = userReservesIncentives?.formattedUserSummary;
 
     const result = useContractReads({
         allowFailure: false,
@@ -161,7 +163,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         <Td>
                                             <HStack spacing={2}>
                                                 <SupplyUnderlyingAssetButton
-                                                    reserve={
+                                                    reserveAddress={
                                                         reserveIncentive.underlyingAsset
                                                     }
                                                     amount={(() => {
@@ -179,37 +181,18 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                                     18
                                                             );
                                                         const smallBalance =
-                                                            BigNumber.from(
+                                                            Number(
                                                                 parsedBalance
-                                                            ).div(10);
+                                                            ) * 0.1;
                                                         return smallBalance.toString();
                                                     })()}
                                                 />
 
                                                 <BorrowUnderlyingAssetButton
-                                                    reserve={
-                                                        reserveIncentive.underlyingAsset
+                                                    reserve={reserveIncentive}
+                                                    formattedUserSummary={
+                                                        formattedUserSummary
                                                     }
-                                                    amount={(() => {
-                                                        const balance =
-                                                            getUserBalance(
-                                                                index
-                                                            );
-                                                        if (!balance)
-                                                            return '0';
-
-                                                        const parsedBalance =
-                                                            formatUnits(
-                                                                balance,
-                                                                reserveIncentive.decimals ??
-                                                                    18
-                                                            );
-                                                        const smallBalance =
-                                                            BigNumber.from(
-                                                                parsedBalance
-                                                            ).div(10);
-                                                        return smallBalance.toString();
-                                                    })()}
                                                 />
                                             </HStack>
                                         </Td>

@@ -4,14 +4,14 @@ import { useSupplyAsset } from '@/hooks/useSupplyAsset';
 import { Button } from '@chakra-ui/react';
 type Props = {
     amount: string;
-    reserve: string;
+    reserveAddress: string;
 };
 export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
-    reserve,
+    reserveAddress,
     amount
 }) => {
     const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
-        useSupplyAsset({ reserve, amount });
+        useSupplyAsset({ reserve: reserveAddress, amount });
 
     const isLoading = isSupplyTxLoading;
 
@@ -24,7 +24,7 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
             size={'sm'}
             colorScheme="green"
             variant={'outline'}
-            disabled={!Number(amount)}
+            isDisabled={!Number(amount)}
             onClick={() => mutate()}
             isLoading={isLoading}
         >
