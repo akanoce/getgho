@@ -7,7 +7,10 @@ export const SendSponsoredTx = () => {
     const [amount, setAmount] = useState('0');
     const [addressTo, setAddressTo] = useState('');
 
-    const { sponsoredTransaction } = useSponsoredTransaction();
+    const { sponsoredTransaction } = useSponsoredTransaction({
+        callData: '0x',
+        sponsorTx: false
+    });
 
     const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
         setAmount(e.target.value);

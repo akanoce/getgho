@@ -1,5 +1,5 @@
 import {
-    ChainId,
+    Pool,
     UiIncentiveDataProvider,
     UiPoolDataProvider
 } from '@aave/contract-helpers';
@@ -11,6 +11,7 @@ interface CurrentUserContextType {
     poolDataProviderContract: UiPoolDataProvider | null;
     incentiveDataProviderContract: UiIncentiveDataProvider | null;
     chainAddressBook: typeof AaveV3Sepolia;
+    poolContract: Pool | null;
 }
 
 const AaveContractsContext = createContext<CurrentUserContextType | null>(null);
@@ -48,7 +49,18 @@ export const AaveContractsProvider = ({
                       uiIncentiveDataProviderAddress:
                           chainAddressBook.UI_INCENTIVE_DATA_PROVIDER,
                       provider: ethersProvider,
-                      chainId: ChainId.sepolia
+                      chainId: chainAddressBook.CHAIN_ID
+                  })
+                : null,
+        [ethersProvider, chainAddressBook]
+    );
+
+    const poolContract = useMemo(
+        () =>
+            ethersProvider
+                ? new Pool(ethersProvider, {
+                      POOL: chainAddressBook.POOL, // Goerli GHO market
+                      WETH_GATEWAY: chainAddressBook.WETH_GATEWAY // Goerli GHO market
                   })
                 : null,
         [ethersProvider, chainAddressBook]
@@ -58,12 +70,14 @@ export const AaveContractsProvider = ({
         () => ({
             poolDataProviderContract,
             incentiveDataProviderContract,
-            chainAddressBook
+            chainAddressBook,
+            poolContract
         }),
         [
             poolDataProviderContract,
             incentiveDataProviderContract,
-            chainAddressBook
+            chainAddressBook,
+            poolContract
         ]
     );
     return (

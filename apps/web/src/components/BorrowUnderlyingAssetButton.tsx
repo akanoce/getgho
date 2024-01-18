@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { Spinner } from './Spinner';
+import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 
-import { useSupplyAsset } from '@/hooks/useSupplyAsset';
 type Props = {
     amount: string;
     reserve: string;
 };
-export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
+export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
     reserve,
     amount
 }) => {
     const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
-        useSupplyAsset({ reserve, amount });
+        useBorrowAsset({ reserve, amount });
 
     const isLoading = isSupplyTxLoading;
 
@@ -25,7 +25,7 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
             disabled={!Number(amount)}
             onClick={() => mutate()}
         >
-            {isLoading ? <Spinner /> : 'Supply'}
+            {isLoading ? <Spinner /> : 'Borrow'}
         </button>
     );
 };

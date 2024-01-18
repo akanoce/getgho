@@ -6,13 +6,16 @@ import { formatUnits } from 'viem';
 import { isNil } from 'lodash';
 import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
+import { BigNumber } from 'ethers';
+import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 type Props = {
     address: string;
 };
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
-    const { data: reservesIncentives } = useReservesIncentives();
+    const { data: reservesIncentives, error: errorReservesIncentives } =
+        useReservesIncentives();
 
-    console.log({ reservesIncentives });
+    console.log({ reservesIncentives, errorReservesIncentives });
 
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
@@ -144,16 +147,51 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                     <td className="px-6 py-4">
                                         {renderUnderLyingAssetBalance(index)}
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 flex gap-4 flex-row items-center">
                                         <SupplyUnderlyingAssetButton
                                             reserve={
                                                 reserveIncentive.underlyingAsset
                                             }
-                                            amount={
-                                                getUserBalance(
-                                                    index
-                                                )?.toString() ?? '0'
+                                            amount={(() => {
+                                                const balance =
+                                                    getUserBalance(index);
+                                                if (!balance) return '0';
+
+                                                const parsedBalance =
+                                                    formatUnits(
+                                                        balance,
+                                                        reserveIncentive.decimals ??
+                                                            18
+                                                    );
+                                                const smallBalance =
+                                                    BigNumber.from(
+                                                        parsedBalance
+                                                    ).div(10);
+                                                return smallBalance.toString();
+                                            })()}
+                                        />
+
+                                        <BorrowUnderlyingAssetButton
+                                            reserve={
+                                                reserveIncentive.underlyingAsset
                                             }
+                                            amount={(() => {
+                                                const balance =
+                                                    getUserBalance(index);
+                                                if (!balance) return '0';
+
+                                                const parsedBalance =
+                                                    formatUnits(
+                                                        balance,
+                                                        reserveIncentive.decimals ??
+                                                            18
+                                                    );
+                                                const smallBalance =
+                                                    BigNumber.from(
+                                                        parsedBalance
+                                                    ).div(10);
+                                                return smallBalance.toString();
+                                            })()}
                                         />
                                     </td>
                                 </tr>
