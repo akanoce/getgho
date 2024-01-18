@@ -3,10 +3,10 @@ import React from 'react';
 import { Spinner } from './Spinner';
 import { AddressButton, Card } from '.';
 import { useLfghoClients, useTurnkeyViem } from '@repo/lfgho-sdk';
-import { Address, Hex, encodeFunctionData } from 'viem';
+import { Address } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { Interface } from 'ethers/lib/utils';
-import { sendTransactionWithSponsor } from '../../../../packages/lfgho-sdk/src/_pimlico';
+import { sendTransactionWithSponsor } from '@repo/lfgho-sdk';
 
 type Props = {
     address: string;
@@ -35,20 +35,17 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
         );
 
     const transferETH = async () => {
-        const iface = new Interface(erc20ABI); 
+        const iface = new Interface(erc20ABI);
 
         const passkeyAccount = (await getViemInstance()).account;
 
         const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
 
         await sendTransactionWithSponsor(
-            "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0", //USDT
+            '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0', //USDT
             iface,
-            "transfer",
-            [
-                '0x3427034D30c9306F95715C6b14690587584cCEDF',
-                1000000n
-            ],
+            'transfer',
+            ['0x3427034D30c9306F95715C6b14690587584cCEDF', 1000000n],
             0n,
             address as Address,
             pimlicoBundler,
