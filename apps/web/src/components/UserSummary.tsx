@@ -1,12 +1,24 @@
 import { useBalance, useUserReservesIncentives } from '@/api';
 import React from 'react';
-import { Spinner } from './Spinner';
-import { AddressButton, Card } from '.';
+import { AddressButton } from '.';
 import { useLfghoClients, useTurnkeyViem } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { Interface } from 'ethers/lib/utils';
 import { sendTransactionWithSponsor } from '@repo/lfgho-sdk';
+import {
+    Button,
+    Card,
+    CardBody,
+    HStack,
+    Heading,
+    Spinner,
+    Table,
+    TableContainer,
+    Tbody,
+    Td,
+    Tr
+} from '@chakra-ui/react';
 
 type Props = {
     address: string;
@@ -28,9 +40,11 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     if (!formattedSummary)
         return (
-            <Card additionalClasses="justify-center items-center h-52">
-                <span className="text-2xl font-bold">User Summary</span>
-                <Spinner />
+            <Card>
+                <CardBody>
+                    <span>User Summary</span>
+                    <Spinner />
+                </CardBody>
             </Card>
         );
 
@@ -58,52 +72,51 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     return (
         <Card>
-            <div className="flex flex-row justify-between">
-                <span className="text-2xl font-bold">User Summary (AA)</span>
-                <AddressButton address={address} withCopy={true} />
-                <button
-                    className="border-2 border-black rounded-xl px-2 py-1 ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={transferETH}
-                >
-                    SEND
-                </button>
-            </div>
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">ETH Balance</span>
-                <span className="text-xl font-semibold">{balance} ETH</span>
-            </div>
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">Available to Borrow</span>
-                <span className="text-xl font-semibold">
-                    {formattedSummary.availableBorrowsUSD} USD
-                </span>
-            </div>
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">Net Worth</span>
-                <span className="text-xl font-semibold">
-                    {formattedSummary.netWorthUSD} USD
-                </span>
-            </div>
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">Total Borrows</span>
-                <span className="text-xl font-semibold">
-                    {formattedSummary.totalBorrowsUSD} USD
-                </span>
-            </div>
+            <CardBody>
+                <HStack>
+                    <Heading fontSize={20}>User Summary (AA)</Heading>
+                    <AddressButton address={address} withCopy={true} />
+                    <Button onClick={transferETH}>SEND</Button>
+                </HStack>
+                <TableContainer>
+                    <Table variant="simple">
+                        <Tbody>
+                            <Tr>
+                                <Td>ETH Balance</Td>
+                                <Td>{balance} ETH</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Available to Borrow</Td>
+                                <Td>
+                                    {formattedSummary.availableBorrowsUSD} USD
+                                </Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Net Worth</Td>
+                                <Td>{formattedSummary.netWorthUSD} USD</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Total Borrows</Td>
+                                <Td>{formattedSummary.totalBorrowsUSD} USD</Td>
+                            </Tr>
 
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">Total Liquidity</span>
-                <span className="text-xl font-semibold">
-                    {formattedSummary.totalLiquidityUSD} USD
-                </span>
-            </div>
+                            <Tr>
+                                <Td>Total Liquidity</Td>
+                                <Td>
+                                    {formattedSummary.totalLiquidityUSD} USD
+                                </Td>
+                            </Tr>
 
-            <div className="flex flex-row justify-between items-center">
-                <span className="text-xl">Total Collateral</span>
-                <span className="text-xl font-semibold">
-                    {formattedSummary.totalCollateralUSD} USD
-                </span>
-            </div>
+                            <Tr>
+                                <Td>Total Collateral</Td>
+                                <Td>
+                                    {formattedSummary.totalCollateralUSD} USD
+                                </Td>
+                            </Tr>
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </CardBody>
         </Card>
     );
 };

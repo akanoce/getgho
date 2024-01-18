@@ -1,5 +1,4 @@
 import { useReservesIncentives } from '@/api';
-import { Spinner } from './Spinner';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
@@ -9,12 +8,12 @@ import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
 import { BigNumber } from 'ethers';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
-    Badge,
     Card,
     CardBody,
     CardHeader,
     HStack,
     Heading,
+    Spinner,
     Table,
     TableCaption,
     TableContainer,
