@@ -9,6 +9,28 @@ import { useCounterFactualAddress } from '..';
 import { sepolia } from 'viem/chains';
 import { ERC_20_PAYMASTER_ADDRESS } from '../_pimlico';
 
+const generateCallData = (to: Address, value: bigint) => {
+    const data = '0x';
+    const callData = encodeFunctionData({
+        abi: [
+            {
+                inputs: [
+                    { name: 'dest', type: 'address' },
+                    { name: 'value', type: 'uint256' },
+                    { name: 'func', type: 'bytes' }
+                ],
+                name: 'execute',
+                outputs: [],
+                stateMutability: 'nonpayable',
+                type: 'function'
+            }
+        ],
+        args: [to, value, data]
+    });
+
+    return callData;
+};
+
 export const useSponsoredTransaction = () => {
     const { viemPublicClient, pimlicoBundler, viemSigner } = useLfghoClients();
     const { getViemInstance } = useTurnkeyViem();
@@ -39,7 +61,7 @@ export const useSponsoredTransaction = () => {
             sender,
             nonce: newNonce,
             initCode: '0x',
-            callData: genereteCallData(to, value),
+            callData: generateCallData(to, value),
             callGasLimit: 100_000n, // TODO - hardcode it for now at a high value
             verificationGasLimit: 500_000n, // TODO - hardcode it for now at a high value
             preVerificationGas: 50_000n, // TODO - hardcode it for now at a high value
@@ -64,7 +86,7 @@ export const useSponsoredTransaction = () => {
         });
 
         //TODO: correct?
-        const localAccount = await (await getViemInstance()).account;
+        const localAccount = (await getViemInstance()).account;
 
         if (!localAccount) {
             throw new Error('No local account found');
@@ -107,26 +129,4 @@ export const useSponsoredTransaction = () => {
     };
 
     return { sponsoredTransaction };
-};
-
-const genereteCallData = (to: Address, value: bigint) => {
-    const data = '0x';
-    const callData = encodeFunctionData({
-        abi: [
-            {
-                inputs: [
-                    { name: 'dest', type: 'address' },
-                    { name: 'value', type: 'uint256' },
-                    { name: 'func', type: 'bytes' }
-                ],
-                name: 'execute',
-                outputs: [],
-                stateMutability: 'nonpayable',
-                type: 'function'
-            }
-        ],
-        args: [to, value, data]
-    });
-
-    return callData;
 };

@@ -1,4 +1,5 @@
 import { Input, ShimmerButton } from '@/components';
+import { ConnectKitButton } from 'connectkit';
 import { ChangeEvent, useState } from 'react';
 
 type Props = {
@@ -48,6 +49,8 @@ export const Onboarding = ({ login, signup }: Props) => {
                         Have a wallet?
                     </span>
                 </ShimmerButton>
+
+                <ConnectKitButton />
             </div>
         </div>
     );

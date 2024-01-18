@@ -5,11 +5,45 @@ import {
     BaseDebtToken,
     ERC20Service
 } from '@aave/contract-helpers';
-import { LPSupplyParamsType } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import {
+    LPBorrowParamsType,
+    LPSignERC20ApprovalType,
+    LPSupplyParamsType,
+    LPSupplyWithPermitType
+} from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book'; // import specific pool
 import { providers } from 'ethers';
 
+export const createErc20Approval = async (
+    provider: providers.FallbackProvider,
+    account: `0x${string}`,
+    data: LPSignERC20ApprovalType
+) => {
+    const pool = new Pool(provider, {
+        POOL: AaveV3Sepolia.POOL, // Goerli GHO market
+        WETH_GATEWAY: AaveV3Sepolia.WETH_GATEWAY // Goerli GHO market
+    });
+
+    /*
+          - @param `user` The ethereum address that will make the deposit 
+          - @param `reserve` The ethereum address of the reserve 
+          - @param `amount` The amount to be deposited 
+          - @param `deadline` Expiration of signature in seconds, for example, 1 hour = Math.floor(Date.now() / 1000 + 3600).toString()
+          */
+    console.log({ data });
+    const dataToSign: string = await pool.signERC20Approval(data);
+
+    console.log({ dataToSign });
+
+    const signature = await provider.call('eth_signTypedData_v4', [
+        account,
+        dataToSign
+    ]);
+
+    // This signature can now be passed into the supplyWithPermit() function below
+    return signature;
+};
 type BorrowParamsType = {
     user: string;
     amount: string;
@@ -53,14 +87,31 @@ export const createBorrowTxs = async (
  * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
  * @returns  EthereumTransactionTypeExtended[]
  */
+export const createSupplyWithPermitTxs = async (
+    pool: Pool,
+    data: LPSupplyWithPermitType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    /*
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+    const txs: EthereumTransactionTypeExtended[] =
+        await pool.supplyWithPermit(data);
+    return txs;
+};
+
+/**
+ *  Create supply txs for Aave V3 pool
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ */
 export const createSupplyTxs = async (
-    provider: providers.Provider,
+    pool: Pool,
     data: LPSupplyParamsType
 ): Promise<EthereumTransactionTypeExtended[]> => {
-    const pool = new Pool(provider, {
-        POOL: AaveV3Sepolia.POOL, // Goerli GHO market
-        WETH_GATEWAY: AaveV3Sepolia.WETH_GATEWAY // Goerli GHO market
-    });
     /*
 - @param `user` The ethereum address that will make the deposit
 - @param `reserve` The ethereum address of the reserve
@@ -68,6 +119,26 @@ export const createSupplyTxs = async (
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
     const txs: EthereumTransactionTypeExtended[] = await pool.supply(data);
+    return txs;
+};
+
+/**
+ *  Create borrow txs for Aave V3 pool
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ */
+export const createBorrowTx = async (
+    pool: Pool,
+    data: LPBorrowParamsType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    /*
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+    const txs: EthereumTransactionTypeExtended[] = await pool.borrow(data);
     return txs;
 };
 
