@@ -1,11 +1,7 @@
 import { useBalance, useUserReservesIncentives } from '@/api';
 import React from 'react';
 import { AddressButton } from '.';
-import {
-    useLfghoClients,
-    useTurnkeyViem,
-    sendTransactionWithSponsor
-} from '@repo/lfgho-sdk';
+import { useLfghoClients, sendTransactionWithSponsor } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { Interface } from 'ethers/lib/utils';
@@ -28,10 +24,9 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
         ethersProvider,
         pimlicoBundler,
         pimlicoPaymaster,
-        viemPublicClient
+        viemPublicClient,
+        getViemInstance
     } = useLfghoClients();
-
-    const { getViemInstance } = useTurnkeyViem();
 
     const { data: balance } = useBalance(ethersProvider, address);
     const { data: userReservesIncentives } = useUserReservesIncentives(address);

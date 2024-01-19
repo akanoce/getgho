@@ -4,14 +4,12 @@ import {
     createUserSubOrg,
     generateRandomBuffer
 } from '../_turnkey';
-import { useCounterFactualAddress, useViemSigner } from '../store';
-import { useTurnkeyViem } from '../hooks';
+import { useCounterFactualAddress } from '../store';
 import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
 import { useLfghoClients } from '.';
 
 export const useSignup = () => {
-    const { createViemInstance } = useTurnkeyViem();
-    const { setViemSigner } = useViemSigner();
+    const { createViemInstance } = useLfghoClients();
     const { setAddressRecords } = useCounterFactualAddress();
     const { viemPublicClient, pimlicoBundler, pimlicoPaymaster } =
         useLfghoClients();
@@ -52,8 +50,7 @@ export const useSignup = () => {
             challenge: base64UrlEncode(challenge)
         });
 
-        const { account: viemAccount, signer: viemSigner } =
-            await createViemInstance(res);
+        const { account: viemAccount } = await createViemInstance(res);
 
         // returns the address of the smart account that would be created fron the contract factory
         const { sender, entryPoint, initCode } =
@@ -73,8 +70,6 @@ export const useSignup = () => {
             initCode,
             pimlicoPaymaster
         });
-
-        setViemSigner(viemSigner);
     };
 
     return { signup };
