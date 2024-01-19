@@ -30,6 +30,7 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
             reserve,
             interestRateMode: InterestRate.Variable
         };
+        console.log({ data });
         console.log('Creating borrow tx...');
         const txs = await createBorrowTx(poolContract, {
             ...data
