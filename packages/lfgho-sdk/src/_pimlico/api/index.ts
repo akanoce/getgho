@@ -4,4 +4,4 @@ export * from './getCounterfactualAddresses';
 export * from './createSmartWallet';
 export * from './approveERC20Paymaster';
 export * from './signUserOperationWithPasskey';
-export * from './sendTransactionWithSponsor';
+export * from './buildUserOperation';
