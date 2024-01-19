@@ -42,7 +42,7 @@ export const App = () => {
         >
             <Container maxW={'4xl'} py={8} px={16}>
                 <VStack
-                    h="100vh"
+                    minH="100vh"
                     alignItems={'center'}
                     justifyContent={'center'}
                 >

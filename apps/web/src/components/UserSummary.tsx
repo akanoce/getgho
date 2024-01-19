@@ -16,11 +16,8 @@ import {
     HStack,
     Heading,
     Spinner,
-    Table,
-    TableContainer,
-    Tbody,
-    Td,
-    Tr
+    Text,
+    VStack
 } from '@chakra-ui/react';
 
 type Props = {
@@ -81,44 +78,44 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                     <AddressButton address={address} withCopy={true} />
                     <Button onClick={transferETH}>SEND</Button>
                 </HStack>
-                <TableContainer>
-                    <Table variant="simple">
-                        <Tbody>
-                            <Tr>
-                                <Td>ETH Balance</Td>
-                                <Td>{balance} ETH</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>Available to Borrow</Td>
-                                <Td>
-                                    {formattedSummary.availableBorrowsUSD} USD
-                                </Td>
-                            </Tr>
-                            <Tr>
-                                <Td>Net Worth</Td>
-                                <Td>{formattedSummary.netWorthUSD} USD</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>Total Borrows</Td>
-                                <Td>{formattedSummary.totalBorrowsUSD} USD</Td>
-                            </Tr>
+                <VStack w="full">
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>ETH Balance</Text>
+                        <Heading size="sm">{balance} ETH</Heading>
+                    </HStack>
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>Available to Borrow</Text>
+                        <Heading size="sm">
+                            {formattedSummary.availableBorrowsUSD} USD
+                        </Heading>
+                    </HStack>
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>Net Worth</Text>
+                        <Heading size="sm">
+                            {formattedSummary.netWorthUSD} USD
+                        </Heading>
+                    </HStack>
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>Total Borrows</Text>
+                        <Heading size="sm">
+                            {formattedSummary.totalBorrowsUSD} USD
+                        </Heading>
+                    </HStack>
 
-                            <Tr>
-                                <Td>Total Liquidity</Td>
-                                <Td>
-                                    {formattedSummary.totalLiquidityUSD} USD
-                                </Td>
-                            </Tr>
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>Total Liquidity</Text>
+                        <Heading size="sm">
+                            {formattedSummary.totalLiquidityUSD} USD
+                        </Heading>
+                    </HStack>
 
-                            <Tr>
-                                <Td>Total Collateral</Td>
-                                <Td>
-                                    {formattedSummary.totalCollateralUSD} USD
-                                </Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
-                </TableContainer>
+                    <HStack w="full" justifyContent={'space-between'}>
+                        <Text>Total Collateral</Text>
+                        <Heading>
+                            {formattedSummary.totalCollateralUSD} USD
+                        </Heading>
+                    </HStack>
+                </VStack>
             </CardBody>
         </Card>
     );
