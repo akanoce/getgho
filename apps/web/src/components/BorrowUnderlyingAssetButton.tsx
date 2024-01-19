@@ -24,13 +24,17 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
     const reservePriceInUsd = new BigNumber(reserve.priceInUSD ?? 0);
     const availableToBorrowInReserve = useMemo(() => {
         if (!availableToBorrowUsd || !reservePriceInUsd) return 0;
-        return availableToBorrowUsd.div(reservePriceInUsd).toNumber();
+        return availableToBorrowUsd.div(reservePriceInUsd);
     }, [availableToBorrowUsd, reservePriceInUsd]);
+
+    const toBorrow = new BigNumber(availableToBorrowInReserve).multipliedBy(
+        0.1
+    );
 
     const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
         useBorrowAsset({
             reserve: reserve.underlyingAsset,
-            amount: availableToBorrowInReserve.toString()
+            amount: toBorrow.toString()
         });
 
     const isLoading = isSupplyTxLoading;
