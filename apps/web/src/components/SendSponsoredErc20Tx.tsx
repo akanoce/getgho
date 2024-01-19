@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { useTransactions } from '@repo/lfgho-sdk';
+import { USDC_SEPOLIA_ADDRESS, useTransactions } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import {
     Button,
@@ -7,12 +7,13 @@ import {
     CardBody,
     FormControl,
     FormLabel,
+    Heading,
     Input,
     VStack,
-    Stack
+    HStack
 } from '@chakra-ui/react';
 
-export const SendSponsoredTx = () => {
+export const SendSponsoredErc20Tx = () => {
     const [amountSponsored, setAmountSponsored] = useState('0');
     const [addressToSponsored, setAddressToSponsored] = useState('');
 
@@ -35,36 +36,33 @@ export const SendSponsoredTx = () => {
         setAddressTo(e.target.value);
     };
 
-    const { sendTransaction, sponsoredTransaction } = useTransactions();
+    const { sponsoredERC20Transaction } = useTransactions();
 
     const handleSendSponsored = () => {
-        const amountToBigInt = BigInt(Number(amountSponsored) * 1e18);
+        const amountToBigInt = BigInt(Number(amountSponsored) * 1e6);
 
         console.log('amountToBigInt', amountToBigInt);
 
-        sponsoredTransaction({
+        sponsoredERC20Transaction({
             to: addressToSponsored as Address,
-            value: amountToBigInt
+            value: amountToBigInt,
+            tokenAddress: USDC_SEPOLIA_ADDRESS
         });
     };
 
     const handleSend = () => {
-        const amountToBigInt = BigInt(Number(amount) * 1e18);
+        const amountToBigInt = BigInt(Number(amount) * 1e6);
         console.log('amountToBigInt', amountToBigInt);
-
-        sendTransaction({
-            to: addressTo as Address,
-            value: amountToBigInt
-        });
     };
 
     return (
-        <Stack direction={['column', 'row']} w="full" justify="space-between">
-            <Card flex={1}>
+        <HStack justifyContent="center">
+            <Card width="100%">
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send Sponsored ERC20 with USDC</Heading>
                         <FormControl>
-                            <FormLabel>Amount in Eth</FormLabel>
+                            <FormLabel>Amount in ERC20</FormLabel>
                             <Input
                                 id="amount"
                                 type="number"
@@ -91,11 +89,12 @@ export const SendSponsoredTx = () => {
                 </CardBody>
             </Card>
 
-            <Card flex={1}>
+            <Card width="100%">
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send ERC20</Heading>
                         <FormControl>
-                            <FormLabel>Amount in Eth</FormLabel>
+                            <FormLabel>Amount in ERC20</FormLabel>
                             <Input
                                 id="amount"
                                 type="number"
@@ -121,6 +120,6 @@ export const SendSponsoredTx = () => {
                     </VStack>
                 </CardBody>
             </Card>
-        </Stack>
+        </HStack>
     );
 };
