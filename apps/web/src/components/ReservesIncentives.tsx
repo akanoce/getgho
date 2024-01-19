@@ -1,5 +1,4 @@
 import { useReservesIncentives, useUserReservesIncentives } from '@/api';
-import { Spinner } from './Spinner';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
@@ -13,6 +12,7 @@ import {
     CardHeader,
     HStack,
     Heading,
+    Spinner,
     Table,
     TableCaption,
     TableContainer,
