@@ -9,6 +9,7 @@ import {
 import { useCounterFactualAddress, useLfghoClients } from '..';
 import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
 import { getWebAuthnAttestation } from '@turnkey/http';
+import { sepolia } from 'viem/chains';
 
 export const useAuth = () => {
     const {
@@ -37,12 +38,16 @@ export const useAuth = () => {
 
             const { account: viemAccount } = await createViemInstance(res);
 
-            await getCounterfactualAddresses({
+            const { sender } = await getCounterfactualAddresses({
                 viemAccount,
                 viemPublicClient,
-                pimlicoBundler,
-                setAddressRecords
+                pimlicoBundler
             });
+
+            // Saves smart wallet address to store
+            // TODO - this is called every time the user logs in, but it should only be called once OR
+            // TODO - it should not save the same address twice
+            setAddressRecords({ [sepolia.id]: sender });
         } catch (e) {
             const message = `caught error: ${(e as Error).message}`;
             console.error(message);
@@ -98,8 +103,7 @@ export const useAuth = () => {
             await getCounterfactualAddresses({
                 viemAccount,
                 viemPublicClient,
-                pimlicoBundler,
-                setAddressRecords
+                pimlicoBundler
             });
 
         await createSmartWallet({
@@ -111,6 +115,11 @@ export const useAuth = () => {
             initCode,
             pimlicoPaymaster
         });
+
+        // Saves smart wallet address to store
+        // TODO - this is called every time the user logs in, but it should only be called once OR
+        // TODO - it should not save the same address twice
+        setAddressRecords({ [sepolia.id]: sender });
     };
 
     return { login, logout, signup };

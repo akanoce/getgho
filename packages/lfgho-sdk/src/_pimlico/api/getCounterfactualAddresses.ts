@@ -5,20 +5,14 @@ import { FACTORY_ADDRESS } from '../const';
 import { getSenderAddress } from 'permissionless';
 import { PimlicoBundlerClient } from 'permissionless/clients/pimlico';
 
-type AddressRecords = (
-    addressRecords: Record<string, `0x${string}`> | undefined
-) => void;
-
 export const getCounterfactualAddresses = async ({
     viemAccount,
     viemPublicClient,
-    pimlicoBundler,
-    setAddressRecords
+    pimlicoBundler
 }: {
     viemAccount: LocalAccount;
     viemPublicClient: PublicClient;
     pimlicoBundler: PimlicoBundlerClient;
-    setAddressRecords: AddressRecords;
 }) => {
     const initCode = generateInitCode(
         // most chains already have deployed a SimpleAccountFactory.sol contract, that is able to easily deploy new SimpleAccount instances via the createAccount function
@@ -50,11 +44,6 @@ export const getCounterfactualAddresses = async ({
     console.log(
         `Counterfactual address on '${sepolia.name}' (${sepolia.id}): ${sender}`
     );
-
-    // Saves smart wallet address to store
-    // TODO - this is called every time the user logs in, but it should only be called once OR
-    // TODO - it should not save the same address twice
-    setAddressRecords({ [sepolia.id]: sender });
 
     return { sender, entryPoint, initCode };
 };
