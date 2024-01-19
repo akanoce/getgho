@@ -11,7 +11,8 @@ import {
     Input,
     VStack,
     HStack,
-    Stack
+    Stack,
+    CardHeader
 } from '@chakra-ui/react';
 
 export const SendSponsoredTx = () => {
@@ -64,9 +65,15 @@ export const SendSponsoredTx = () => {
     return (
         <Stack direction={['column', 'row']} w="full" justify="space-between">
             <Card flex={1}>
+                <CardHeader>
+                    <HStack w="full" justify={'space-between'}>
+                        <Heading size="md">
+                            Send Sponsored Eth with USDC
+                        </Heading>
+                    </HStack>
+                </CardHeader>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
-                        <Heading>Send Sponsored Eth with USDC</Heading>
                         <FormControl>
                             <FormLabel>Amount in USDC</FormLabel>
                             <Input
@@ -96,9 +103,13 @@ export const SendSponsoredTx = () => {
             </Card>
 
             <Card flex={1}>
+                <CardHeader>
+                    <HStack w="full" justify={'space-between'}>
+                        <Heading size={'md'}>Send Eth</Heading>
+                    </HStack>
+                </CardHeader>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
-                        <Heading>Send Eth</Heading>
                         <FormControl>
                             <FormLabel>Amount in Eth</FormLabel>
                             <Input

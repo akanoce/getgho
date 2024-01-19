@@ -7,8 +7,11 @@ import {
     Button,
     Card,
     CardBody,
+    CardHeader,
     FormControl,
     FormLabel,
+    HStack,
+    Heading,
     Input,
     Spinner,
     VStack
@@ -45,10 +48,14 @@ export const Deposit = () => {
         );
     return (
         <Card>
+            <CardHeader>
+                <HStack justifyContent={'space-between'} w="full">
+                    <Heading size="md">Deposit to account</Heading>
+                    <ConnectKitButton />
+                </HStack>
+            </CardHeader>
             <CardBody>
                 <VStack spacing={4} alignItems={'flex-start'}>
-                    <span>Deposit funds to AA</span>
-                    <ConnectKitButton />
                     <FormControl>
                         <FormLabel>Amount</FormLabel>
                         <Input
