@@ -23,7 +23,7 @@ export const AddressButton = ({ address, onClick, withCopy = true }: Props) => {
         return <FaCheck />;
     }, [isCopied]);
     return (
-        <Button onClick={handleOnClick} display={'flex'} gap={2}>
+        <Button onClick={handleOnClick} size="sm" display={'flex'} gap={2}>
             {humanizeAddress(address)}
             {icon}
         </Button>

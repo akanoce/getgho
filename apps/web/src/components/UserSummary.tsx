@@ -1,11 +1,7 @@
 import { useBalance, useUserReservesIncentives } from '@/api';
 import React from 'react';
 import { AddressButton } from '.';
-import {
-    useLfghoClients,
-    useTurnkeyViem,
-    sendTransactionWithSponsor
-} from '@repo/lfgho-sdk';
+import { useLfghoClients, sendTransactionWithSponsor } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { Interface } from 'ethers/lib/utils';
@@ -13,9 +9,12 @@ import {
     Button,
     Card,
     CardBody,
+    CardHeader,
+    Divider,
     HStack,
     Heading,
     Spinner,
+    Stack,
     Text,
     VStack
 } from '@chakra-ui/react';
@@ -28,10 +27,9 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
         ethersProvider,
         pimlicoBundler,
         pimlicoPaymaster,
-        viemPublicClient
+        viemPublicClient,
+        getViemInstance
     } = useLfghoClients();
-
-    const { getViemInstance } = useTurnkeyViem();
 
     const { data: balance } = useBalance(ethersProvider, address);
     const { data: userReservesIncentives } = useUserReservesIncentives(address);
@@ -72,49 +70,113 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     return (
         <Card>
-            <CardBody>
-                <HStack>
+            <CardHeader>
+                <HStack w="full" justify={'space-between'}>
                     <Heading fontSize={20}>User Summary (AA)</Heading>
-                    <AddressButton address={address} withCopy={true} />
-                    <Button onClick={transferETH}>SEND</Button>
+                    <HStack gap={2}>
+                        <AddressButton address={address} withCopy={true} />
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={transferETH}
+                        >
+                            SEND
+                        </Button>
+                    </HStack>
                 </HStack>
-                <VStack w="full">
-                    <HStack w="full" justifyContent={'space-between'}>
+            </CardHeader>
+            <CardBody>
+                <VStack w="full" spacing={4} divider={<Divider />}>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>ETH Balance</Text>
-                        <Heading size="sm">{balance} ETH</Heading>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                        <HStack spacing={1}>
+                            <Heading size="sm">{balance}</Heading>
+                            <Text as="sub" fontSize="xs">
+                                ETH
+                            </Text>
+                        </HStack>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Available to Borrow</Text>
-                        <Heading size="sm">
-                            {formattedSummary.availableBorrowsUSD} USD
-                        </Heading>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                        <HStack spacing={1}>
+                            <Heading size="sm">
+                                {formattedSummary.availableBorrowsUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Net Worth</Text>
-                        <Heading size="sm">
-                            {formattedSummary.netWorthUSD} USD
-                        </Heading>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                        <HStack spacing={1}>
+                            <Heading size="sm">
+                                {formattedSummary.netWorthUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Total Borrows</Text>
-                        <Heading size="sm">
-                            {formattedSummary.totalBorrowsUSD} USD
-                        </Heading>
-                    </HStack>
+                        <HStack spacing={1}>
+                            <Heading size="md">
+                                {formattedSummary.totalBorrowsUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
+                    </Stack>
 
-                    <HStack w="full" justifyContent={'space-between'}>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Total Liquidity</Text>
-                        <Heading size="sm">
-                            {formattedSummary.totalLiquidityUSD} USD
-                        </Heading>
-                    </HStack>
+                        <HStack spacing={1}>
+                            <Heading size="md">
+                                {formattedSummary.totalLiquidityUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
+                    </Stack>
 
-                    <HStack w="full" justifyContent={'space-between'}>
-                        <Text>Total Collateral</Text>
-                        <Heading>
-                            {formattedSummary.totalCollateralUSD} USD
-                        </Heading>
-                    </HStack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
+                        <Heading size="sm">Total Collateral</Heading>
+                        <HStack spacing={1}>
+                            <Heading size="lg">
+                                {formattedSummary.totalCollateralUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="md">
+                                USD
+                            </Text>
+                        </HStack>
+                    </Stack>
                 </VStack>
             </CardBody>
         </Card>

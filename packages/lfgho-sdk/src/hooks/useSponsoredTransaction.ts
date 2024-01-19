@@ -4,7 +4,7 @@ import {
     getUserOperationHash
 } from 'permissionless';
 import { Address, encodeFunctionData } from 'viem';
-import { useLfghoClients, useTurnkeyViem } from '.';
+import { useLfghoClients } from '.';
 import { useCounterFactualAddress } from '..';
 import { sepolia } from 'viem/chains';
 import { ERC_20_PAYMASTER_ADDRESS } from '../_pimlico';
@@ -32,12 +32,10 @@ const generateCallData = (to: Address, value: bigint) => {
 };
 
 export const useSponsoredTransaction = () => {
-    const { viemPublicClient, pimlicoBundler, viemSigner } = useLfghoClients();
-    const { getViemInstance } = useTurnkeyViem();
+    const { viemPublicClient, pimlicoBundler, getViemInstance } =
+        useLfghoClients();
     const { addressRecords } = useCounterFactualAddress();
     const sender = addressRecords?.[sepolia.id] as Address;
-
-    viemSigner?.account;
 
     const sponsoredTransaction = async ({
         to,
@@ -47,6 +45,8 @@ export const useSponsoredTransaction = () => {
         value: bigint;
     }) => {
         console.log('Sponsoring a user operation with the ERC-20 paymaster...');
+
+        const { account: localAccount } = await getViemInstance();
 
         const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
 
@@ -62,9 +62,9 @@ export const useSponsoredTransaction = () => {
             nonce: newNonce,
             initCode: '0x',
             callData: generateCallData(to, value),
-            callGasLimit: 100_000n, // TODO - hardcode it for now at a high value
-            verificationGasLimit: 500_000n, // TODO - hardcode it for now at a high value
-            preVerificationGas: 50_000n, // TODO - hardcode it for now at a high value
+            callGasLimit: 100753n, // hardcode it for now at a high value
+            verificationGasLimit: 526674n, // hardcode it for now at a high value
+            preVerificationGas: 47416n, // hardcode it for now at a high value
             maxFeePerGas: gasPriceResult.fast.maxFeePerGas,
             maxPriorityFeePerGas: gasPriceResult.fast.maxPriorityFeePerGas,
             paymasterAndData: ERC_20_PAYMASTER_ADDRESS, // to use the erc20 paymaster, put its address in the paymasterAndData field
@@ -85,8 +85,7 @@ export const useSponsoredTransaction = () => {
             entryPoint
         });
 
-        //TODO: correct?
-        const localAccount = (await getViemInstance()).account;
+        console.log('UserOperation hash:', userOperationHash);
 
         if (!localAccount) {
             throw new Error('No local account found');
@@ -102,7 +101,11 @@ export const useSponsoredTransaction = () => {
             }
         });
 
+        console.log('UserOperation signature:', signature);
+
         sponsoredUserOperation.signature = signature;
+
+        console.log('Sponsored user operation:', sponsoredUserOperation);
 
         await submitUserOperation(sponsoredUserOperation, entryPoint);
     };

@@ -13,12 +13,19 @@ export const Home = ({ wallet, logout }: Props) => {
     return (
         <>
             {wallet && (
-                <VStack spacing={4} alignItems={'stretch'} py={4}>
+                <VStack spacing={4} alignItems={'stretch'} w="full">
                     <ReservesIncentives address={wallet} />
                     <UserSummary address={wallet} />
                     <Deposit />
                     <SendSponsoredTx />
-                    <Button onClick={logout}>Logout</Button>
+                    <Button
+                        variant={'solid'}
+                        colorScheme="purple"
+                        onClick={logout}
+                        size="lg"
+                    >
+                        Logout
+                    </Button>
                 </VStack>
             )}
         </>
