@@ -14,6 +14,7 @@ import {
     HStack,
     Heading,
     Spinner,
+    Stack,
     Text,
     VStack
 } from '@chakra-ui/react';
@@ -86,7 +87,11 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
             </CardHeader>
             <CardBody>
                 <VStack w="full" spacing={4} divider={<Divider />}>
-                    <HStack w="full" justifyContent={'space-between'}>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>ETH Balance</Text>
                         <HStack spacing={1}>
                             <Heading size="sm">{balance}</Heading>
@@ -94,8 +99,12 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 ETH
                             </Text>
                         </HStack>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Available to Borrow</Text>
                         <HStack spacing={1}>
                             <Heading size="sm">
@@ -105,8 +114,12 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 USD
                             </Text>
                         </HStack>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Net Worth</Text>
                         <HStack spacing={1}>
                             <Heading size="sm">
@@ -116,8 +129,12 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 USD
                             </Text>
                         </HStack>
-                    </HStack>
-                    <HStack w="full" justifyContent={'space-between'}>
+                    </Stack>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Total Borrows</Text>
                         <HStack spacing={1}>
                             <Heading size="md">
@@ -127,9 +144,13 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 USD
                             </Text>
                         </HStack>
-                    </HStack>
+                    </Stack>
 
-                    <HStack w="full" justifyContent={'space-between'}>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Text>Total Liquidity</Text>
                         <HStack spacing={1}>
                             <Heading size="md">
@@ -139,9 +160,13 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 USD
                             </Text>
                         </HStack>
-                    </HStack>
+                    </Stack>
 
-                    <HStack w="full" justifyContent={'space-between'}>
+                    <Stack
+                        w="full"
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Heading size="sm">Total Collateral</Heading>
                         <HStack spacing={1}>
                             <Heading size="lg">
@@ -151,7 +176,7 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
                                 USD
                             </Text>
                         </HStack>
-                    </HStack>
+                    </Stack>
                 </VStack>
             </CardBody>
         </Card>

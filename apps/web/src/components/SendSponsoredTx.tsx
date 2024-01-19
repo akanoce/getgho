@@ -10,7 +10,8 @@ import {
     Heading,
     Input,
     VStack,
-    HStack
+    HStack,
+    Stack
 } from '@chakra-ui/react';
 
 export const SendSponsoredTx = () => {
@@ -61,8 +62,8 @@ export const SendSponsoredTx = () => {
     };
 
     return (
-        <HStack>
-            <Card>
+        <Stack direction={['column', 'row']} w="full" justify="space-between">
+            <Card flex={1}>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
                         <Heading>Send Sponsored Eth with USDC</Heading>
@@ -94,7 +95,7 @@ export const SendSponsoredTx = () => {
                 </CardBody>
             </Card>
 
-            <Card>
+            <Card flex={1}>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
                         <Heading>Send Eth</Heading>
@@ -125,6 +126,6 @@ export const SendSponsoredTx = () => {
                     </VStack>
                 </CardBody>
             </Card>
-        </HStack>
+        </Stack>
     );
 };
