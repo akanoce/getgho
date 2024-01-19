@@ -79,10 +79,14 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
 
     if (!formattedReservesIncentives)
         return (
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100  flex flex-col items-center justify-center h-52 gap-y-2">
-                <span className="text-2xl font-bold">Reserves Incentives</span>
-                <Spinner />
-            </div>
+            <Card>
+                <CardHeader>
+                    <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+                </CardHeader>
+                <CardBody>
+                    <Spinner />
+                </CardBody>
+            </Card>
         );
 
     return (
