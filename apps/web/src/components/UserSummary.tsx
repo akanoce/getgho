@@ -9,6 +9,8 @@ import {
     Button,
     Card,
     CardBody,
+    CardHeader,
+    Divider,
     HStack,
     Heading,
     Spinner,
@@ -67,48 +69,88 @@ export const UserSummary: React.FC<Props> = ({ address }) => {
 
     return (
         <Card>
-            <CardBody>
-                <HStack>
+            <CardHeader>
+                <HStack w="full" justify={'space-between'}>
                     <Heading fontSize={20}>User Summary (AA)</Heading>
-                    <AddressButton address={address} withCopy={true} />
-                    <Button onClick={transferETH}>SEND</Button>
+                    <HStack gap={2}>
+                        <AddressButton address={address} withCopy={true} />
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={transferETH}
+                        >
+                            SEND
+                        </Button>
+                    </HStack>
                 </HStack>
-                <VStack w="full">
+            </CardHeader>
+            <CardBody>
+                <VStack w="full" spacing={4} divider={<Divider />}>
                     <HStack w="full" justifyContent={'space-between'}>
                         <Text>ETH Balance</Text>
-                        <Heading size="sm">{balance} ETH</Heading>
+                        <HStack spacing={1}>
+                            <Heading size="sm">{balance}</Heading>
+                            <Text as="sub" fontSize="xs">
+                                ETH
+                            </Text>
+                        </HStack>
                     </HStack>
                     <HStack w="full" justifyContent={'space-between'}>
                         <Text>Available to Borrow</Text>
-                        <Heading size="sm">
-                            {formattedSummary.availableBorrowsUSD} USD
-                        </Heading>
+                        <HStack spacing={1}>
+                            <Heading size="sm">
+                                {formattedSummary.availableBorrowsUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
                     </HStack>
                     <HStack w="full" justifyContent={'space-between'}>
                         <Text>Net Worth</Text>
-                        <Heading size="sm">
-                            {formattedSummary.netWorthUSD} USD
-                        </Heading>
+                        <HStack spacing={1}>
+                            <Heading size="sm">
+                                {formattedSummary.netWorthUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
                     </HStack>
                     <HStack w="full" justifyContent={'space-between'}>
                         <Text>Total Borrows</Text>
-                        <Heading size="sm">
-                            {formattedSummary.totalBorrowsUSD} USD
-                        </Heading>
+                        <HStack spacing={1}>
+                            <Heading size="md">
+                                {formattedSummary.totalBorrowsUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
                     </HStack>
 
                     <HStack w="full" justifyContent={'space-between'}>
                         <Text>Total Liquidity</Text>
-                        <Heading size="sm">
-                            {formattedSummary.totalLiquidityUSD} USD
-                        </Heading>
+                        <HStack spacing={1}>
+                            <Heading size="md">
+                                {formattedSummary.totalLiquidityUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="xs">
+                                USD
+                            </Text>
+                        </HStack>
                     </HStack>
 
                     <HStack w="full" justifyContent={'space-between'}>
-                        <Text>Total Collateral</Text>
-                        <Heading>
-                            {formattedSummary.totalCollateralUSD} USD
-                        </Heading>
+                        <Heading size="sm">Total Collateral</Heading>
+                        <HStack spacing={1}>
+                            <Heading size="lg">
+                                {formattedSummary.totalCollateralUSD}
+                            </Heading>
+                            <Text as="sub" fontSize="md">
+                                USD
+                            </Text>
+                        </HStack>
                     </HStack>
                 </VStack>
             </CardBody>

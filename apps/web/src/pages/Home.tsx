@@ -18,7 +18,14 @@ export const Home = ({ wallet, logout }: Props) => {
                     <UserSummary address={wallet} />
                     <Deposit />
                     <SendSponsoredTx />
-                    <Button onClick={logout}>Logout</Button>
+                    <Button
+                        variant={'solid'}
+                        colorScheme="purple"
+                        onClick={logout}
+                        size="lg"
+                    >
+                        Logout
+                    </Button>
                 </VStack>
             )}
         </>
