@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { useSponsoredTransaction } from '@repo/lfgho-sdk';
+import { useSponsoredTransaction, useTransaction } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import {
     Button,
@@ -9,17 +9,24 @@ import {
     FormLabel,
     Heading,
     Input,
-    VStack
+    VStack,
+    HStack
 } from '@chakra-ui/react';
 
 export const SendSponsoredTx = () => {
+    const [amountSponsored, setAmountSponsored] = useState('0');
+    const [addressToSponsored, setAddressToSponsored] = useState('');
+
     const [amount, setAmount] = useState('0');
     const [addressTo, setAddressTo] = useState('');
 
-    const { sponsoredTransaction } = useSponsoredTransaction({
-        callData: '0x',
-        sponsorTx: false
-    });
+    const handleAmountChangeSponsored = (e: ChangeEvent<HTMLInputElement>) => {
+        setAmountSponsored(e.target.value);
+    };
+
+    const handleAddressChangeSponsored = (e: ChangeEvent<HTMLInputElement>) => {
+        setAddressToSponsored(e.target.value);
+    };
 
     const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
         setAmount(e.target.value);
@@ -29,45 +36,95 @@ export const SendSponsoredTx = () => {
         setAddressTo(e.target.value);
     };
 
-    const handleSend = () => {
-        const amountToBigInt = BigInt(Number(amount) * 1e6);
+    const { sendTransaction } = useTransaction();
+    const { sponsoredTransaction } = useSponsoredTransaction();
+
+    const handleSendSponsored = () => {
+        const amountToBigInt = BigInt(Number(amountSponsored) * 1e18);
+
+        console.log('amountToBigInt', amountToBigInt);
+
         sponsoredTransaction({
+            to: addressToSponsored as Address,
+            value: amountToBigInt
+        });
+    };
+
+    const handleSend = () => {
+        const amountToBigInt = BigInt(Number(amount) * 1e18);
+        console.log('amountToBigInt', amountToBigInt);
+
+        sendTransaction({
             to: addressTo as Address,
             value: amountToBigInt
         });
     };
 
     return (
-        <Card>
-            <CardBody>
-                <VStack spacing={4} alignItems={'flex-start'}>
-                    <Heading>Send Sponsored USDC</Heading>
-                    <FormControl>
-                        <FormLabel>Amount in USDC</FormLabel>
-                        <Input
-                            id="amount"
-                            type="number"
-                            value={amount}
-                            onChange={handleAmountChange}
-                        />
-                    </FormControl>
+        <HStack>
+            <Card>
+                <CardBody>
+                    <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send Sponsored Eth with USDC</Heading>
+                        <FormControl>
+                            <FormLabel>Amount in USDC</FormLabel>
+                            <Input
+                                id="amount"
+                                type="number"
+                                value={amountSponsored}
+                                onChange={handleAmountChangeSponsored}
+                            />
+                        </FormControl>
 
-                    <FormControl>
-                        <FormLabel>Address to Send</FormLabel>
-                        <Input
-                            id="address"
-                            value={addressTo}
-                            onChange={handleAddressChange}
-                        />
-                    </FormControl>
-                    <Button
-                        disabled={!Number(amount) || !addressTo}
-                        onClick={handleSend}
-                    >
-                        Send
-                    </Button>
-                </VStack>
-            </CardBody>
-        </Card>
+                        <FormControl>
+                            <FormLabel>Address to Send</FormLabel>
+                            <Input
+                                id="address"
+                                value={addressToSponsored}
+                                onChange={handleAddressChangeSponsored}
+                            />
+                        </FormControl>
+                        <Button
+                            disabled={!Number(amount) || !addressTo}
+                            onClick={handleSendSponsored}
+                        >
+                            Send
+                        </Button>
+                    </VStack>
+                </CardBody>
+            </Card>
+
+            <Card>
+                <CardBody>
+                    <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send Eth</Heading>
+                        <FormControl>
+                            <FormLabel>Amount in Eth</FormLabel>
+                            <Input
+                                id="amount"
+                                type="number"
+                                value={amount}
+                                onChange={handleAmountChange}
+                            />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Address to Send</FormLabel>
+                            <Input
+                                id="address"
+                                value={addressTo}
+                                onChange={handleAddressChange}
+                            />
+                        </FormControl>
+                        <Button
+                            disabled={!Number(amount) || !addressTo}
+                            onClick={handleSend}
+                        >
+                            Send
+                        </Button>
+                    </VStack>
+                </CardBody>
+            </Card>
+        </HStack>
     );
 };
