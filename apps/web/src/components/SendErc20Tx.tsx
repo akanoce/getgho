@@ -13,7 +13,7 @@ import {
     HStack
 } from '@chakra-ui/react';
 
-export const SendSponsoredErc20Tx = () => {
+export const SendErc20Tx = () => {
     const [amountSponsored, setAmountSponsored] = useState('0');
     const [addressToSponsored, setAddressToSponsored] = useState('');
 
@@ -36,7 +36,8 @@ export const SendSponsoredErc20Tx = () => {
         setAddressTo(e.target.value);
     };
 
-    const { sponsoredERC20Transaction } = useTransactions();
+    const { sponsoredERC20Transaction, sendERC20Transaction } =
+        useTransactions();
 
     const handleSendSponsored = () => {
         const amountToBigInt = BigInt(Number(amountSponsored) * 1e6);
@@ -53,6 +54,12 @@ export const SendSponsoredErc20Tx = () => {
     const handleSend = () => {
         const amountToBigInt = BigInt(Number(amount) * 1e6);
         console.log('amountToBigInt', amountToBigInt);
+
+        sendERC20Transaction({
+            to: addressTo as Address,
+            value: amountToBigInt,
+            tokenAddress: USDC_SEPOLIA_ADDRESS
+        });
     };
 
     return (

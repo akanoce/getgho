@@ -1,5 +1,5 @@
 export * from './Deposit';
 export * from './Input';
-export * from './SendSponsoredTx';
+export * from './SendTx';
 export * from './AddressButton';
-export * from './SendSponsoredErc20Tx';
+export * from './SendErc20Tx';

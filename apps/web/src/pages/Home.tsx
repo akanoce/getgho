@@ -1,4 +1,4 @@
-import { Deposit, SendSponsoredTx, SendSponsoredErc20Tx } from '@/components';
+import { Deposit, SendTx, SendErc20Tx } from '@/components';
 import { Address } from 'viem';
 import { UserSummary } from '@/components/UserSummary';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
@@ -17,8 +17,8 @@ export const Home = ({ wallet, logout }: Props) => {
                     <ReservesIncentives address={wallet} />
                     <UserSummary address={wallet} />
                     <Deposit />
-                    <SendSponsoredTx />
-                    <SendSponsoredErc20Tx />
+                    <SendTx />
+                    <SendErc20Tx />
                     <Button
                         variant={'solid'}
                         colorScheme="purple"

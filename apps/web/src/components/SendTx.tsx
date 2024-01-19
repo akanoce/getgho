@@ -9,10 +9,11 @@ import {
     FormLabel,
     Input,
     VStack,
-    Stack
+    Stack,
+    Heading
 } from '@chakra-ui/react';
 
-export const SendSponsoredTx = () => {
+export const SendTx = () => {
     const [amountSponsored, setAmountSponsored] = useState('0');
     const [addressToSponsored, setAddressToSponsored] = useState('');
 
@@ -63,6 +64,7 @@ export const SendSponsoredTx = () => {
             <Card flex={1}>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send Sponsored Tx</Heading>
                         <FormControl>
                             <FormLabel>Amount in Eth</FormLabel>
                             <Input
@@ -94,6 +96,7 @@ export const SendSponsoredTx = () => {
             <Card flex={1}>
                 <CardBody>
                     <VStack spacing={4} alignItems={'flex-start'}>
+                        <Heading>Send Tx</Heading>
                         <FormControl>
                             <FormLabel>Amount in Eth</FormLabel>
                             <Input

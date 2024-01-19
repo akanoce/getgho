@@ -31,7 +31,7 @@ export const useTransactions = () => {
         to: Address;
         value: bigint;
     }) => {
-        const genereteCallData = (to: Address, value: bigint) => {
+        const generateCallData = (to: Address, value: bigint) => {
             const data = '0x';
             const callData = encodeFunctionData({
                 abi: [
@@ -53,7 +53,7 @@ export const useTransactions = () => {
             return callData;
         };
 
-        const callData = genereteCallData(to, value);
+        const callData = generateCallData(to, value);
         const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
         const { account: localAccount } = await getViemInstance();
 
@@ -241,6 +241,93 @@ export const useTransactions = () => {
         );
     };
 
+    const sendERC20Transaction = async ({
+        to,
+        value,
+        tokenAddress
+    }: {
+        to: Address;
+        value: bigint;
+        tokenAddress: Address;
+    }) => {
+        const iface = new Interface(erc20abi);
+        const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
+        const { account: localAccount } = await getViemInstance();
+
+        const callData = encodeFunctionData({
+            abi: [
+                {
+                    inputs: [
+                        { name: 'dest', type: 'address' },
+                        { name: 'value', type: 'uint256' },
+                        { name: 'func', type: 'bytes' }
+                    ],
+                    name: 'execute',
+                    outputs: [],
+                    stateMutability: 'nonpayable',
+                    type: 'function'
+                }
+            ],
+            args: [
+                tokenAddress,
+                0n, // 0 because it's not an ETH tx
+                iface.encodeFunctionData('transfer', [to, value]) as Hex
+            ]
+        });
+
+        let userOperation: UserOperation = (await buildUserOperation({
+            sender,
+            entryPoint,
+            initCode: '0x',
+            callData,
+            bundlerClient: pimlicoBundler,
+            publicClient: viemPublicClient
+        })) as UserOperation;
+
+        console.log('Built userOperation:', userOperation);
+        const gasStimate = await pimlicoBundler.estimateUserOperationGas({
+            userOperation: userOperation,
+            entryPoint
+        });
+
+        userOperation.callGasLimit = gasStimate.callGasLimit;
+        userOperation.verificationGasLimit = gasStimate.verificationGasLimit;
+        userOperation.preVerificationGas = gasStimate.preVerificationGas;
+
+        console.log('Sponsored userOperation:', userOperation);
+
+        if (!localAccount) {
+            throw new Error('No local account found');
+        }
+
+        if (!localAccount.signMessage) {
+            throw new Error('No signMessage method found on local account');
+        }
+
+        const signature = await signUserOperationWithPasskey({
+            viemAccount: localAccount,
+            userOperation,
+            entryPoint,
+            chain: sepolia
+        });
+        userOperation = { ...userOperation, signature };
+        console.log('Signed userOperation:', userOperation);
+
+        // Send the useroperation
+        const hash = await pimlicoBundler.sendUserOperation({
+            userOperation,
+            entryPoint
+        });
+        console.log('Sent userOperation:', hash);
+
+        console.log('Querying for receipts...');
+        const receipt = await pimlicoBundler.waitForUserOperationReceipt({
+            hash
+        });
+        const txHash = receipt.receipt.transactionHash;
+        console.log(`Transaction hash: ${txHash}`);
+    };
+
     const sponsoredERC20Transaction = async ({
         to,
         value,
@@ -319,5 +406,10 @@ export const useTransactions = () => {
         console.log(`Transaction hash: ${txHash}`);
     };
 
-    return { sendTransaction, sponsoredTransaction, sponsoredERC20Transaction };
+    return {
+        sendTransaction,
+        sponsoredTransaction,
+        sendERC20Transaction,
+        sponsoredERC20Transaction
+    };
 };
