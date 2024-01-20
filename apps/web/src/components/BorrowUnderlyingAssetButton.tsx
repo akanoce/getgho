@@ -1,6 +1,21 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
-import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import {
+    Button,
+    FormControl,
+    FormHelperText,
+    HStack,
+    Input,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverFooter,
+    PopoverHeader,
+    PopoverTrigger,
+    Portal
+} from '@chakra-ui/react';
 import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers';
 import {
     FormatReserveUSDResponse,
@@ -28,9 +43,7 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
         return availableToBorrowUsd.div(reservePriceInUsd);
     }, [availableToBorrowUsd, reservePriceInUsd]);
 
-    const toBorrow = new BigNumber(availableToBorrowInReserve).multipliedBy(
-        0.1
-    );
+    const [amount, setAmount] = useState('0');
 
     const {
         isSupplyTxLoading,
@@ -39,12 +52,10 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
         supplyTxError
     } = useBorrowAsset({
         reserve: reserve.underlyingAsset,
-        amount: toBorrow.toString()
+        amount: amount.toString()
     });
 
-    const {
-        mutate: borrowOnBehalf,
-    } = useBorrowAssetOnBehalf({
+    const { mutate: borrowOnBehalf } = useBorrowAssetOnBehalf({
         reserve: reserve.underlyingAsset,
         amount: '10', // TODO: ADD MODAL TO SPECIFY AMOUNT
         onBehalfOf: '0x97b465c1869819282e9728E6D9d8Fd56deA8FBee' // TODO: ADD MODAL TO SPECIFY DELERGATOR ADDRESS
@@ -56,25 +67,80 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
         console.log({ supplyTxResult, supplyTxError });
     }, [supplyTxError, supplyTxResult]);
 
+    const isDisabled =
+        !Number(amount) ||
+        isLoading ||
+        Number(amount) > Number(availableToBorrowInReserve) ||
+        Number(amount) <= 0;
+
     return (
-        <Menu>
-            <MenuButton
-                as={Button}
-                colorScheme="orange"
-                variant="outline"
-                size="sm"
-                isDisabled={false}
-            >
-                Borrow
-            </MenuButton>
-            <MenuList>
-                <MenuItem onClick={() => borrow()}>Borrow</MenuItem>
-                <MenuItem
-                    onClick={() => borrowOnBehalf()}
+        <Popover>
+            <PopoverTrigger>
+                <Button
+                    colorScheme="green"
+                    variant="outline"
+                    size="sm"
+                    isDisabled={
+                        !availableToBorrowInReserve ||
+                        availableToBorrowInReserve.isZero()
+                    }
                 >
-                    Borrow with Credit
-                </MenuItem>
-            </MenuList>
-        </Menu>
+                    Borrow
+                </Button>
+            </PopoverTrigger>
+            <Portal>
+                <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverHeader>Amount</PopoverHeader>
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                        <FormControl id="amount">
+                            <Input
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                            />
+                            <FormHelperText>
+                                <Button
+                                    variant="link"
+                                    onClick={() =>
+                                        setAmount(
+                                            availableToBorrowInReserve.toString()
+                                        )
+                                    }
+                                >
+                                    Use Max: =~
+                                    {availableToBorrowInReserve.toFixed(2)}
+                                </Button>
+                            </FormHelperText>
+                        </FormControl>
+                    </PopoverBody>
+                    <PopoverFooter>
+                        <HStack spacing={4}>
+                            <Button
+                                isDisabled={isDisabled}
+                                size="sm"
+                                alignSelf={'flex-end'}
+                                colorScheme="purple"
+                                isLoading={isLoading}
+                                onClick={() => borrow()}
+                            >
+                                Borrow
+                            </Button>
+                            <Button
+                                variant="outline"
+                                isDisabled={isDisabled}
+                                size="sm"
+                                alignSelf={'flex-end'}
+                                colorScheme="purple"
+                                isLoading={isLoading}
+                                onClick={() => borrowOnBehalf()}
+                            >
+                                Borrow with credit
+                            </Button>
+                        </HStack>
+                    </PopoverFooter>
+                </PopoverContent>
+            </Portal>
+        </Popover>
     );
 };
