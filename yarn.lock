@@ -14,10 +14,22 @@
   dependencies:
     isomorphic-unfetch "^3.1.0"
 
+"@aave/contract-helpers@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@aave/contract-helpers/-/contract-helpers-1.23.0.tgz#c5218f9800379466943aed353fefb1715f5bccec"
+  integrity sha512-EXbsB8BReHpRWQ6N0E2R+XKFIOcVukr9/udxeVd1zn+94sSyGx5sV7aJuYubLQRrRsfRJewmhmvMFFWb52yBZg==
+  dependencies:
+    isomorphic-unfetch "^3.1.0"
+
 "@aave/math-utils@1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@aave/math-utils/-/math-utils-1.21.1.tgz#b72b85e0ef6d98ac28121cac383c985122b08bd4"
   integrity sha512-oFZafJ5MeNtiqgJBEsmvvGlFtdFauWX0wI9B+wikqT//LVc0PYS0IX49UItv6yoTcd0I7IDq3Zv8V47e3lhBOw==
+
+"@aave/math-utils@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@aave/math-utils/-/math-utils-1.23.0.tgz#1747779b85077e95a3d2ef01858311b75225319e"
+  integrity sha512-XAZB8TL5nRt3a2Xlz/reiLdCdyyvmkNaxjQouVOgIY7XcxCXkFntpAR6a0AoUEunrqnrFlpBRVDk0ctBFtwjuQ==
 
 "@adraffy/ens-normalize@1.10.0":
   version "1.10.0"
@@ -1702,6 +1714,16 @@
     "@ethersproject/logger" "^5.7.0"
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
+
+"@fontsource/montserrat@^5.0.16":
+  version "5.0.16"
+  resolved "https://registry.yarnpkg.com/@fontsource/montserrat/-/montserrat-5.0.16.tgz#caa1b11b1d0ee1d6a028a73cedb5b27f8d881242"
+  integrity sha512-g27g1cvkyVm74QM0HKOCnI4iifMqf/3cSJYedjbjtW/Ygb271qfDz5gGMJCl9MinD4nimDdENsU3K1vGR50S2Q==
+
+"@fontsource/roboto@^5.0.8":
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.0.8.tgz#613b477a56f21b5705db1a67e995c033ef317f76"
+  integrity sha512-XxPltXs5R31D6UZeLIV1td3wTXU3jzd3f2DLsXI8tytMGBkIsGcc9sIyiupRtA8y73HAhuSCeweOoBqf6DbWCA==
 
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"
@@ -4466,6 +4488,11 @@ function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.2.tgz#2c02d864d97f3ea6c8830c464cbd11ab6eab7a1c"
   integrity sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==
+
+geist@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/geist/-/geist-1.2.1.tgz#0cf801709e2b7064c1f62f71660d83785b45930c"
+  integrity sha512-xCl7zWfnWqc+TbCG5qqyeT5tnVlOO4pSJsT3Ei59DN1SR4N2VlauF8Fv0D1pPFXGUJgu6RMoeZX+wsR4T9bMhg==
 
 gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"

@@ -1,8 +1,9 @@
-import { useMutation, usePublicClient, useWalletClient } from 'wagmi';
-import { createSupplyTxs, submitTransaction } from '@/api';
+import { useMutation } from 'wagmi';
+import { createSupplyTxs } from '@/api';
 import { LPSignERC20ApprovalType } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import dayjs from 'dayjs';
 import { useAaveContracts } from '@/providers';
+import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {
     amount: string;
@@ -16,32 +17,28 @@ type Props = {
  * @returns
  */
 export const useSupplyAsset = ({ amount, reserve }: Props) => {
-    const { data: walletClient } = useWalletClient();
-    const publicClient = usePublicClient();
-
     const { poolContract } = useAaveContracts();
+    const { sendTransaction, account } = useAccountAdapter();
 
     const supplyAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
-        if (!walletClient) throw new Error('no walletClient');
+        if (!account) throw new Error('no account found');
+
         const data: LPSignERC20ApprovalType = {
             amount: amount,
-            user: walletClient.account.address as `0x${string}`,
+            user: account,
             reserve,
             deadline: dayjs().add(1, 'day').unix().toString()
         };
+
+        console.log('TX', data);
         console.log('Creating supply with permit txs...');
         const txs = await createSupplyTxs(poolContract, {
             ...data
         });
         console.log({ txs });
         console.log('Submitting txs...');
-        const sendTxResult = await submitTransaction({
-            publicClient,
-            txs,
-            signer: walletClient
-        });
-        console.log('sendTxResult', sendTxResult);
+        await sendTransaction({ txs });
     };
 
     const {

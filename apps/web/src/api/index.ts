@@ -21,11 +21,14 @@ export const submitTransaction = async ({
         console.log('txGas', txGas);
         const extendedTxData = await tx.tx();
         const txData = extendedTxData;
+
         const txResponse = await signer.sendTransaction({
             ...txData,
             value: BigNumber.from(txData.value).toBigInt()
         });
+
         console.log('Waiting for tx receipt...', txResponse);
+
         const receipt = await publicClient.waitForTransactionReceipt({
             hash: txResponse
         });
