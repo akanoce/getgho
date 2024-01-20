@@ -9,7 +9,8 @@ import {
     IconButton,
     Image,
     Text,
-    Box
+    Box,
+    useColorModeValue
 } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
@@ -30,6 +31,7 @@ const OnboardingBody = ({ login, signup }: Props) => {
     };
 
     const [step, setStep] = useState<Steps>('main');
+    const borderColor = useColorModeValue('black', 'white');
 
     if (step === 'alreadyHaveWallet') {
         return (
@@ -87,7 +89,8 @@ const OnboardingBody = ({ login, signup }: Props) => {
                     placeholder="Wallet name ..."
                     onChange={handleInputChange}
                     value={inputValue}
-                    borderColor={'black'}
+                    borderColor={borderColor}
+                    _hover={{ borderColor: { borderColor } }}
                 />
                 <IconButton
                     size="sm"
@@ -125,8 +128,8 @@ const OnboardingBody = ({ login, signup }: Props) => {
 
 export const Onboarding = ({ login, signup }: Props) => {
     return (
-        <>
-            <VStack mb={70}>
+        <VStack spacing={70}>
+            <VStack>
                 <HStack>
                     <Image src={ghost} w={100} />
                     <VStack alignItems={'flex-start'}>
@@ -137,9 +140,9 @@ export const Onboarding = ({ login, signup }: Props) => {
                     </VStack>
                 </HStack>
             </VStack>
-            <Box minH={300}>
+            <Box minH={100}>
                 <OnboardingBody login={login} signup={signup} />
             </Box>
-        </>
+        </VStack>
     );
 };
