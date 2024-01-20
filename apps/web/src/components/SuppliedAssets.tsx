@@ -3,17 +3,34 @@ import {
     Card,
     CardBody,
     CardHeader,
+    HStack,
     Heading,
     Table,
     TableContainer,
     Tag,
     Tbody,
     Td,
+    Text,
     Th,
     Thead,
-    Tr
+    Tr,
+    VStack
 } from '@chakra-ui/react';
 import { WithdrawAssetButton } from './WithdrawAssetButton';
+import BigNumber from 'bignumber.js';
+
+const formatAPY = (apy?: number | string) => {
+    return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
+};
+
+const formatBalance = (balance?: number | string) => {
+    const bn = BigNumber(balance ?? 0);
+    const isSmall = bn.lt(0.01);
+    if (isSmall) {
+        return `< 0.01`;
+    }
+    return `${Number(balance ?? 0).toFixed(2)}`;
+};
 
 type Props = {
     address: string;
@@ -21,10 +38,7 @@ type Props = {
 export const SuppliedAssets = ({ address }: Props) => {
     const { data: userReserves, isLoading: userReservesLoading } =
         useUserReservesIncentives(address);
-
-    const { data: reserves, isLoading: reservesLoading } = useReserves();
-
-    console.log({ userReserves, reserves });
+    const { data: reserves } = useReserves();
 
     const availableUnderlying =
         userReserves?.formattedUserSummary.userReservesData.filter(
@@ -44,33 +58,72 @@ export const SuppliedAssets = ({ address }: Props) => {
                             <Tr>
                                 <Th>Token</Th>
                                 <Th>Underlying Balance</Th>
-                                <Th>Underlying Balance USD</Th>
+                                <Th>Supply APY</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {availableUnderlying?.map((reserve) => (
-                                <Tr key={reserve.underlyingAsset}>
-                                    <Td>
-                                        <Tag colorScheme="blue">
-                                            {reserve.reserve.name}
-                                        </Tag>
-                                    </Td>
-                                    <Td>
-                                        {reserve.underlyingBalance}{' '}
-                                        {reserve.reserve.name}
-                                    </Td>
-                                    <Td>{reserve.underlyingBalanceUSD} USD</Td>
-                                    <Td>
-                                        <WithdrawAssetButton
-                                            amount={reserve.underlyingBalance}
-                                            reserveAddress={
-                                                reserve.reserve.underlyingAsset
-                                            }
-                                        />
-                                    </Td>
-                                </Tr>
-                            ))}
+                            {availableUnderlying?.map((userReserve) => {
+                                const reserve =
+                                    reserves?.formattedReserves.find(
+                                        (reserve) =>
+                                            reserve.id ===
+                                            userReserve.reserve.id
+                                    );
+                                return (
+                                    <Tr key={userReserve.underlyingAsset}>
+                                        <Td>
+                                            <Tag colorScheme="blue">
+                                                {userReserve.reserve.name}
+                                            </Tag>
+                                        </Td>
+                                        <Td>
+                                            <VStack
+                                                spacing={0}
+                                                justify={'flex-start'}
+                                                align={'flex-start'}
+                                            >
+                                                <HStack spacing={1}>
+                                                    <Heading size="sm">
+                                                        {formatBalance(
+                                                            userReserve.underlyingBalance
+                                                        )}
+                                                    </Heading>
+                                                    <Text size="sm" as="sub">
+                                                        {
+                                                            userReserve.reserve
+                                                                .name
+                                                        }
+                                                    </Text>
+                                                </HStack>
+                                                <HStack spacing={1}>
+                                                    <Heading size="sm">
+                                                        {formatBalance(
+                                                            userReserve.underlyingBalanceUSD
+                                                        )}
+                                                    </Heading>
+                                                    <Text size="sm" as="sub">
+                                                        USD
+                                                    </Text>
+                                                </HStack>
+                                            </VStack>
+                                        </Td>
+
+                                        <Td>{formatAPY(reserve?.supplyAPY)}</Td>
+                                        <Td>
+                                            <WithdrawAssetButton
+                                                amount={
+                                                    userReserve.underlyingBalance
+                                                }
+                                                reserveAddress={
+                                                    userReserve.reserve
+                                                        .underlyingAsset
+                                                }
+                                            />
+                                        </Td>
+                                    </Tr>
+                                );
+                            })}
                         </Tbody>
                     </Table>
                 </TableContainer>

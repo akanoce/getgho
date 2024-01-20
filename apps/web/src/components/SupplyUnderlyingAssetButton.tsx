@@ -3,12 +3,7 @@ import {
     Button,
     FormControl,
     FormHelperText,
-    FormLabel,
     Input,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
     Popover,
     PopoverArrow,
     PopoverBody,
@@ -34,17 +29,24 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
         amount
     });
 
+    console.log({ maxAmount });
+
     const isLoading = isSupplyTxLoading;
+
+    const isDisabled =
+        !Number(amount) ||
+        isLoading ||
+        Number(amount) > Number(maxAmount) ||
+        Number(amount) <= 0;
 
     return (
         <Popover>
             <PopoverTrigger>
                 <Button
-                    as={Button}
                     colorScheme="green"
                     variant="outline"
                     size="sm"
-                    isDisabled={false}
+                    isDisabled={!maxAmount || maxAmount === '0'}
                 >
                     Supply
                 </Button>
@@ -70,7 +72,18 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
                             </FormHelperText>
                         </FormControl>
                     </PopoverBody>
-                    <PopoverFooter>This is the footer</PopoverFooter>
+                    <PopoverFooter>
+                        <Button
+                            isDisabled={isDisabled}
+                            size="sm"
+                            alignSelf={'flex-end'}
+                            colorScheme="purple"
+                            isLoading={isLoading}
+                            onClick={() => mutate()}
+                        >
+                            Confirm
+                        </Button>
+                    </PopoverFooter>
                 </PopoverContent>
             </Portal>
         </Popover>
