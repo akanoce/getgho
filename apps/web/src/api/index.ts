@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
+import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
 import { WalletClient } from 'viem';
 import { PublicClient } from 'wagmi';
 
@@ -21,11 +21,14 @@ export const submitTransaction = async ({
         console.log('txGas', txGas);
         const extendedTxData = await tx.tx();
         const txData = extendedTxData;
+
         const txResponse = await signer.sendTransaction({
             ...txData,
             value: BigNumber.from(txData.value).toBigInt()
         });
+
         console.log('Waiting for tx receipt...', txResponse);
+
         const receipt = await publicClient.waitForTransactionReceipt({
             hash: txResponse
         });

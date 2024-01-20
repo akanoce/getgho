@@ -1,8 +1,8 @@
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
 import { useUserReservesIncentives } from './api';
-import { useAuth, useCounterFactualAddress } from '@repo/lfgho-sdk';
-import { sepolia, useAccount } from 'wagmi';
+import { useAuth } from '@repo/lfgho-sdk';
+
 import {
     Box,
     Container,
@@ -13,22 +13,16 @@ import {
 } from '@chakra-ui/react';
 import { FaMoon, FaSun } from 'react-icons/fa6';
 import { GhostBusters } from './components/GhostBusters';
+import { useAccountAdapter } from './hooks/useAccountAdapter';
 
 export const App = () => {
     const { signup, login, logout } = useAuth();
+    const { account } = useAccountAdapter();
 
-    const { addressRecords } = useCounterFactualAddress();
-    const smartAccountLoggedIn = !!addressRecords?.[sepolia.id];
-    const smartAccountWallet = addressRecords?.[sepolia.id];
-    const { address } = useAccount();
-
-    const { data: userReservesIncentives } = useUserReservesIncentives(address);
+    const { data: userReservesIncentives } = useUserReservesIncentives(account);
     const { toggleColorMode } = useColorMode();
 
     console.log({ userReservesIncentives });
-
-    const loggedIn = !!address || !!smartAccountLoggedIn;
-    const addressToUse = address || smartAccountWallet;
 
     return (
         <Box
@@ -59,8 +53,8 @@ export const App = () => {
                     alignItems={'center'}
                     justifyContent={'center'}
                 >
-                    {loggedIn ? (
-                        <Home wallet={addressToUse!} logout={logout} />
+                    {account ? (
+                        <Home wallet={account!} logout={logout} />
                     ) : (
                         <Onboarding login={login} signup={signup} />
                     )}

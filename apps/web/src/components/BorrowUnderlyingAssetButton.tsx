@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import { Button } from '@chakra-ui/react';
-import { ReserveDataHumanized } from '@aave/contract-helpers';
+import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers';
 import {
     FormatReserveUSDResponse,
     FormatUserSummaryAndIncentivesResponse
-} from '@aave/math-utils';
+} from '@aave/aave-utilities/packages/math-utils';
 import { BigNumber } from 'bignumber.js';
 
 type Props = {
