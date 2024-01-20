@@ -54,7 +54,7 @@ export const App = () => {
                     justifyContent={'center'}
                 >
                     {account ? (
-                        <Home wallet={account!} logout={logout} />
+                        <Home wallet={account!} />
                     ) : (
                         <Onboarding login={login} signup={signup} />
                     )}

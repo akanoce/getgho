@@ -1,8 +1,18 @@
 import { submitTransaction } from '@/api';
 import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
-import { useCounterFactualAddress, useTransactions } from '@repo/lfgho-sdk';
-import { useMemo } from 'react';
-import { sepolia, useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import {
+    useAuth,
+    useCounterFactualAddress,
+    useTransactions
+} from '@repo/lfgho-sdk';
+import { useCallback, useMemo } from 'react';
+import {
+    sepolia,
+    useAccount,
+    useDisconnect,
+    usePublicClient,
+    useWalletClient
+} from 'wagmi';
 
 export const useAccountAdapter = () => {
     const { addressRecords } = useCounterFactualAddress();
@@ -12,10 +22,19 @@ export const useAccountAdapter = () => {
     const publicClient = usePublicClient();
     const { sendAaveBatchTransactions } = useTransactions();
 
+    const { logout: logoutSmartAccount } = useAuth();
+
+    const { disconnect } = useDisconnect();
+
     const account = useMemo(
-        () => address || smartAccountWallet,
+        () => address ?? smartAccountWallet,
         [address, smartAccountWallet]
     );
+
+    const logout = useCallback(() => {
+        if (smartAccountWallet) return logoutSmartAccount();
+        return disconnect();
+    }, [logoutSmartAccount]);
 
     const sendTransaction = async ({
         txs
@@ -40,5 +59,5 @@ export const useAccountAdapter = () => {
         }
     };
 
-    return { sendTransaction, account };
+    return { sendTransaction, account, logout };
 };

@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { useSupplyAsset } from '@/hooks/useSupplyAsset';
 import { Button } from '@chakra-ui/react';
 type Props = {
@@ -10,14 +8,12 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
     reserveAddress,
     amount
 }) => {
-    const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
-        useSupplyAsset({ reserve: reserveAddress, amount });
+    const { isSupplyTxLoading, mutate } = useSupplyAsset({
+        reserve: reserveAddress,
+        amount
+    });
 
     const isLoading = isSupplyTxLoading;
-
-    useEffect(() => {
-        console.log({ supplyTxResult, supplyTxError });
-    }, [supplyTxError, supplyTxResult]);
 
     return (
         <Button

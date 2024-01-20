@@ -36,7 +36,6 @@ export const useSupplyAsset = ({ amount, reserve }: Props) => {
         const txs = await createSupplyTxs(poolContract, {
             ...data
         });
-        console.log({ txs });
         console.log('Submitting txs...');
         await sendTransaction({ txs });
     };
