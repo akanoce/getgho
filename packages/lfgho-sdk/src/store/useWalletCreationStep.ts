@@ -4,7 +4,8 @@ export enum WalletCreationStep {
     Initial = 0,
     CreatingWallet = 1,
     RequestingSignature = 2,
-    DeployingWallet = 3
+    DeployingWallet = 3,
+    LoadingWallet = 4
 }
 
 interface useWalletCreationStepState {

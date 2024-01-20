@@ -13,8 +13,7 @@ import {
     useColorModeValue,
     Spinner
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
 import ghost from '../assets/ghost.png';
 import { WalletCreationStep, useWalletCreationStep } from '@repo/lfgho-sdk';
@@ -27,6 +26,15 @@ type Props = {
 };
 
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
+
+const Loading = ({ text }: { text: string }) => {
+    return (
+        <HStack spacing={4}>
+            <Text>{text}</Text>
+            <Spinner />
+        </HStack>
+    );
+};
 
 const OnboardingBody = ({ login, signup }: Props) => {
     const [inputValue, setInputValue] = useState('');
@@ -53,32 +61,23 @@ const OnboardingBody = ({ login, signup }: Props) => {
         });
     });
 
+    if (walletCreationStep === WalletCreationStep.LoadingWallet) {
+        return <Loading text={'Loading wallet...'} />;
+    }
+
     if (walletCreationStep === WalletCreationStep.CreatingWallet) {
-        return (
-            <HStack spacing={4}>
-                <Text>Creating local wallet...</Text>
-                <Spinner />
-            </HStack>
-        );
+        return <Loading text={'Creating wallet...'} />;
     }
 
     if (walletCreationStep === WalletCreationStep.RequestingSignature) {
-        return (
-            <HStack spacing={4}>
-                <Text>Requesting signature...</Text>
-                <Spinner />
-            </HStack>
-        );
+        return <Loading text={'Requesting signature...'} />;
     }
 
     if (walletCreationStep === WalletCreationStep.DeployingWallet) {
         return (
             <VStack spacing={4}>
                 <VStack spacing={4}>
-                    <HStack spacing={4}>
-                        <Text>Deploying the smart wallet...</Text>
-                        <Spinner />
-                    </HStack>
+                    <Loading text={'Deploying the smart wallet...'} />
                     <Text>
                         someone is waiting with you... hold{' '}
                         <strong>'space' </strong> to reveal
@@ -105,28 +104,32 @@ const OnboardingBody = ({ login, signup }: Props) => {
 
     if (step === 'alreadyHaveWallet') {
         return (
-            <HStack>
-                <IconButton
-                    size="sm"
-                    aria-label="Go back"
-                    variant={'ghost'}
-                    icon={<Icon as={FaArrowLeft} />}
-                    onClick={() => setStep('main')}
-                />
-                <HStack spacing={4}>
-                    <Button
-                        colorScheme="black"
-                        variant={'outline'}
-                        size={'lg'}
-                        onClick={login}
-                        leftIcon={<Icon as={FaKey} />}
-                    >
-                        Passkey
-                    </Button>
-                    <Text>or</Text>
-                    <ConnectKitButton.Custom>
-                        {({ isConnected, show, address }) => {
-                            return (
+            <ConnectKitButton.Custom>
+                {({ isConnected, isConnecting, show, address }) => {
+                    if (isConnecting) {
+                        return <Loading text={'Loading wallet...'} />;
+                    }
+                    return (
+                        <HStack>
+                            <IconButton
+                                size="sm"
+                                aria-label="Go back"
+                                variant={'ghost'}
+                                icon={<Icon as={FaArrowLeft} />}
+                                onClick={() => setStep('main')}
+                            />
+                            <HStack spacing={4}>
+                                <Button
+                                    colorScheme="black"
+                                    variant={'outline'}
+                                    size={'lg'}
+                                    onClick={login}
+                                    leftIcon={<Icon as={FaKey} />}
+                                >
+                                    Passkey
+                                </Button>
+                                <Text>or</Text>
+
                                 <Button
                                     colorScheme="black"
                                     variant={'outline'}
@@ -135,11 +138,11 @@ const OnboardingBody = ({ login, signup }: Props) => {
                                 >
                                     {isConnected ? address : 'Connect Wallet'}
                                 </Button>
-                            );
-                        }}
-                    </ConnectKitButton.Custom>
-                </HStack>
-            </HStack>
+                            </HStack>
+                        </HStack>
+                    );
+                }}
+            </ConnectKitButton.Custom>
         );
     }
 

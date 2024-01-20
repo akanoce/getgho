@@ -34,6 +34,7 @@ export const useAuth = () => {
             const signedRequest = await turnkeyPasskeyClient().stampGetWhoami({
                 organizationId: config.turnkeyOrganizationId
             });
+            setWalletCreationStep(WalletCreationStep.LoadingWallet);
 
             // ...to get the sub-org ID, which we don't know at this point because we don't
             // have a DB. Note that we are able to perform this lookup by using the
@@ -41,7 +42,6 @@ export const useAuth = () => {
             // In our login endpoint we also fetch wallet details after we get the sub-org ID
             // (our backend API key can do this: parent orgs have read-only access to their sub-orgs)
             const res = await turnkeyLogin({ signedRequest });
-
             const { account: viemAccount } = await createViemInstance(res);
 
             const { sender } = await getCounterfactualAddresses({
@@ -64,73 +64,76 @@ export const useAuth = () => {
     const logout = () => {
         deleteViemAccount();
         setAddressRecords(undefined);
+        setWalletCreationStep(WalletCreationStep.Initial);
     };
 
     const signup = async (walletName: string) => {
-        const challenge = generateRandomBuffer();
-        const subOrgName = walletName;
-        const authenticatorUserId = generateRandomBuffer();
+        try {
+            const challenge = generateRandomBuffer();
+            const subOrgName = walletName;
+            const authenticatorUserId = generateRandomBuffer();
 
-        setWalletCreationStep(WalletCreationStep.CreatingWallet);
+            setWalletCreationStep(WalletCreationStep.CreatingWallet);
 
-        const attestation = await getWebAuthnAttestation({
-            publicKey: {
-                rp: {
-                    id: 'localhost',
-                    name: 'LFGHO SDK'
-                },
-                challenge,
-                pubKeyCredParams: [
-                    {
-                        type: 'public-key',
-                        alg: -7
+            const attestation = await getWebAuthnAttestation({
+                publicKey: {
+                    rp: {
+                        id: 'localhost',
+                        name: 'LFGHO SDK'
                     },
-                    {
-                        type: 'public-key',
-                        alg: -257
+                    challenge,
+                    pubKeyCredParams: [
+                        {
+                            type: 'public-key',
+                            alg: -7
+                        },
+                        {
+                            type: 'public-key',
+                            alg: -257
+                        }
+                    ],
+                    user: {
+                        id: authenticatorUserId,
+                        name: subOrgName,
+                        displayName: subOrgName
                     }
-                ],
-                user: {
-                    id: authenticatorUserId,
-                    name: subOrgName,
-                    displayName: subOrgName
                 }
-            }
-        });
-
-        const res = await createUserSubOrg({
-            subOrgName: subOrgName,
-            attestation,
-            challenge: base64UrlEncode(challenge)
-        });
-        const { account: viemAccount } = await createViemInstance(res);
-
-        // returns the address of the smart account that would be created fron the contract factory
-        const { sender, entryPoint, initCode } =
-            await getCounterfactualAddresses({
-                viemAccount,
-                viemPublicClient,
-                pimlicoBundler
             });
 
-        // used for UI on onboarding screen
-        await createSmartWallet({
-            viemAccount,
-            sender,
-            entryPoint,
-            viemPublicClient,
-            pimlicoBundler,
-            initCode,
-            pimlicoPaymaster,
-            setWalletCreationStep
-        });
+            const res = await createUserSubOrg({
+                subOrgName: subOrgName,
+                attestation,
+                challenge: base64UrlEncode(challenge)
+            });
+            const { account: viemAccount } = await createViemInstance(res);
 
-        // Saves smart wallet address to store
-        // TODO - this is called every time the user logs in, but it should only be called once OR
-        // TODO - it should not save the same address twice
-        setAddressRecords({ [sepolia.id]: sender });
+            // returns the address of the smart account that would be created fron the contract factory
+            const { sender, entryPoint, initCode } =
+                await getCounterfactualAddresses({
+                    viemAccount,
+                    viemPublicClient,
+                    pimlicoBundler
+                });
 
-        setWalletCreationStep(WalletCreationStep.Initial);
+            // used for UI on onboarding screen
+            await createSmartWallet({
+                viemAccount,
+                sender,
+                entryPoint,
+                viemPublicClient,
+                pimlicoBundler,
+                initCode,
+                pimlicoPaymaster,
+                setWalletCreationStep
+            });
+
+            // Saves smart wallet address to store
+            // TODO - this is called every time the user logs in, but it should only be called once OR
+            // TODO - it should not save the same address twice
+            setAddressRecords({ [sepolia.id]: sender });
+        } finally {
+            setWalletCreationStep(WalletCreationStep.Initial);
+        }
     };
 
     return { login, logout, signup };
