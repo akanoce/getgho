@@ -4,17 +4,22 @@
         "build": "dotenv -- turbo build",
         "dev": "dotenv -- turbo dev",
         "lint": "turbo lint",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "postinstall": "patch-package"
     },
     "devDependencies": {
+        "dotenv-cli": "latest",
         "eslint": "^8.56.0",
         "prettier": "^3.1.1",
-        "turbo": "latest",
-        "dotenv-cli": "latest"
+        "turbo": "latest"
     },
     "packageManager": "yarn@1.22.21",
     "workspaces": [
         "apps/*",
         "packages/*"
-    ]
+    ],
+    "dependencies": {
+        "@aave/contract-helpers": "^1.23.0",
+        "@aave/math-utils": "^1.23.0"
+    }
 }

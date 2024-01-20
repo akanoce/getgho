@@ -421,9 +421,7 @@ export const useTransactions = () => {
 
         console.log({ txs });
 
-        const signleTX = [txs[0]];
-
-        for (const tx of signleTX) {
+        for (const tx of txs) {
             const txGas = await tx.gas();
             console.log('txGas', txGas);
             const extendedTxData = await tx.tx();

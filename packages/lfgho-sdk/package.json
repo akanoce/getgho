@@ -19,6 +19,7 @@
         "@turnkey/http": "^2.6.2",
         "@turnkey/viem": "^0.4.7",
         "ethers": "5.7.2",
+        "patch-package": "^8.0.0",
         "permissionless": "^0.0.26",
         "viem": "^1.21.4",
         "zustand": "^4.4.7"
