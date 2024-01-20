@@ -13,8 +13,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@aave/contract-helpers": "^1.23.0",
-        "@aave/math-utils": "^1.23.0",
         "@repo/config": "*",
         "@turnkey/http": "^2.6.2",
         "@turnkey/viem": "^0.4.7",

@@ -19,7 +19,6 @@
         "packages/*"
     ],
     "dependencies": {
-        "@aave/contract-helpers": "^1.23.0",
-        "@aave/math-utils": "^1.23.0"
+        "@aave/aave-utilities": "https://github.com/grenos/aave-utilities.git#master"
     }
 }

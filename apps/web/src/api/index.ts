@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
+import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
 import { WalletClient } from 'viem';
 import { PublicClient } from 'wagmi';
 

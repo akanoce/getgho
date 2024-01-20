@@ -1,5 +1,5 @@
 import { submitTransaction } from '@/api';
-import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
+import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
 import { useCounterFactualAddress, useTransactions } from '@repo/lfgho-sdk';
 import { useMemo } from 'react';
 import { sepolia, useAccount, usePublicClient, useWalletClient } from 'wagmi';

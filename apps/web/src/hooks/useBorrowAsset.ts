@@ -1,8 +1,8 @@
 import { useMutation, usePublicClient, useWalletClient } from 'wagmi';
 import { createBorrowTx, submitTransaction } from '@/api';
-import { LPBorrowParamsType } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { LPBorrowParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/contract-helpers';
+import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
 
 type Props = {
     amount: string;

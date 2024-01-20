@@ -16,7 +16,7 @@ import { erc20abi, simpleAccountABI } from '../_pimlico/util';
 import {
     EthereumTransactionTypeExtended,
     transactionType
-} from '@aave/contract-helpers';
+} from '@aave/aave-utilities/packages/contract-helpers';
 
 export const useTransactions = () => {
     const {
