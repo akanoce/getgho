@@ -3,13 +3,15 @@ import {
     InterestRate,
     EthereumTransactionTypeExtended,
     BaseDebtToken,
-    ERC20Service
+    ERC20Service,
+    ApproveDelegationType
 } from '@aave/aave-utilities/packages/contract-helpers';
 import {
     LPBorrowParamsType,
     LPSignERC20ApprovalType,
     LPSupplyParamsType,
-    LPSupplyWithPermitType
+    LPSupplyWithPermitType,
+    LPWithdrawParamsType
 } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book'; // import specific pool
@@ -123,6 +125,21 @@ export const createSupplyTxs = async (
 };
 
 /**
+ * Create withdraw txs for Aave V3 pool
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ *
+ */
+export const createWithdrawTx = async (
+    pool: Pool,
+    data: LPWithdrawParamsType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    const txs = await pool.withdraw(data);
+    return txs;
+};
+
+/**
  *  Create borrow txs for Aave V3 pool
  * @param provider
  * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
@@ -142,28 +159,17 @@ export const createBorrowTx = async (
     return txs;
 };
 
-type ApproveDelegationParamsType = {
-    user: string;
-    delegatee: string;
-    debtTokenAddress: string;
-    amount: string;
-};
 export const createApproveDelegationTx = async (
     provider: providers.Provider,
-    data: ApproveDelegationParamsType
+    data: ApproveDelegationType
 ): Promise<EthereumTransactionTypeExtended> => {
-    const { user, delegatee, debtTokenAddress, amount } = data;
     const delegationServicePolygonV2USDC = new BaseDebtToken(
         provider,
         new ERC20Service(provider) // This parameter will be removed in future utils version
     );
 
-    const approveDelegation = delegationServicePolygonV2USDC.approveDelegation({
-        user, /// delegator
-        delegatee,
-        debtTokenAddress, // can be any V2 or V3 debt token
-        amount // in decimals of underlying token
-    });
+    const approveDelegation =
+        delegationServicePolygonV2USDC.approveDelegation(data);
 
     return approveDelegation;
 };

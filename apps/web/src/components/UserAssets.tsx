@@ -9,11 +9,11 @@ import {
     Tag,
     Tbody,
     Td,
-    Tfoot,
     Th,
     Thead,
     Tr
 } from '@chakra-ui/react';
+import { WithdrawAssetButton } from './WithdrawAssetButton';
 
 type Props = {
     address: string;
@@ -45,6 +45,7 @@ export const UserAssets = ({ address }: Props) => {
                                 <Th>Token</Th>
                                 <Th>Underlying Balance</Th>
                                 <Th>Underlying Balance USD</Th>
+                                <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -60,6 +61,14 @@ export const UserAssets = ({ address }: Props) => {
                                         {reserve.reserve.name}
                                     </Td>
                                     <Td>{reserve.underlyingBalanceUSD} USD</Td>
+                                    <Td>
+                                        <WithdrawAssetButton
+                                            amount={reserve.underlyingBalance}
+                                            reserveAddress={
+                                                reserve.reserve.underlyingAsset
+                                            }
+                                        />
+                                    </Td>
                                 </Tr>
                             ))}
                         </Tbody>

@@ -21,7 +21,7 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
 
     const { poolContract } = useAaveContracts();
 
-    const supplyAsset = async () => {
+    const borrowAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
 
@@ -48,13 +48,13 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
         data: supplyTxResult,
         isLoading: isSupplyTxLoading,
         error: supplyTxError,
-        mutate: supply
+        mutate: borrow
     } = useMutation({
-        mutationFn: supplyAsset
+        mutationFn: borrowAsset
     });
 
     return {
-        mutate: supply,
+        mutate: borrow,
         isSupplyTxLoading,
         supplyTxError,
         supplyTxResult
