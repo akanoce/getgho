@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import { Button } from '@chakra-ui/react';
-import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers';
+import { ReserveDataHumanized } from '@aave/aave-utilities';
 import {
     FormatReserveUSDResponse,
     FormatUserSummaryAndIncentivesResponse
