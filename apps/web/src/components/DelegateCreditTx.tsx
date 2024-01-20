@@ -89,7 +89,7 @@ export const DelegateCreditTx = ({ userAddress }: Props) => {
     const { mutate } = useApproveDelegation({
         delegatee: address,
         debtTokenAddress,
-        amount: `${Number(collateralToDelegate * 10 ** (tokenDecimals ?? 0) ?? 0).toFixed(0)}`
+        amount: `${Number(collateralToDelegate * 10 ** (tokenDecimals ?? 0)).toFixed(0)}`
     });
 
     const handleAddressChangeSponsored = (e: ChangeEvent<HTMLInputElement>) => {
