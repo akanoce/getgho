@@ -3,6 +3,7 @@ import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/c
 import {
     useAuth,
     useCounterFactualAddress,
+    useSponsoredTxFlag,
     useTransactions
 } from '@repo/lfgho-sdk';
 import { useCallback, useMemo } from 'react';
@@ -20,10 +21,14 @@ export const useAccountAdapter = () => {
     const { address } = useAccount();
     const { data: walletClient } = useWalletClient();
     const publicClient = usePublicClient();
-    const { sendAaveBatchTransactions } = useTransactions();
+    const { isSponsoredTx } = useSponsoredTxFlag();
+
+    const {
+        sendAaveBatchTransactions,
+        sendSponsoredERC20AaveBatchTransactions
+    } = useTransactions();
 
     const { logout: logoutSmartAccount } = useAuth();
-
     const { disconnect } = useDisconnect();
 
     const account = useMemo(
@@ -34,7 +39,7 @@ export const useAccountAdapter = () => {
     const logout = useCallback(() => {
         if (smartAccountWallet) return logoutSmartAccount();
         return disconnect();
-    }, [logoutSmartAccount]);
+    }, [disconnect, logoutSmartAccount, smartAccountWallet]);
 
     const sendTransaction = async ({
         txs
@@ -55,7 +60,11 @@ export const useAccountAdapter = () => {
 
             console.log('sendTxResult', sendTxResult);
         } else {
-            await sendAaveBatchTransactions({ txs });
+            if (isSponsoredTx) {
+                await sendSponsoredERC20AaveBatchTransactions({ txs });
+            } else {
+                await sendAaveBatchTransactions({ txs });
+            }
         }
     };
 

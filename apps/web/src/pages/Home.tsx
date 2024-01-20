@@ -1,6 +1,16 @@
 import { Address } from 'viem';
-import { VStack } from '@chakra-ui/react';
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    Switch,
+    VStack
+} from '@chakra-ui/react';
 import { UserAssets } from '@/components/UserAssets';
+import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
+import { ChangeEvent, useCallback } from 'react';
+import { Funnel } from '@/components/Funnel';
+import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { UserSummary } from '@/components/UserSummary';
 
@@ -9,14 +19,31 @@ type Props = {
 };
 
 export const Home = ({ wallet }: Props) => {
+    const { setIsSPonsored } = useSponsoredTxFlag();
+    const { logout } = useAccountAdapter();
+
+    const handleOnChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            setIsSPonsored(event.target.checked);
+        },
+        [setIsSPonsored]
+    );
+
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
+            <FormControl display="flex" alignItems="center">
+                <FormLabel htmlFor="sposnored" mb="0">
+                    Enable ERC20 Sponsored Transactions
+                </FormLabel>
+                <Switch id="sposnored" size="lg" onChange={handleOnChange} />
+            </FormControl>
             <UserAssets address={wallet} />
+            <Funnel address={wallet} />
             <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
             {/* <Deposit />
             <SendTx />
-            <SendErc20Tx />
+            <SendErc20Tx /> */}
             <Button
                 variant={'solid'}
                 colorScheme="purple"
@@ -24,7 +51,7 @@ export const Home = ({ wallet }: Props) => {
                 size="lg"
             >
                 Logout
-            </Button>  */}
+            </Button>
         </VStack>
     );
 };
