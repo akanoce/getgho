@@ -1,7 +1,6 @@
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
 import { useUserReservesIncentives } from './api';
-import { useAuth } from '@repo/lfgho-sdk';
 
 import {
     Box,
@@ -16,7 +15,6 @@ import { GhostBusters } from './components/GhostBusters';
 import { useAccountAdapter } from './hooks/useAccountAdapter';
 
 export const App = () => {
-    const { signup, login, logout } = useAuth();
     const { account } = useAccountAdapter();
 
     const { data: userReservesIncentives } = useUserReservesIncentives(account);
@@ -53,11 +51,7 @@ export const App = () => {
                     alignItems={'center'}
                     justifyContent={'center'}
                 >
-                    {account ? (
-                        <Home wallet={account!} />
-                    ) : (
-                        <Onboarding login={login} signup={signup} />
-                    )}
+                    {account ? <Home wallet={account} /> : <Onboarding />}
                 </VStack>
             </Container>
         </Box>
