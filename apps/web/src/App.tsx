@@ -12,6 +12,7 @@ import {
     useColorModeValue
 } from '@chakra-ui/react';
 import { FaMoon, FaSun } from 'react-icons/fa6';
+import { GhostBusters } from './components/GhostBusters';
 
 export const App = () => {
     const { signup, login, logout } = useAuth();
@@ -45,12 +46,13 @@ export const App = () => {
                 position={'absolute'}
                 top={4}
                 right={4}
-                variant={'ghost'}
+                variant={'empty'}
                 aria-label="Mode Change"
                 size="lg"
                 icon={useColorModeValue(<FaMoon />, <FaSun />)}
                 onClick={toggleColorMode}
             />
+            <GhostBusters />
             <Container maxW={'8xl'} py={[2, 4, 8]} px={[4, 8, 16]}>
                 <VStack
                     minH="100vh"

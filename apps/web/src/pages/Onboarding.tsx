@@ -135,7 +135,7 @@ export const Onboarding = ({ login, signup }: Props) => {
                     <VStack alignItems={'flex-start'}>
                         <Heading fontSize={30}>GetGho</Heading>
                         <Text fontSize={13}>
-                            Owning Gho is never been so easy
+                            Owning Gho has never been so easy
                         </Text>
                     </VStack>
                 </HStack>
