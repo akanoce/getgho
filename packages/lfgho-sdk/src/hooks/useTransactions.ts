@@ -525,21 +525,9 @@ export const useTransactions = () => {
             callData,
             bundlerClient: pimlicoBundler,
             publicClient: viemPublicClient,
-            callGasLimit: 100753n, // hardcode it for now at a high value
-            verificationGasLimit: 526674n, // hardcode it for now at a high value
-            preVerificationGas: 47416n, // hardcode it for now at a high value
-            paymasterAndData: ERC_20_PAYMASTER_ADDRESS
         })) as UserOperation;
 
         console.log('Built userOperation:', userOperation);
-        const gasStimate = await pimlicoBundler.estimateUserOperationGas({
-            userOperation: userOperation,
-            entryPoint
-        });
-
-        userOperation.callGasLimit = gasStimate.callGasLimit;
-        userOperation.verificationGasLimit = gasStimate.verificationGasLimit;
-        userOperation.preVerificationGas = gasStimate.preVerificationGas;
 
         const sponsorParams = await pimlicoPaymaster.sponsorUserOperation({
             userOperation,
