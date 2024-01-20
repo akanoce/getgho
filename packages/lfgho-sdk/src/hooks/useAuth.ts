@@ -7,9 +7,10 @@ import {
     turnkeyPasskeyClient
 } from '../_turnkey';
 import {
+    WalletCreationStep,
     useCounterFactualAddress,
     useLfghoClients,
-    useOnboardingStep
+    useWalletCreationStep
 } from '..';
 import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
 import { getWebAuthnAttestation } from '@turnkey/http';
@@ -25,7 +26,7 @@ export const useAuth = () => {
     } = useLfghoClients();
 
     const { setAddressRecords } = useCounterFactualAddress();
-    const { increaseOnboardingStep } = useOnboardingStep();
+    const { setWalletCreationStep } = useWalletCreationStep();
 
     const login = async () => {
         try {
@@ -70,6 +71,8 @@ export const useAuth = () => {
         const subOrgName = walletName;
         const authenticatorUserId = generateRandomBuffer();
 
+        setWalletCreationStep(WalletCreationStep.CreatingWallet);
+
         const attestation = await getWebAuthnAttestation({
             publicKey: {
                 rp: {
@@ -100,7 +103,6 @@ export const useAuth = () => {
             attestation,
             challenge: base64UrlEncode(challenge)
         });
-
         const { account: viemAccount } = await createViemInstance(res);
 
         // returns the address of the smart account that would be created fron the contract factory
@@ -112,8 +114,6 @@ export const useAuth = () => {
             });
 
         // used for UI on onboarding screen
-        increaseOnboardingStep();
-
         await createSmartWallet({
             viemAccount,
             sender,
@@ -121,13 +121,16 @@ export const useAuth = () => {
             viemPublicClient,
             pimlicoBundler,
             initCode,
-            pimlicoPaymaster
+            pimlicoPaymaster,
+            setWalletCreationStep
         });
 
         // Saves smart wallet address to store
         // TODO - this is called every time the user logs in, but it should only be called once OR
         // TODO - it should not save the same address twice
         setAddressRecords({ [sepolia.id]: sender });
+
+        setWalletCreationStep(WalletCreationStep.Initial);
     };
 
     return { login, logout, signup };

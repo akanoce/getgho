@@ -5,7 +5,8 @@ import ghostBustersMp3 from '../assets/ghostbusters.mp3';
 
 export const GhostBusters = () => {
     const [play, setPlay] = useState(false);
-    const player = useRef<HTMLAudioElement | null>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const player = useRef<HTMLAudioElement>() as any;
     const tooglePlay = () => {
         if (play) {
             player.current?.pause();

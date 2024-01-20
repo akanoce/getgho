@@ -1,2 +1,2 @@
 export * from './useCounterfactualAddresses';
-export * from './useOnboardingStep';
+export * from './useWalletCreationStep';
