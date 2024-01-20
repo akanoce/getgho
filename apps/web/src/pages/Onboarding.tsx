@@ -1,18 +1,20 @@
 import { ConnectKitButton } from 'connectkit';
 import {
-    Card,
-    CardBody,
     Button,
     Input,
     VStack,
     Icon,
-    CardHeader,
     HStack,
     Heading,
-    IconButton
+    IconButton,
+    Image,
+    Text,
+    Box
 } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
-import { FaArrowLeft, FaKey } from 'react-icons/fa6';
+import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
+import ghost from '../assets/ghost.png';
+
 type Props = {
     login: () => void;
     signup: (walletName: string) => Promise<void>;
@@ -20,7 +22,7 @@ type Props = {
 
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
 
-export const Onboarding = ({ login, signup }: Props) => {
+const OnboardingBody = ({ login, signup }: Props) => {
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,89 +33,113 @@ export const Onboarding = ({ login, signup }: Props) => {
 
     if (step === 'alreadyHaveWallet') {
         return (
-            <Card w="md">
-                <CardHeader>
-                    <HStack>
-                        <IconButton
-                            size="sm"
-                            aria-label="Go back"
-                            icon={<Icon as={FaArrowLeft} />}
-                            onClick={() => setStep('main')}
-                        />
-
-                        <Heading size="md">Already have a wallet</Heading>
-                    </HStack>
-                </CardHeader>
-                <CardBody>
-                    <VStack spacing={4} w="full">
-                        <Button
-                            size={'lg'}
-                            onClick={login}
-                            leftIcon={<Icon as={FaKey} />}
-                        >
-                            Passkey
-                        </Button>
-
-                        <ConnectKitButton />
-                    </VStack>
-                </CardBody>
-            </Card>
+            <HStack>
+                <IconButton
+                    size="sm"
+                    aria-label="Go back"
+                    variant={'ghost'}
+                    icon={<Icon as={FaArrowLeft} />}
+                    onClick={() => setStep('main')}
+                />
+                <HStack spacing={4}>
+                    <Button
+                        colorScheme="black"
+                        variant={'outline'}
+                        size={'lg'}
+                        onClick={login}
+                        leftIcon={<Icon as={FaKey} />}
+                    >
+                        Passkey
+                    </Button>
+                    <Text>or</Text>
+                    <ConnectKitButton.Custom>
+                        {({ isConnected, show, address }) => {
+                            return (
+                                <Button
+                                    colorScheme="black"
+                                    variant={'outline'}
+                                    size={'lg'}
+                                    onClick={show}
+                                >
+                                    {isConnected ? address : 'Connect Wallet'}
+                                </Button>
+                            );
+                        }}
+                    </ConnectKitButton.Custom>
+                </HStack>
+            </HStack>
         );
     }
 
     if (step === 'createWallet') {
         return (
-            <Card w="md">
-                <CardHeader>
-                    <HStack>
-                        <IconButton
-                            size="sm"
-                            aria-label="Go back"
-                            icon={<Icon as={FaArrowLeft} />}
-                            onClick={() => setStep('main')}
-                        />
-
-                        <Heading size="md">Create wallet</Heading>
-                    </HStack>
-                </CardHeader>
-                <CardBody>
-                    <VStack spacing={4} w="full">
-                        <Input
-                            type="text"
-                            placeholder="Wallet name ..."
-                            onChange={handleInputChange}
-                            value={inputValue}
-                        />
-                        <Button
-                            isDisabled={!inputValue}
-                            onClick={() => signup(`LFGHO - ${inputValue}`)}
-                        >
-                            Create wallet
-                        </Button>
-                    </VStack>
-                </CardBody>
-            </Card>
+            <HStack>
+                <IconButton
+                    size="sm"
+                    aria-label="Go back"
+                    variant={'ghost'}
+                    icon={<Icon as={FaArrowLeft} />}
+                    onClick={() => setStep('main')}
+                />
+                <Input
+                    variant="outline"
+                    type="text"
+                    placeholder="Wallet name ..."
+                    onChange={handleInputChange}
+                    value={inputValue}
+                    borderColor={'black'}
+                />
+                <IconButton
+                    size="sm"
+                    variant={'ghost'}
+                    aria-label="Confirm"
+                    colorScheme="green"
+                    icon={<Icon as={FaCheck} />}
+                    isDisabled={!inputValue}
+                    onClick={() => signup(`LFGHO - ${inputValue}`)}
+                />
+            </HStack>
         );
     }
 
     return (
-        <Card w="md">
-            <CardHeader>
-                <Heading size="md">Welcome to GETGHO!</Heading>
-            </CardHeader>
-            <CardBody>
-                <VStack spacing={4} w="full">
-                    <Button size={'lg'} onClick={() => setStep('createWallet')}>
-                        Get a wallet
-                    </Button>
-                    <Button
-                        variant={'link'}
-                        onClick={() => setStep('alreadyHaveWallet')}
-                    >
-                        Already have a wallet?
-                    </Button>
-                </VStack>
-            </CardBody>
-        </Card>
+        <VStack spacing={4}>
+            <Button
+                colorScheme="black"
+                variant={'outline'}
+                size={'lg'}
+                onClick={() => setStep('createWallet')}
+            >
+                Create wallet
+            </Button>
+            <Button
+                variant={'link'}
+                colorScheme="black"
+                onClick={() => setStep('alreadyHaveWallet')}
+            >
+                Already have a wallet?
+            </Button>
+        </VStack>
+    );
+};
+
+export const Onboarding = ({ login, signup }: Props) => {
+    return (
+        <>
+            <VStack mb={70}>
+                <HStack>
+                    <Image src={ghost} w={100} />
+                    <VStack alignItems={'flex-start'}>
+                        <Heading fontSize={30}>GetGho</Heading>
+                        <Text fontSize={13}>
+                            Owning Gho is never been so easy
+                        </Text>
+                    </VStack>
+                </HStack>
+            </VStack>
+            <Box minH={300}>
+                <OnboardingBody login={login} signup={signup} />
+            </Box>
+        </>
     );
 };

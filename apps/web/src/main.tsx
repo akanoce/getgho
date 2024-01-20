@@ -7,6 +7,9 @@ import { AaveContractsProvider } from './providers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConnectKitProvider } from 'connectkit';
 import { ChakraProvider } from '@chakra-ui/react';
+import { theme } from './theme';
+import '@fontsource/roboto/300.css';
+import '@fontsource/montserrat/600.css';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -24,7 +27,7 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
             <WagmiConfig config={config}>
                 <QueryClientProvider client={queryClient}>
                     <AaveContractsProvider>
