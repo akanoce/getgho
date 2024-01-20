@@ -1,20 +1,24 @@
 import { useReserves, useUserReservesIncentives } from '@/api';
-import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import {
-    Box,
-    Button,
-    HStack,
+    Card,
+    CardBody,
+    CardHeader,
     Heading,
-    Spinner,
-    VStack
+    Table,
+    TableContainer,
+    Tag,
+    Tbody,
+    Td,
+    Tfoot,
+    Th,
+    Thead,
+    Tr
 } from '@chakra-ui/react';
 
 type Props = {
     address: string;
 };
 export const UserAssets = ({ address }: Props) => {
-    const { logout } = useAccountAdapter();
-
     const { data: userReserves, isLoading: userReservesLoading } =
         useUserReservesIncentives(address);
 
@@ -26,31 +30,42 @@ export const UserAssets = ({ address }: Props) => {
         userReserves?.formattedUserSummary.userReservesData.filter(
             (reserve) => reserve.underlyingBalance !== '0'
         );
+
+    console.log({ availableUnderlying });
     return (
-        <VStack spacing={4} alignItems={'stretch'} w="full">
-            <Button
-                alignSelf="flex-end"
-                variant={'solid'}
-                colorScheme="purple"
-                onClick={logout}
-                size="lg"
-            >
-                Logout
-            </Button>
-            <Box>
-                {userReservesLoading ? (
-                    <Spinner />
-                ) : (
-                    <VStack w="full" spacing={4}>
-                        {availableUnderlying?.map((reserve) => (
-                            <HStack w="full" key={reserve.underlyingAsset}>
-                                <Box>{reserve.reserve.symbol}</Box>
-                                <Box>{reserve.underlyingBalanceUSD} USD</Box>
-                            </HStack>
-                        ))}
-                    </VStack>
-                )}
-            </Box>
-        </VStack>
+        <Card>
+            <CardHeader>
+                <Heading fontSize={'2xl'}>Supplied Assets</Heading>
+            </CardHeader>
+            <CardBody>
+                <TableContainer>
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th>Token</Th>
+                                <Th>Underlying Balance</Th>
+                                <Th>Underlying Balance USD</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {availableUnderlying?.map((reserve) => (
+                                <Tr key={reserve.underlyingAsset}>
+                                    <Td>
+                                        <Tag colorScheme="blue">
+                                            {reserve.reserve.name}
+                                        </Tag>
+                                    </Td>
+                                    <Td>
+                                        {reserve.underlyingBalance}{' '}
+                                        {reserve.reserve.name}
+                                    </Td>
+                                    <Td>{reserve.underlyingBalanceUSD} USD</Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </CardBody>
+        </Card>
     );
 };
