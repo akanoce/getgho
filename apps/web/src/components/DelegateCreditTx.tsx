@@ -27,16 +27,15 @@ type Props = {
 export const DelegateCreditTx = ({ userAddress }: Props) => {
     const [address, setAdddress] = useState<string>('');
     const [collateralPercentage, setCollateralPercentage] = useState<number>(0);
-    const [selectedToken, setSelectedToken] = useState<string>("");
-
-   
+    const [selectedToken, setSelectedToken] = useState<string>('');
 
     const { data: userReservesIncentives } =
         useUserReservesIncentives(userAddress);
 
     const { data: reserves, isLoading: reservesLoading } = useReserves();
 
-    const userReserves = userReservesIncentives?.formattedUserSummary.userReservesData;
+    const userReserves =
+        userReservesIncentives?.formattedUserSummary.userReservesData;
 
     const delegatableTokens = useMemo(() => {
         return reserves?.formattedReserves
@@ -45,8 +44,9 @@ export const DelegateCreditTx = ({ userAddress }: Props) => {
     }, [reserves]);
 
     const tokenDecimals = useMemo(() => {
-        return reserves?.formattedReserves
-            .filter((reserve) => reserve.symbol === selectedToken)[0]?.decimals;
+        return reserves?.formattedReserves.filter(
+            (reserve) => reserve.symbol === selectedToken
+        )[0]?.decimals;
     }, [reserves, selectedToken]);
 
     const selectedTokenAddress = useMemo(() => {
@@ -54,32 +54,43 @@ export const DelegateCreditTx = ({ userAddress }: Props) => {
     }, [selectedToken]);
 
     const selectedUserReserve = useMemo(() => {
-        return userReserves?.filter((reserve) => reserve.underlyingAsset === selectedTokenAddress)[0];
+        return userReserves?.filter(
+            (reserve) => reserve.underlyingAsset === selectedTokenAddress
+        )[0];
     }, [selectedTokenAddress, userReserves]);
-        
+
     const debtTokenAddress = useMemo(() => {
         return variableDebtTokens[selectedToken as string];
     }, [selectedToken]);
 
     const collateralLTV = useMemo(() => {
-        return  Number(reserves?.formattedReserves
-            .filter((reserve) => reserve.symbol === selectedToken)[0]?.formattedBaseLTVasCollateral);
+        return Number(
+            reserves?.formattedReserves.filter(
+                (reserve) => reserve.symbol === selectedToken
+            )[0]?.formattedBaseLTVasCollateral
+        );
     }, [reserves, selectedToken]);
 
     const collateralToDelegate = useMemo(() => {
-        return Number(selectedUserReserve?.underlyingBalance ?? 0) * collateralLTV * collateralPercentage ;
+        return (
+            Number(selectedUserReserve?.underlyingBalance ?? 0) *
+            collateralLTV *
+            collateralPercentage
+        );
     }, [selectedUserReserve, collateralPercentage, collateralLTV]);
 
-
-    console.log({ selectedUserReserve, collateralToDelegate, debtTokenAddress, tokenDecimals })
-
-    const { isSupplyTxLoading, mutate, supplyTxResult, supplyTxError } =
-    useApproveDelegation({
-        delegatee: address,
+    console.log({
+        selectedUserReserve,
+        collateralToDelegate,
         debtTokenAddress,
-        amount: `${Number((collateralToDelegate * 10 ** (tokenDecimals ?? 0)) ?? 0).toFixed(0)}`,
+        tokenDecimals
     });
 
+    const { mutate } = useApproveDelegation({
+        delegatee: address,
+        debtTokenAddress,
+        amount: `${Number(collateralToDelegate * 10 ** (tokenDecimals ?? 0)).toFixed(0)}`
+    });
 
     const handleAddressChangeSponsored = (e: ChangeEvent<HTMLInputElement>) => {
         setAdddress(e.target.value);
@@ -106,18 +117,32 @@ export const DelegateCreditTx = ({ userAddress }: Props) => {
                                     setSelectedToken(e.target.value)
                                 }
                             >
-                                {delegatableTokens && delegatableTokens.map((token) => (
-                                    <option value={token}>{token}</option>
-                                ))}
+                                {delegatableTokens &&
+                                    delegatableTokens.map((token) => (
+                                        <option value={token}>{token}</option>
+                                    ))}
                             </Select>
                         </FormControl>
                         <FormControl>
-                            <HStack w="full" spacing={4} justifyContent="space-between">
-                            <FormLabel>Slide to select the amount to delegate</FormLabel>
-                            <FormLabel>{collateralToDelegate} {selectedToken}</FormLabel>
+                            <HStack
+                                w="full"
+                                spacing={4}
+                                justifyContent="space-between"
+                            >
+                                <FormLabel>
+                                    Slide to select the amount to delegate
+                                </FormLabel>
+                                <FormLabel>
+                                    {collateralToDelegate} {selectedToken}
+                                </FormLabel>
                             </HStack>
-                            <Slider colorScheme="pink" defaultValue={0} isDisabled={!selectedUserReserve}
-                                onChange={(value) => setCollateralPercentage(value/100)}
+                            <Slider
+                                colorScheme="pink"
+                                defaultValue={0}
+                                isDisabled={!selectedUserReserve}
+                                onChange={(value) =>
+                                    setCollateralPercentage(value / 100)
+                                }
                             >
                                 <SliderTrack>
                                     <SliderFilledTrack />
@@ -134,7 +159,10 @@ export const DelegateCreditTx = ({ userAddress }: Props) => {
                                 onChange={handleAddressChangeSponsored}
                             />
                         </FormControl>
-                        <Button disabled={!address || !collateralToDelegate} onClick={() => mutate()}>
+                        <Button
+                            disabled={!address || !collateralToDelegate}
+                            onClick={() => mutate()}
+                        >
                             Send
                         </Button>
                     </VStack>

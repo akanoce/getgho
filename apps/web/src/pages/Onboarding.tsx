@@ -13,7 +13,7 @@ import {
     useColorModeValue,
     Spinner
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
 import ghost from '../assets/ghost.png';
 import {
@@ -215,7 +215,7 @@ export const Onboarding = () => {
                 </HStack>
             </VStack>
             <Box minH={100}>
-                <OnboardingBody login={login} signup={signup} />
+                <OnboardingBody />
             </Box>
         </VStack>
     );
