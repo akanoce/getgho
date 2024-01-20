@@ -3,6 +3,9 @@ import { FormControl, FormLabel, Switch, VStack } from '@chakra-ui/react';
 import { UserAssets } from '@/components/UserAssets';
 import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
+import { ReservesIncentives } from '@/components/ReservesIncentives';
+import { UserSummary } from '@/components/UserSummary';
+import { DelegateCreditTx, Deposit, SendErc20Tx, SendTx } from '@/components';
 
 type Props = {
     wallet: Address;
@@ -28,12 +31,13 @@ export const Home = ({ wallet }: Props) => {
             </FormControl>
 
             <UserAssets address={wallet} />
-            {/* <ReservesIncentives address={wallet} />
+            <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
             <Deposit />
             <SendTx />
             <SendErc20Tx />
-            <Button
+            <DelegateCreditTx userAddress={wallet} />
+            {/* <Button
                 variant={'solid'}
                 colorScheme="purple"
                 onClick={logout}

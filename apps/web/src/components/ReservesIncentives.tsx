@@ -195,6 +195,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                     formattedUserSummary={
                                                         formattedUserSummary
                                                     }
+                                                    user={
+                                                      address
+                                                    }
                                                 />
                                             </HStack>
                                         </Td>
