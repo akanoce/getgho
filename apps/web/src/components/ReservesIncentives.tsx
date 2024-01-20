@@ -229,13 +229,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 reserveAddress={
                                                     reserveIncentive.underlyingAsset
                                                 }
-                                                amount={(() => {
-                                                    const smallBalance =
-                                                        Number(
-                                                            reserveIncentive.balance
-                                                        ) * 0.1;
-                                                    return smallBalance.toString();
-                                                })()}
+                                                maxAmount={
+                                                    reserveIncentive.balance
+                                                }
                                             />
 
                                             <BorrowUnderlyingAssetButton
@@ -243,7 +239,6 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 formattedUserSummary={
                                                     formattedUserSummary
                                                 }
-                                                user={address}
                                             />
                                         </HStack>
                                     </Td>

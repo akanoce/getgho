@@ -16,14 +16,13 @@ import {
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
 import ghost from '../assets/ghost.png';
-import { WalletCreationStep, useWalletCreationStep } from '@repo/lfgho-sdk';
+import {
+    WalletCreationStep,
+    useAuth,
+    useWalletCreationStep
+} from '@repo/lfgho-sdk';
 import Lottie from 'react-lottie';
 import ghostAnimation from '../assets/ghost-lottie.json';
-
-type Props = {
-    login: () => void;
-    signup: (walletName: string) => Promise<void>;
-};
 
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
 
@@ -36,7 +35,8 @@ const Loading = ({ text }: { text: string }) => {
     );
 };
 
-const OnboardingBody = ({ login, signup }: Props) => {
+const OnboardingBody = () => {
+    const { signup, login } = useAuth();
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +200,7 @@ const OnboardingBody = ({ login, signup }: Props) => {
     );
 };
 
-export const Onboarding = ({ login, signup }: Props) => {
+export const Onboarding = () => {
     return (
         <VStack spacing={70}>
             <VStack>

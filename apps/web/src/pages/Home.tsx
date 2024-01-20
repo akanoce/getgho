@@ -3,16 +3,18 @@ import {
     Button,
     FormControl,
     FormLabel,
+    HStack,
     Switch,
     VStack
 } from '@chakra-ui/react';
-import { UserAssets } from '@/components/UserAssets';
+import { SuppliedAssets } from '@/components/SuppliedAssets';
 import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
-import { Funnel } from '@/components/Funnel';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { UserSummary } from '@/components/UserSummary';
+import { AddressButton } from '@/components';
+import { SuppliedTokens } from '@/components/SuppliedTokens';
 
 type Props = {
     wallet: Address;
@@ -31,27 +33,40 @@ export const Home = ({ wallet }: Props) => {
 
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
-            <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="sposnored" mb="0">
-                    Enable ERC20 Sponsored Transactions
-                </FormLabel>
-                <Switch id="sposnored" size="lg" onChange={handleOnChange} />
-            </FormControl>
-            <UserAssets address={wallet} />
-            <Funnel address={wallet} />
+            <HStack
+                justifyContent="space-between"
+                w="full"
+                // pos={'sticky'}
+                // top={4}
+                // right={4}
+                // zIndex={1}
+            >
+                <FormControl display="flex" alignItems="center">
+                    <FormLabel htmlFor="sponsored" mb="0">
+                        Enable ERC20 Sponsored Transactions
+                    </FormLabel>
+                    <Switch
+                        id="sponsored"
+                        size="lg"
+                        onChange={handleOnChange}
+                    />
+                </FormControl>
+                <HStack spacing={4}>
+                    <AddressButton address={wallet} withCopy={true} />
+                    <Button
+                        variant={'solid'}
+                        colorScheme="purple"
+                        onClick={logout}
+                        size="sm"
+                    >
+                        Logout
+                    </Button>
+                </HStack>
+            </HStack>
+            <SuppliedAssets address={wallet} />
+            <SuppliedTokens address={wallet} />
             <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
-            {/* <Deposit />
-            <SendTx />
-            <SendErc20Tx /> */}
-            <Button
-                variant={'solid'}
-                colorScheme="purple"
-                onClick={logout}
-                size="lg"
-            >
-                Logout
-            </Button>
         </VStack>
     );
 };
