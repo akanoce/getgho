@@ -11,6 +11,8 @@ import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
 import { Funnel } from '@/components/Funnel';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
+import { ReservesIncentives } from '@/components/ReservesIncentives';
+import { UserSummary } from '@/components/UserSummary';
 
 type Props = {
     wallet: Address;
@@ -37,9 +39,9 @@ export const Home = ({ wallet }: Props) => {
             </FormControl>
             <UserAssets address={wallet} />
             <Funnel address={wallet} />
-            {/* <ReservesIncentives address={wallet} />
+            <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
-            <Deposit />
+            {/* <Deposit />
             <SendTx />
             <SendErc20Tx /> */}
             <Button
