@@ -8,6 +8,7 @@ import { UserOperation } from 'permissionless';
 import { signUserOperationWithPasskey } from './signUserOperationWithPasskey';
 import { sepolia } from 'viem/chains';
 import { approveERC20Paymaster } from '.';
+import { WalletCreationStep } from '../..';
 
 export const createSmartWallet = async ({
     viemAccount,
@@ -16,7 +17,8 @@ export const createSmartWallet = async ({
     viemPublicClient,
     pimlicoBundler,
     initCode,
-    pimlicoPaymaster
+    pimlicoPaymaster,
+    setWalletCreationStep
 }: {
     viemAccount: LocalAccount;
     sender: Address;
@@ -25,6 +27,7 @@ export const createSmartWallet = async ({
     pimlicoBundler: PimlicoBundlerClient;
     initCode: Address;
     pimlicoPaymaster: PimlicoPaymasterClient;
+    setWalletCreationStep: (walletCreationStep: WalletCreationStep) => void;
 }) => {
     try {
         // create mock call data
@@ -67,6 +70,8 @@ export const createSmartWallet = async ({
 
         console.log('Sponsored userOperation:', userOperation);
 
+        setWalletCreationStep(WalletCreationStep.RequestingSignature);
+
         // Sign the useroperation
 
         const signature = await signUserOperationWithPasskey({
@@ -75,6 +80,8 @@ export const createSmartWallet = async ({
             chain: sepolia,
             entryPoint
         });
+
+        setWalletCreationStep(WalletCreationStep.DeployingWallet);
 
         userOperation = { ...userOperation, signature };
 

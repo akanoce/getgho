@@ -13,10 +13,13 @@ import {
     useColorModeValue,
     Spinner
 } from '@chakra-ui/react';
-import { ChangeEvent, useState } from 'react';
+import { motion } from 'framer-motion';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
 import ghost from '../assets/ghost.png';
 import { WalletCreationStep, useWalletCreationStep } from '@repo/lfgho-sdk';
+import Lottie from 'react-lottie';
+import ghostAnimation from '../assets/ghost-lottie.json';
 
 type Props = {
     login: () => void;
@@ -35,6 +38,21 @@ const OnboardingBody = ({ login, signup }: Props) => {
     const [step, setStep] = useState<Steps>('main');
     const borderColor = useColorModeValue('black', 'white');
 
+    const [showGhost, setShowGhost] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                setShowGhost(true);
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                setShowGhost(false);
+            }
+        });
+    });
+
     if (walletCreationStep === WalletCreationStep.CreatingWallet) {
         return (
             <HStack spacing={4}>
@@ -44,12 +62,44 @@ const OnboardingBody = ({ login, signup }: Props) => {
         );
     }
 
-    if (walletCreationStep === WalletCreationStep.DeployingWallet) {
+    if (walletCreationStep === WalletCreationStep.RequestingSignature) {
         return (
             <HStack spacing={4}>
-                <Text>Deploying smart wallet...</Text>
+                <Text>Requesting signature...</Text>
                 <Spinner />
             </HStack>
+        );
+    }
+
+    if (walletCreationStep === WalletCreationStep.DeployingWallet) {
+        return (
+            <VStack spacing={4}>
+                <VStack spacing={4}>
+                    <HStack spacing={4}>
+                        <Text>Deploying the smart wallet...</Text>
+                        <Spinner />
+                    </HStack>
+                    <Text>
+                        someone is waiting with you... hold{' '}
+                        <strong>'space' </strong> to reveal
+                    </Text>
+                </VStack>
+                <Lottie
+                    style={{
+                        position: 'absolute',
+                        pointerEvents: 'none',
+                        opacity: showGhost ? 1 : 0,
+                        transition: 'opacity 0.5s ease-in-out'
+                    }}
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: ghostAnimation
+                    }}
+                    height={200}
+                    width={200}
+                />
+            </VStack>
         );
     }
 
@@ -110,6 +160,7 @@ const OnboardingBody = ({ login, signup }: Props) => {
                     onChange={handleInputChange}
                     value={inputValue}
                     borderColor={borderColor}
+                    _placeholder={{ color: borderColor, opacity: 0.5 }}
                     _hover={{ borderColor: { borderColor } }}
                 />
                 <IconButton

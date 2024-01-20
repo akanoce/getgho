@@ -114,8 +114,6 @@ export const useAuth = () => {
             });
 
         // used for UI on onboarding screen
-        setWalletCreationStep(WalletCreationStep.DeployingWallet);
-
         await createSmartWallet({
             viemAccount,
             sender,
@@ -123,7 +121,8 @@ export const useAuth = () => {
             viemPublicClient,
             pimlicoBundler,
             initCode,
-            pimlicoPaymaster
+            pimlicoPaymaster,
+            setWalletCreationStep
         });
 
         // Saves smart wallet address to store

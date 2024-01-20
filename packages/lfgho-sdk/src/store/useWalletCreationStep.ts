@@ -3,7 +3,8 @@ import { create } from 'zustand';
 export enum WalletCreationStep {
     Initial = 0,
     CreatingWallet = 1,
-    DeployingWallet = 2
+    RequestingSignature = 2,
+    DeployingWallet = 3
 }
 
 interface useWalletCreationStepState {
