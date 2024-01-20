@@ -1,6 +1,8 @@
 import { Address } from 'viem';
 import { VStack } from '@chakra-ui/react';
 import { UserAssets } from '@/components/UserAssets';
+import { ReservesIncentives } from '@/components/ReservesIncentives';
+import { UserSummary } from '@/components/UserSummary';
 
 type Props = {
     wallet: Address;
@@ -10,9 +12,9 @@ export const Home = ({ wallet }: Props) => {
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
             <UserAssets address={wallet} />
-            {/* <ReservesIncentives address={wallet} />
+            <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
-            <Deposit />
+            {/* <Deposit />
             <SendTx />
             <SendErc20Tx />
             <Button
@@ -22,7 +24,7 @@ export const Home = ({ wallet }: Props) => {
                 size="lg"
             >
                 Logout
-            </Button> */}
+            </Button>  */}
         </VStack>
     );
 };

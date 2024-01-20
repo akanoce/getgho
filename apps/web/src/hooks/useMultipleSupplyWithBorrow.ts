@@ -2,24 +2,27 @@ import { useMutation } from 'wagmi';
 import { createSupplyTxs } from '@/api';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
-import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
+import {
+    EthereumTransactionTypeExtended,
+    InterestRate
+} from '@aave/aave-utilities/packages/contract-helpers';
 import {
     LPSupplyParamsType,
     LPBorrowParamsType
 } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
-import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
 import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-UiPoolDataProvider-contract/types';
 import { FormatReserveUSDResponse } from '@aave/aave-utilities/packages/math-utils';
 import BigNumber from 'bignumber.js';
 
 type TAmountAndReserve = {
-    amount: string;
+    amountInUsd: number | string;
     reserve: ReserveDataHumanized & FormatReserveUSDResponse;
+    amount: string;
 };
 
 type Props = {
     toSupply: TAmountAndReserve[];
-    toBorrow: ReserveDataHumanized & FormatReserveUSDResponse;
+    toBorrow?: ReserveDataHumanized & FormatReserveUSDResponse;
 };
 
 /**
@@ -33,9 +36,11 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
 
+        console.log({ toSupply, toBorrow });
+
         const allTxs: EthereumTransactionTypeExtended[] = [];
         let totalEstimatedAvailableUsdToBorrow: number = 0;
-        for (const { amount, reserve } of toSupply) {
+        for (const { amount, reserve, amountInUsd } of toSupply) {
             const supplyData: LPSupplyParamsType = {
                 amount: amount,
                 user: account,
@@ -48,13 +53,13 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
                 ...supplyData
             });
 
-            totalEstimatedAvailableUsdToBorrow += BigNumber(amount)
-                .times(reserve.priceInMarketReferenceCurrency)
-                .toNumber();
+            totalEstimatedAvailableUsdToBorrow +=
+                BigNumber(amountInUsd).toNumber();
 
             allTxs.push(...supplyTxs);
         }
 
+        if (!toBorrow) throw new Error('no toBorrow');
         const maxAmountBorrowable = BigNumber(
             toBorrow.formattedBaseLTVasCollateral
         ).multipliedBy(totalEstimatedAvailableUsdToBorrow);
