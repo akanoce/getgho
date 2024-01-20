@@ -32,12 +32,12 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Use Node from .nvmrc
+            - name: Setup Node
               uses: actions/setup-node@v3
               with:
-                  node-version: '.nvmrc'
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  node-version-file: .nvmrc
+                env:
+                    NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
             - name: Build React App
               run: yarn build
