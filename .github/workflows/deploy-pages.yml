@@ -25,7 +25,7 @@ jobs:
     # Single deploy job since we're just deploying
     deploy:
         environment:
-            name: github-pages
+            name: Pages
             url: ${{ steps.deployment.outputs.page_url }}
         runs-on: ubuntu-latest
         steps:
@@ -35,8 +35,7 @@ jobs:
             - name: Use Node from .nvmrc
               uses: actions/setup-node@v3
               with:
-                  with:
-                      node-version: '.nvmrc'
+                  node-version: '.nvmrc'
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
