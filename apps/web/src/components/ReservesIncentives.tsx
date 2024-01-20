@@ -31,8 +31,6 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives, error: errorReservesIncentives } =
         useReservesIncentives();
 
-    console.log({ reservesIncentives, errorReservesIncentives });
-
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
 

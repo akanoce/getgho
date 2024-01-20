@@ -5,7 +5,7 @@ import {
     UiIncentiveDataProvider,
     UiPoolDataProvider,
     UserReserveDataHumanized
-} from '@aave/contract-helpers';
+} from '@aave/aave-utilities/packages/contract-helpers';
 import {
     FormatReserveUSDResponse,
     FormatUserSummaryResponse,
@@ -13,7 +13,7 @@ import {
     formatReservesAndIncentives,
     formatUserSummary,
     formatUserSummaryAndIncentives
-} from '@aave/math-utils';
+} from '@aave/aave-utilities/packages/math-utils';
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
 import dayjs from 'dayjs';
 

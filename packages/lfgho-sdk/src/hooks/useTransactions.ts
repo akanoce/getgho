@@ -12,7 +12,11 @@ import {
     signUserOperationWithPasskey
 } from '../_pimlico';
 import { Interface } from 'ethers/lib/utils';
-import { erc20abi } from '../_pimlico/util';
+import { erc20abi, simpleAccountABI } from '../_pimlico/util';
+import {
+    EthereumTransactionTypeExtended,
+    transactionType
+} from '@aave/aave-utilities/packages/contract-helpers';
 
 export const useTransactions = () => {
     const {
@@ -406,10 +410,93 @@ export const useTransactions = () => {
         console.log(`Transaction hash: ${txHash}`);
     };
 
+    const sendAaveBatchTransactions = async ({
+        txs
+    }: {
+        txs: EthereumTransactionTypeExtended[];
+    }) => {
+        const extendedTxs: transactionType[] = [];
+        const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
+        const { account: localAccount } = await getViemInstance();
+
+        console.log({ txs });
+
+        for (const tx of txs) {
+            const txGas = await tx.gas();
+            console.log('txGas', txGas);
+            const extendedTxData = await tx.tx();
+            extendedTxData.to;
+            extendedTxs.push(extendedTxData);
+        }
+
+        const callData = encodeFunctionData({
+            abi: simpleAccountABI,
+            functionName: 'executeBatch',
+            args: [
+                extendedTxs.map((tx) => tx.to as Address),
+                extendedTxs.map((tx) => tx.data as Address)
+            ]
+        });
+
+        const userOperation: UserOperation = (await buildUserOperation({
+            sender,
+            entryPoint,
+            initCode: '0x',
+            callData,
+            bundlerClient: pimlicoBundler,
+            publicClient: viemPublicClient
+        })) as UserOperation;
+
+        console.log('Built userOperation:', userOperation);
+        const gasStimate = await pimlicoBundler.estimateUserOperationGas({
+            userOperation: userOperation,
+            entryPoint
+        });
+
+        userOperation.callGasLimit = gasStimate.callGasLimit;
+        userOperation.verificationGasLimit = gasStimate.verificationGasLimit;
+        userOperation.preVerificationGas = gasStimate.preVerificationGas;
+
+        console.log('Sponsored userOperation:', userOperation);
+
+        if (!localAccount) {
+            throw new Error('No local account found');
+        }
+
+        if (!localAccount.signMessage) {
+            throw new Error('No signMessage method found on local account');
+        }
+
+        const signature = await signUserOperationWithPasskey({
+            viemAccount: localAccount,
+            userOperation,
+            entryPoint,
+            chain: sepolia
+        });
+
+        userOperation.signature = signature;
+        console.log('Signed userOperation:', userOperation);
+
+        // Send the useroperation
+        const hash = await pimlicoBundler.sendUserOperation({
+            userOperation,
+            entryPoint
+        });
+        console.log('Sent userOperation:', hash);
+
+        console.log('Querying for receipts...');
+        const receipt = await pimlicoBundler.waitForUserOperationReceipt({
+            hash
+        });
+        const txHash = receipt.receipt.transactionHash;
+        console.log(`Transaction hash: ${txHash}`);
+    };
+
     return {
         sendTransaction,
         sponsoredTransaction,
         sendERC20Transaction,
-        sponsoredERC20Transaction
+        sponsoredERC20Transaction,
+        sendAaveBatchTransactions
     };
 };

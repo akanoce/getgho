@@ -4,13 +4,13 @@ import {
     EthereumTransactionTypeExtended,
     BaseDebtToken,
     ERC20Service
-} from '@aave/contract-helpers';
+} from '@aave/aave-utilities/packages/contract-helpers';
 import {
     LPBorrowParamsType,
     LPSignERC20ApprovalType,
     LPSupplyParamsType,
     LPSupplyWithPermitType
-} from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+} from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book'; // import specific pool
 import { providers } from 'ethers';

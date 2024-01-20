@@ -1,8 +1,9 @@
-import { useMutation, usePublicClient, useWalletClient } from 'wagmi';
-import { createBorrowTx, submitTransaction } from '@/api';
-import { LPBorrowParamsType } from '@aave/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { useMutation } from 'wagmi';
+import { createBorrowTx } from '@/api';
+import { LPBorrowParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/contract-helpers';
+import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
+import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {
     amount: string;
@@ -16,17 +17,17 @@ type Props = {
  * @returns
  */
 export const useBorrowAsset = ({ amount, reserve }: Props) => {
-    const { data: walletClient } = useWalletClient();
-    const publicClient = usePublicClient();
+    const { sendTransaction, account } = useAccountAdapter();
 
     const { poolContract } = useAaveContracts();
 
     const supplyAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
-        if (!walletClient) throw new Error('no walletClient');
+        if (!account) throw new Error('no account found');
+
         const data: LPBorrowParamsType = {
             amount: amount,
-            user: walletClient.account.address as `0x${string}`,
+            user: account,
             reserve,
             interestRateMode: InterestRate.Variable
         };
@@ -37,12 +38,10 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
         });
         console.log({ txs });
         console.log('Submitting tx...');
-        const sendTxResult = await submitTransaction({
-            publicClient,
-            txs,
-            signer: walletClient
-        });
-        console.log('sendTxResult', sendTxResult);
+
+        console.log({ txs });
+        console.log('Submitting txs...');
+        await sendTransaction({ txs });
     };
 
     const {
