@@ -6,7 +6,11 @@ import {
     turnkeyLogin,
     turnkeyPasskeyClient
 } from '../_turnkey';
-import { useCounterFactualAddress, useLfghoClients } from '..';
+import {
+    useCounterFactualAddress,
+    useLfghoClients,
+    useOnboardingStep
+} from '..';
 import { createSmartWallet, getCounterfactualAddresses } from '../_pimlico';
 import { getWebAuthnAttestation } from '@turnkey/http';
 import { sepolia } from 'viem/chains';
@@ -21,6 +25,7 @@ export const useAuth = () => {
     } = useLfghoClients();
 
     const { setAddressRecords } = useCounterFactualAddress();
+    const { increaseOnboardingStep } = useOnboardingStep();
 
     const login = async () => {
         try {
@@ -105,6 +110,9 @@ export const useAuth = () => {
                 viemPublicClient,
                 pimlicoBundler
             });
+
+        // used for UI on onboarding screen
+        increaseOnboardingStep();
 
         await createSmartWallet({
             viemAccount,
