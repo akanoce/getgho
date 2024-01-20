@@ -1,5 +1,5 @@
 import { useMutation } from 'wagmi';
-import { createSupplyTxs } from '@/api';
+import { createBorrowTx, createSupplyTxs } from '@/api';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
 import {
@@ -61,26 +61,25 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
 
         if (!toBorrow) throw new Error('no toBorrow');
         const maxAmountBorrowable = BigNumber(
-            toBorrow.formattedBaseLTVasCollateral
+            toBorrow.borrowUsageRatio
         ).multipliedBy(totalEstimatedAvailableUsdToBorrow);
 
         console.log({
             totalEstimatedAvailableUsdToBorrow,
-            maxAmountBorrowable,
-            ltv: toBorrow.formattedBaseLTVasCollateral
+            maxAmountBorrowable
         });
 
-        const borrowData: LPBorrowParamsType = {
-            amount: maxAmountBorrowable.toString(),
-            user: account,
-            reserve: toBorrow.underlyingAsset,
-            interestRateMode: InterestRate.Variable
-        };
+        // const borrowData: LPBorrowParamsType = {
+        //     amount: maxAmountBorrowable.toString(),
+        //     user: account,
+        //     reserve: toBorrow.underlyingAsset,
+        //     interestRateMode: InterestRate.Variable
+        // };
 
-        const borrowTxs = await createSupplyTxs(poolContract, {
-            ...borrowData
-        });
-        allTxs.push(...borrowTxs);
+        // const borrowTxs = await createBorrowTx(poolContract, {
+        //     ...borrowData
+        // });
+        // allTxs.push(...borrowTxs);
         console.log('Submitting txs...');
         await sendTransaction({ txs: allTxs });
     };

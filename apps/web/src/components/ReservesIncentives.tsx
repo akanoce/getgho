@@ -93,10 +93,18 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         [reservesWithBalance]
     );
 
+    const availableSuppliableReservesWithBalance = useMemo(
+        () =>
+            availableReservesWithBalance.filter(
+                (reserve) => reserve.reserve.supplyCap !== '0'
+            ),
+        [availableReservesWithBalance]
+    );
+
     const { mutate: multipleSupplyAndBorrow, isSupplyTxLoading } =
         useMultipleSupplyWithBorrow({
             toBorrow: ghoReserve,
-            toSupply: availableReservesWithBalance
+            toSupply: availableSuppliableReservesWithBalance
         });
 
     if (!formattedReservesIncentives)
@@ -141,7 +149,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                 <Th>Balance USDT</Th>
                                 <Th>Available liquidity</Th>
                                 <Th>Total debt</Th>
-                                <Th>Base LTV as collateral</Th>
+                                <Th>SupplyCaP</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
@@ -214,9 +222,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         )}
                                     </Td>
 
-                                    <Td>
-                                        {reserveIncentive.baseLTVasCollateral}
-                                    </Td>
+                                    <Td>{reserveIncentive.supplyCapUSD}</Td>
                                     <Td>
                                         <HStack spacing={2}>
                                             <SupplyUnderlyingAssetButton
