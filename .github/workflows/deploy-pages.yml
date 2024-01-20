@@ -36,8 +36,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version-file: .nvmrc
-                env:
-                    NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
             - name: Build React App
               run: yarn build
