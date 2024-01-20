@@ -10,11 +10,13 @@ import {
     Image,
     Text,
     Box,
-    useColorModeValue
+    useColorModeValue,
+    Spinner
 } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
 import ghost from '../assets/ghost.png';
+import { WalletCreationStep, useWalletCreationStep } from '@repo/lfgho-sdk';
 
 type Props = {
     login: () => void;
@@ -29,9 +31,27 @@ const OnboardingBody = ({ login, signup }: Props) => {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
-
+    const { walletCreationStep } = useWalletCreationStep();
     const [step, setStep] = useState<Steps>('main');
     const borderColor = useColorModeValue('black', 'white');
+
+    if (walletCreationStep === WalletCreationStep.CreatingWallet) {
+        return (
+            <HStack spacing={4}>
+                <Text>Creating local wallet...</Text>
+                <Spinner />
+            </HStack>
+        );
+    }
+
+    if (walletCreationStep === WalletCreationStep.DeployingWallet) {
+        return (
+            <HStack spacing={4}>
+                <Text>Deploying smart wallet...</Text>
+                <Spinner />
+            </HStack>
+        );
+    }
 
     if (step === 'alreadyHaveWallet') {
         return (
