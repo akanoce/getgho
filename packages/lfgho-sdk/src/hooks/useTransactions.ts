@@ -419,7 +419,11 @@ export const useTransactions = () => {
         const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
         const { account: localAccount } = await getViemInstance();
 
-        for (const tx of txs) {
+        console.log({ txs });
+
+        const signleTX = [txs[0]];
+
+        for (const tx of signleTX) {
             const txGas = await tx.gas();
             console.log('txGas', txGas);
             const extendedTxData = await tx.tx();
