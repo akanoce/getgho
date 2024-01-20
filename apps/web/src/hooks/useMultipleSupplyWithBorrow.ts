@@ -1,15 +1,9 @@
 import { useMutation } from 'wagmi';
-import { createBorrowTx, createSupplyTxs } from '@/api';
+import { createSupplyTxs } from '@/api';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
-import {
-    EthereumTransactionTypeExtended,
-    InterestRate
-} from '@aave/aave-utilities/packages/contract-helpers';
-import {
-    LPSupplyParamsType,
-    LPBorrowParamsType
-} from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
+import { LPSupplyParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-UiPoolDataProvider-contract/types';
 import { FormatReserveUSDResponse } from '@aave/aave-utilities/packages/math-utils';
 import BigNumber from 'bignumber.js';

@@ -1,4 +1,4 @@
-import { useReservesIncentives, useUserReservesIncentives } from '@/api';
+import { useReservesIncentives } from '@/api';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React from 'react';
 import { formatUnits } from 'viem';
@@ -32,15 +32,10 @@ const formatAPY = (apy: number | string) => {
 };
 
 export const SuppliedTokens: React.FC<Props> = ({ address }) => {
-    const { data: reservesIncentives, error: errorReservesIncentives } =
-        useReservesIncentives();
+    const { data: reservesIncentives } = useReservesIncentives();
 
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
-
-    const { data: userReservesIncentives } = useUserReservesIncentives(address);
-
-    const formattedUserSummary = userReservesIncentives?.formattedUserSummary;
 
     const result = useContractReads({
         allowFailure: false,

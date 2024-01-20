@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { TSignedRequest, TurnkeyClient } from '@turnkey/http';
-import { ApiKeyStamper } from '@turnkey/api-key-stamper';
+import { TSignedRequest } from '@turnkey/http';
 import { turnkeyClient } from '../../const';
 
 export async function turnkeyLogin(signedRequest: TSignedRequest) {

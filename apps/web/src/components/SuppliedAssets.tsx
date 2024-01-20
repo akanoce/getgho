@@ -36,8 +36,7 @@ type Props = {
     address: string;
 };
 export const SuppliedAssets = ({ address }: Props) => {
-    const { data: userReserves, isLoading: userReservesLoading } =
-        useUserReservesIncentives(address);
+    const { data: userReserves } = useUserReservesIncentives(address);
     const { data: reserves } = useReserves();
 
     const availableUnderlying =

@@ -29,8 +29,7 @@ type Props = {
     address: string;
 };
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
-    const { data: reservesIncentives, error: errorReservesIncentives } =
-        useReservesIncentives();
+    const { data: reservesIncentives } = useReservesIncentives();
 
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
@@ -39,18 +38,17 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
 
     const formattedUserSummary = userReservesIncentives?.formattedUserSummary;
 
-    const { data: userBalances, isLoading: isUserBalancesLoading } =
-        useContractReads({
-            allowFailure: false,
-            contracts: reservesIncentives?.formattedReservesIncentives.map(
-                (reserveIncentive) => ({
-                    address: reserveIncentive.underlyingAsset as `0x${string}`,
-                    abi: erc20ABI,
-                    functionName: 'balanceOf',
-                    args: [address]
-                })
-            )
-        });
+    const { data: userBalances } = useContractReads({
+        allowFailure: false,
+        contracts: reservesIncentives?.formattedReservesIncentives.map(
+            (reserveIncentive) => ({
+                address: reserveIncentive.underlyingAsset as `0x${string}`,
+                abi: erc20ABI,
+                functionName: 'balanceOf',
+                args: [address]
+            })
+        )
+    });
     const getUserBalance = useCallback(
         (assetIndex: number, decimals: number) => {
             const balance = userBalances?.[assetIndex] as bigint;
