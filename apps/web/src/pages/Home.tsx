@@ -7,10 +7,9 @@ import {
     Switch,
     VStack
 } from '@chakra-ui/react';
-import { UserAssets } from '@/components/UserAssets';
+import { SuppliedAssets } from '@/components/SuppliedAssets';
 import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
-import { Funnel } from '@/components/Funnel';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { UserSummary } from '@/components/UserSummary';
@@ -64,7 +63,7 @@ export const Home = ({ wallet }: Props) => {
                     </Button>
                 </HStack>
             </HStack>
-            <UserAssets address={wallet} />
+            <SuppliedAssets address={wallet} />
             <SuppliedTokens address={wallet} />
             <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />

@@ -18,7 +18,7 @@ import { WithdrawAssetButton } from './WithdrawAssetButton';
 type Props = {
     address: string;
 };
-export const UserAssets = ({ address }: Props) => {
+export const SuppliedAssets = ({ address }: Props) => {
     const { data: userReserves, isLoading: userReservesLoading } =
         useUserReservesIncentives(address);
 
