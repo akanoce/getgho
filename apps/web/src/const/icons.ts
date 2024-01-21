@@ -8,6 +8,9 @@ import wEthIcon from 'cryptocurrency-icons/svg/color/eth.svg';
 import eurIcon from 'cryptocurrency-icons/svg/color/eur.svg';
 import genericCryptoIcon from 'cryptocurrency-icons/svg/color/generic.svg';
 
+import ghoIcon from '../assets/gho.svg';
+import eursIcons from '../assets/eurs.svg';
+
 const CryptoIconMap: { [key: string]: string } = {
     LINK: linkIcon,
     USDC: usdcIcon,
@@ -16,7 +19,9 @@ const CryptoIconMap: { [key: string]: string } = {
     AAVE: aaveIcon,
     WBTC: wBtcIcon,
     WETH: wEthIcon,
-    EUR: eurIcon
+    EUR: eurIcon,
+    GHO: ghoIcon,
+    EURS: eursIcons
 };
 
 export { genericCryptoIcon, CryptoIconMap };
