@@ -20,8 +20,6 @@ export const App = () => {
     const { data: userReservesIncentives } = useUserReservesIncentives(account);
     const { toggleColorMode } = useColorMode();
 
-    console.log({ userReservesIncentives });
-
     return (
         <Box
             w="100vw"

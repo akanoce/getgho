@@ -6,6 +6,7 @@ export const formatAPY = (apy?: number | string) => {
 
 export const formatBalance = (balance?: number | string, currency?: string) => {
     const bn = BigNumber(balance ?? 0);
+    if (bn.isZero()) return '0';
     const isSmall = bn.lt(0.01);
     if (isSmall) {
         return `< 0.01`;

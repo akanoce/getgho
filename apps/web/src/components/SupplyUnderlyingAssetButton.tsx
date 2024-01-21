@@ -29,8 +29,6 @@ export const SupplyUnderlyingAssetButton: React.FC<Props> = ({
         amount
     });
 
-    console.log({ maxAmount });
-
     const isLoading = isSupplyTxLoading;
 
     const isDisabled =

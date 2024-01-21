@@ -6,6 +6,10 @@ import {
     getUserReserves,
     getUserReservesIncentives
 } from '.';
+import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
+import { erc20ABI, useContractReads } from 'wagmi';
+import { formatUnits } from 'viem';
+import { useCallback } from 'react';
 
 /**
  * see {@link getReserves}
@@ -118,4 +122,74 @@ export const useUserReservesIncentives = (user?: string) => {
                 : null,
         enabled
     });
+};
+
+export const useMergedTableData = ({
+    address,
+    showAll = false
+}: {
+    address: string;
+    showAll?: boolean;
+}) => {
+    const { data: userReserves } = useUserReservesIncentives(address);
+
+    const assetsData =
+        userReserves?.formattedUserSummary.userReservesData || [];
+
+    const { data: userBalances } = useContractReads({
+        allowFailure: false,
+        contracts: assetsData?.map((assetData) => ({
+            address: assetData.underlyingAsset as `0x${string}`,
+            abi: erc20ABI,
+            functionName: 'balanceOf',
+            args: [address]
+        }))
+    });
+
+    const getUserBalance = useCallback(
+        (assetIndex: number, decimals: number) => {
+            const balance = userBalances?.[assetIndex] as bigint;
+            if (!balance) return '0';
+
+            const parsedBalance = formatUnits(balance, decimals);
+
+            return parsedBalance;
+        },
+        [userBalances]
+    );
+
+    if (!assetsData) {
+        return [];
+    }
+
+    return assetsData
+        .map((assetData, index) => {
+            const asset = assetData.reserve;
+            return {
+                id: asset.id,
+                symbol: asset.symbol.toUpperCase(),
+                name: asset.name,
+                tokenImage:
+                    CryptoIconMap[asset.symbol.toUpperCase()] ??
+                    genericCryptoIcon,
+                price: asset.priceInUSD,
+                availableBalance: getUserBalance(index, asset.decimals ?? 18),
+                availableBalanceUSD:
+                    Number(asset.priceInUSD) *
+                    Number(getUserBalance(index, asset.decimals ?? 18)),
+                supplyAPY: asset.supplyAPY,
+                suppliedBalance: assetData.underlyingBalance,
+                suppliedBalanceUSD: assetData.underlyingBalanceUSD,
+                borrowAPY: asset.variableBorrowAPY,
+                borrowedBalance: assetData.totalBorrows,
+                borrowedBalanceUSD: assetData.totalBorrowsUSD
+            };
+        })
+        .filter(
+            (asset) =>
+                showAll ||
+                asset.availableBalance !== '0' ||
+                asset.suppliedBalance !== '0' ||
+                asset.borrowedBalance !== '0'
+        );
 };
