@@ -132,11 +132,13 @@ export const Home = ({ wallet }: Props) => {
                         variants={bottomToUp}
                         transition={{ duration: 0.5 }}
                     >
-                        <Spacer h={30} />
-                        <Heading size="md">Advanced View</Heading>
-                        <SuppliedAssets address={wallet} />
-                        <BorrowedAssets address={wallet} />
-                        <ReservesIncentives address={wallet} />
+                        <VStack spacing={4} alignItems={'stretch'} w="full">
+                            <Spacer h={30} />
+                            <Heading size="md">Advanced View</Heading>
+                            <SuppliedAssets address={wallet} />
+                            <BorrowedAssets address={wallet} />
+                            <ReservesIncentives address={wallet} />
+                        </VStack>
                     </motion.div>
                 )}
             </VStack>
