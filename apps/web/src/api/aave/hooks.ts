@@ -202,6 +202,10 @@ export const useMergedTableData = ({
 };
 
 export const useGhoData = (address: string) => {
-    const mergeData = useMergedTableData({ address, showGho: true });
+    const mergeData = useMergedTableData({
+        address,
+        showAll: true,
+        showGho: true
+    });
     return mergeData.find((asset) => asset.symbol === 'GHO');
 };
