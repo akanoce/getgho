@@ -49,7 +49,8 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
             });
 
             totalEstimatedAvailableUsdToBorrow +=
-                BigNumber(amountInUsd).toNumber();
+                BigNumber(amountInUsd).toNumber() *
+                Number(reserve.baseLTVasCollateral);
 
             allTxs.push(...supplyTxs);
         }

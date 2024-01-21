@@ -6,8 +6,8 @@ import { InterestRate } from '@aave/aave-utilities';
 import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {
-    amount: string;
-    reserve: string;
+    amount?: string;
+    reserve?: string;
 };
 /**
  * Hook to borrow an asset to a reserve of the AAVE protocol pool
@@ -24,6 +24,9 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
     const borrowAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
+
+        if (!amount) throw new Error('no amount');
+        if (!reserve) throw new Error('no reserve ');
 
         const data: LPBorrowParamsType = {
             amount: amount,

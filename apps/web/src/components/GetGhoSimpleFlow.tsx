@@ -19,6 +19,7 @@ import {
 import { useMemo, useState } from 'react';
 import { AssetsTableWithCheckBox } from './AssetsTableWithCheckBox';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
+import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     const { data: userReserves } = useUserReservesIncentives(address);
@@ -102,18 +103,52 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             }))
         });
 
+    const availableToBorrowInGho = useMemo(
+        () =>
+            (Number(
+                userReserves?.formattedUserSummary.availableBorrowsUSD ?? 0
+            ) /
+                Number(ghoReserve?.priceInUSD ?? 0)) *
+            Number(userReserves?.formattedUserSummary.currentLoanToValue),
+        [userReserves, ghoReserve]
+    );
+
+    const { mutate: borrowGho, isSupplyTxLoading: isBorrowGhoLoading } =
+        useBorrowAsset({
+            reserve: ghoReserve?.underlyingAsset,
+            amount: availableToBorrowInGho.toString()
+        });
+
     const tableCaption = useMemo(
         () => (
-            <Button
-                isDisabled={totalSupplyUsdSelected === 0}
-                onClick={() => multipleSupplyAndBorrow()}
-                isLoading={isSupplyTxLoading}
-            >
-                Get GHO using an additional {totalSupplyUsdSelected.toFixed(2)}{' '}
-                USD worth of assets
-            </Button>
+            <VStack spacing={1} justifyContent={'center'}>
+                <Button
+                    isDisabled={totalSupplyUsdSelected === 0}
+                    onClick={() => multipleSupplyAndBorrow()}
+                    isLoading={isSupplyTxLoading}
+                >
+                    Get GHO using an additional{' '}
+                    {totalSupplyUsdSelected.toFixed(2)} USD worth of assets
+                </Button>
+                <Button
+                    size="sm"
+                    variant={'link'}
+                    isDisabled={availableToBorrowInGho <= 0}
+                    onClick={() => borrowGho()}
+                    isLoading={isBorrowGhoLoading}
+                >
+                    Get GHO using your available collateral
+                </Button>
+            </VStack>
         ),
-        [totalSupplyUsdSelected, isSupplyTxLoading, multipleSupplyAndBorrow]
+        [
+            totalSupplyUsdSelected,
+            isSupplyTxLoading,
+            multipleSupplyAndBorrow,
+            borrowGho,
+            isBorrowGhoLoading,
+            availableToBorrowInGho
+        ]
     );
 
     const assetsDataWithAvailableBalance = useMemo(
@@ -123,6 +158,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             ),
         [assetsData]
     );
+
     return (
         <Card>
             <CardHeader>
