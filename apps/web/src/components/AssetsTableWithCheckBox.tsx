@@ -191,23 +191,6 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
                                     </Heading>
                                 </VStack>
                             </Td>
-                            <Td>
-                                <HStack spacing={2}>
-                                    {/* <SupplyUnderlyingAssetButton
-                                                reserveAddress={
-                                                    asset.underlyingAsset
-                                                }
-                                                maxAmount={asset.balance}
-                                            /> */}
-
-                                    {/* <BorrowUnderlyingAssetButton
-                                                reserve={reserveIncentive}
-                                                formattedUserSummary={
-                                                    formattedUserSummary
-                                                }
-                                            /> */}
-                                </HStack>
-                            </Td>
                         </Tr>
                     ))}
                 </Tbody>
