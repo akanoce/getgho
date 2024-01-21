@@ -1,13 +1,14 @@
 import { useMutation } from 'wagmi';
 import { createBorrowTx } from '@/api';
-import { LPBorrowParamsType } from '@aave/aave-utilities/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { LPBorrowParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/aave-utilities';
+import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
 import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {
     amount: string;
     reserve: string;
+    onBehalfOf?: string
 };
 /**
  * Hook to borrow an asset to a reserve of the AAVE protocol pool
@@ -16,12 +17,12 @@ type Props = {
  * @param param0
  * @returns
  */
-export const useBorrowAsset = ({ amount, reserve }: Props) => {
+export const useBorrowAssetOnBehalf = ({ amount, reserve, onBehalfOf }: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
 
     const { poolContract } = useAaveContracts();
 
-    const borrowAsset = async () => {
+    const supplyAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
 
@@ -29,7 +30,8 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
             amount: amount,
             user: account,
             reserve,
-            interestRateMode: InterestRate.Variable
+            interestRateMode: InterestRate.Variable,
+            onBehalfOf
         };
         console.log({ data });
         console.log('Creating borrow tx...');
@@ -48,13 +50,13 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
         data: supplyTxResult,
         isLoading: isSupplyTxLoading,
         error: supplyTxError,
-        mutate: borrow
+        mutate: supply
     } = useMutation({
-        mutationFn: borrowAsset
+        mutationFn: supplyAsset
     });
 
     return {
-        mutate: borrow,
+        mutate: supply,
         isSupplyTxLoading,
         supplyTxError,
         supplyTxResult

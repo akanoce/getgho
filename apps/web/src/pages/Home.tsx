@@ -1,8 +1,23 @@
 import { Address } from 'viem';
-import { FormControl, FormLabel, Switch, VStack } from '@chakra-ui/react';
-import { UserAssets } from '@/components/UserAssets';
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    HStack,
+    Heading,
+    Image,
+    Switch,
+    VStack
+} from '@chakra-ui/react';
+import { SuppliedAssets } from '@/components/SuppliedAssets';
 import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
+import { useAccountAdapter } from '@/hooks/useAccountAdapter';
+import { ReservesIncentives } from '@/components/ReservesIncentives';
+import { AddressButton } from '@/components';
+import { BorrowedAssets } from '@/components/BorrowedAssets';
+import { useBalance } from 'wagmi';
+import { CryptoIconMap } from '@/const/icons';
 
 type Props = {
     wallet: Address;
@@ -10,6 +25,7 @@ type Props = {
 
 export const Home = ({ wallet }: Props) => {
     const { setIsSPonsored } = useSponsoredTxFlag();
+    const { logout } = useAccountAdapter();
 
     const handleOnChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,29 +34,54 @@ export const Home = ({ wallet }: Props) => {
         [setIsSPonsored]
     );
 
+    const { data: balance } = useBalance({ address: wallet });
+
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
-            <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="sposnored" mb="0">
-                    Enable ERC20 Sponsored Transactions
-                </FormLabel>
-                <Switch id="sposnored" size="lg" onChange={handleOnChange} />
-            </FormControl>
-
-            <UserAssets address={wallet} />
-            {/* <ReservesIncentives address={wallet} />
-            <UserSummary address={wallet} />
-            <Deposit />
-            <SendTx />
-            <SendErc20Tx />
-            <Button
-                variant={'solid'}
-                colorScheme="purple"
-                onClick={logout}
-                size="lg"
+            <HStack
+                justifyContent="space-between"
+                w="full"
+                // pos={'sticky'}
+                // top={4}
+                // right={4}
+                // zIndex={1}
             >
-                Logout
-            </Button> */}
+                <FormControl display="flex" alignItems="center">
+                    <FormLabel htmlFor="sponsored" mb="0">
+                        Enable ERC20 Sponsored Transactions
+                    </FormLabel>
+                    <Switch
+                        id="sponsored"
+                        size="lg"
+                        onChange={handleOnChange}
+                    />
+                </FormControl>
+                <HStack spacing={8}>
+                    <HStack spacing={2}>
+                        <AddressButton address={wallet} withCopy={true} />
+                        <HStack spacing={2}>
+                            <Image
+                                src={CryptoIconMap['WETH']}
+                                boxSize="1.5rem"
+                            />
+                            <Heading size="xs">
+                                {Number(balance?.formatted ?? 0).toFixed(4)}
+                            </Heading>
+                        </HStack>
+                    </HStack>
+                    <Button
+                        variant={'solid'}
+                        colorScheme="purple"
+                        onClick={logout}
+                        size="sm"
+                    >
+                        Logout
+                    </Button>
+                </HStack>
+            </HStack>
+            <SuppliedAssets address={wallet} />
+            <BorrowedAssets address={wallet} />
+            <ReservesIncentives address={wallet} />
         </VStack>
     );
 };

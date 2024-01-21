@@ -1,8 +1,7 @@
 import { useMutation } from 'wagmi';
-import { createBorrowTx } from '@/api';
-import { LPBorrowParamsType } from '@aave/aave-utilities/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { createWithdrawTx } from '@/api';
+import { LPWithdrawParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/aave-utilities';
 import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {
@@ -10,34 +9,32 @@ type Props = {
     reserve: string;
 };
 /**
- * Hook to borrow an asset to a reserve of the AAVE protocol pool
+ * Hook to withdraw an asset from a reserve of the AAVE protocol pool
+ *
  * Handles the approval of the asset to the AAVE protocol pool
  * Handles the supply of the asset to the AAVE protocol pool
  * @param param0
  * @returns
  */
-export const useBorrowAsset = ({ amount, reserve }: Props) => {
+export const useWithdrawAsset = ({ amount, reserve }: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
 
     const { poolContract } = useAaveContracts();
 
-    const borrowAsset = async () => {
+    const withdrawAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
 
-        const data: LPBorrowParamsType = {
+        const data: LPWithdrawParamsType = {
             amount: amount,
             user: account,
-            reserve,
-            interestRateMode: InterestRate.Variable
+            reserve
         };
         console.log({ data });
-        console.log('Creating borrow tx...');
-        const txs = await createBorrowTx(poolContract, {
+        console.log('Creating withdraw txs...');
+        const txs = await createWithdrawTx(poolContract, {
             ...data
         });
-        console.log({ txs });
-        console.log('Submitting tx...');
 
         console.log({ txs });
         console.log('Submitting txs...');
@@ -45,18 +42,18 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
     };
 
     const {
-        data: supplyTxResult,
-        isLoading: isSupplyTxLoading,
-        error: supplyTxError,
-        mutate: borrow
+        data,
+        isLoading,
+        error,
+        mutate: withdraw
     } = useMutation({
-        mutationFn: borrowAsset
+        mutationFn: withdrawAsset
     });
 
     return {
-        mutate: borrow,
-        isSupplyTxLoading,
-        supplyTxError,
-        supplyTxResult
+        mutate: withdraw,
+        isLoading,
+        error,
+        data
     };
 };

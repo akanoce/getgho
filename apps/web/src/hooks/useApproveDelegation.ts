@@ -1,13 +1,12 @@
 import { useMutation } from 'wagmi';
-import { createBorrowTx } from '@/api';
-import { LPBorrowParamsType } from '@aave/aave-utilities/dist/esm/v3-pool-contract/lendingPoolTypes';
-import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/aave-utilities';
+import { createApproveDelegationTx } from '@/api';
 import { useAccountAdapter } from './useAccountAdapter';
+import { useLfghoClients } from '@repo/lfgho-sdk';
 
 type Props = {
+    delegatee: string;
+    debtTokenAddress: string;
     amount: string;
-    reserve: string;
 };
 /**
  * Hook to borrow an asset to a reserve of the AAVE protocol pool
@@ -16,24 +15,27 @@ type Props = {
  * @param param0
  * @returns
  */
-export const useBorrowAsset = ({ amount, reserve }: Props) => {
+export const useApproveDelegation = ({
+    delegatee,
+    debtTokenAddress,
+    amount
+}: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
 
-    const { poolContract } = useAaveContracts();
+    const { ethersProvider } = useLfghoClients();
 
-    const borrowAsset = async () => {
-        if (!poolContract) throw new Error('no poolContract');
+    const approveDelegation = async () => {
         if (!account) throw new Error('no account found');
 
-        const data: LPBorrowParamsType = {
-            amount: amount,
+        const data = {
             user: account,
-            reserve,
-            interestRateMode: InterestRate.Variable
+            delegatee,
+            debtTokenAddress,
+            amount
         };
         console.log({ data });
-        console.log('Creating borrow tx...');
-        const txs = await createBorrowTx(poolContract, {
+        console.log('Creating approve delegation tx...');
+        const txs = await createApproveDelegationTx(ethersProvider, {
             ...data
         });
         console.log({ txs });
@@ -41,20 +43,20 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
 
         console.log({ txs });
         console.log('Submitting txs...');
-        await sendTransaction({ txs });
+        await sendTransaction({ txs: [txs] });
     };
 
     const {
         data: supplyTxResult,
         isLoading: isSupplyTxLoading,
         error: supplyTxError,
-        mutate: borrow
+        mutate: supply
     } = useMutation({
-        mutationFn: borrowAsset
+        mutationFn: approveDelegation
     });
 
     return {
-        mutate: borrow,
+        mutate: supply,
         isSupplyTxLoading,
         supplyTxError,
         supplyTxResult
