@@ -44,7 +44,7 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
                         <Th>Supplied</Th>
                         <Th>Borrowed</Th>
                         <Th>Price</Th>
-                        <Th>APY</Th>
+                        <Th>APY - Supply/Borrow</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
