@@ -408,6 +408,7 @@ export const useTransactions = () => {
         });
         const txHash = receipt.receipt.transactionHash;
         console.log(`Transaction hash: ${txHash}`);
+        return txHash;
     };
 
     const sendAaveBatchTransactions = async ({
@@ -490,6 +491,7 @@ export const useTransactions = () => {
         });
         const txHash = receipt.receipt.transactionHash;
         console.log(`Transaction hash: ${txHash}`);
+        return txHash;
     };
 
     const sendSponsoredERC20AaveBatchTransactions = async ({
@@ -524,7 +526,7 @@ export const useTransactions = () => {
             initCode: '0x',
             callData,
             bundlerClient: pimlicoBundler,
-            publicClient: viemPublicClient,
+            publicClient: viemPublicClient
         })) as UserOperation;
 
         console.log('Built userOperation:', userOperation);
@@ -569,6 +571,7 @@ export const useTransactions = () => {
         });
         const txHash = receipt.receipt.transactionHash;
         console.log(`Transaction hash: ${txHash}`);
+        return txHash;
     };
 
     return {

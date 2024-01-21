@@ -45,7 +45,7 @@ export const useAccountAdapter = () => {
         txs
     }: {
         txs: EthereumTransactionTypeExtended[];
-    }) => {
+    }): Promise<`0x${string}`> => {
         if (smartAccountWallet && address)
             throw new Error('Cannot have EOA and SCA both connected');
 
@@ -59,11 +59,13 @@ export const useAccountAdapter = () => {
             });
 
             console.log('sendTxResult', sendTxResult);
+            //TODO: we don't need this as the receipt is already awaited in the function above
+            return sendTxResult[0];
         } else {
             if (isSponsoredTx) {
-                await sendSponsoredERC20AaveBatchTransactions({ txs });
+                return await sendSponsoredERC20AaveBatchTransactions({ txs });
             } else {
-                await sendAaveBatchTransactions({ txs });
+                return await sendAaveBatchTransactions({ txs });
             }
         }
     };
