@@ -82,33 +82,28 @@ export const Home = ({ wallet }: Props) => {
                         onChange={handleOnChange}
                     />
                 </FormControl> */}
-                    <HStack spacing={8}>
+
+                    <HStack spacing={4}>
+                        <AddressButton address={wallet} withCopy={true} />
                         <HStack spacing={2}>
-                            <AddressButton address={wallet} withCopy={true} />
-                            <HStack spacing={2}>
-                                <Image
-                                    src={CryptoIconMap['WETH']}
-                                    boxSize="1.5rem"
-                                />
-                                <Heading size="xs">
-                                    {Number(balance?.formatted ?? 0).toFixed(4)}
-                                </Heading>
-                            </HStack>
+                            <Image
+                                src={CryptoIconMap['WETH']}
+                                boxSize="1.5rem"
+                            />
+                            <Heading size="xs">
+                                {Number(balance?.formatted ?? 0).toFixed(4)}
+                            </Heading>
                         </HStack>
-                        <Button
-                            variant={'solid'}
-                            colorScheme="purple"
-                            onClick={logout}
-                            size="sm"
-                        >
-                            Logout
-                        </Button>
                     </HStack>
+
+                    <Button onClick={logout} size="sm" colorScheme="purple">
+                        Logout
+                    </Button>
                 </HStack>
                 <GetGhoSimpleFlow address={wallet} />
                 {!isShowAdvanced && (
                     <Button variant="link" onClick={showAdvanced} size="lg">
-                        Feelin' advanced?
+                        Feeling advanced?
                     </Button>
                 )}
                 {/* <GhoData address={wallet} />
