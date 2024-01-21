@@ -6,6 +6,7 @@ import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
+    Box,
     Button,
     Card,
     CardBody,
@@ -143,45 +144,39 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                         align={'flex-start'}
                     >
                         <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
-                        <HStack spacing={2}>
-                            <Heading size="sm" color="orange">
-                                Available to borrow
-                            </Heading>
-                            <Heading size="sm">
-                                {formatBalance(
-                                    formattedUserSummary?.availableBorrowsUSD ??
-                                        0,
-                                    'USD'
-                                )}
-                            </Heading>
-                        </HStack>
                     </VStack>
-                    <Button
-                        size={'sm'}
-                        colorScheme={'purple'}
-                        isLoading={isSupplyTxLoading}
-                        onClick={() => multipleSupplyAndBorrow()}
-                    >
-                        Supply all & Borrow
-                    </Button>
+                    <Box textAlign={'right'}>
+                        <Heading size="xs" color="green">
+                            Available collateral
+                        </Heading>
+                        <Heading size="sm">
+                            {formatBalance(
+                                formattedUserSummary?.availableBorrowsUSD ?? 0,
+                                'USD'
+                            )}
+                        </Heading>
+                    </Box>
                 </HStack>
             </CardHeader>
             <CardBody>
                 <TableContainer>
                     <Table variant="simple">
                         <TableCaption>
-                            {reservesWithBalance.length} reserves incentives
+                            <Button
+                                size={'sm'}
+                                colorScheme={'purple'}
+                                isLoading={isSupplyTxLoading}
+                                onClick={() => multipleSupplyAndBorrow()}
+                            >
+                                Supply all & Borrow
+                            </Button>
                         </TableCaption>
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
-                                <Th>Address</Th>
                                 <Th>Price</Th>
                                 <Th>Balance</Th>
                                 <Th>APY</Th>
-                                <Th>Caps</Th>
-                                <Th>Liquidity</Th>
-                                <Th>Debt</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
@@ -203,14 +198,6 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 {reserveIncentive.name}
                                             </Heading>
                                         </HStack>
-                                    </Td>
-                                    <Td>
-                                        <AddressButton
-                                            address={
-                                                reserveIncentive.underlyingAsset
-                                            }
-                                            withCopy={true}
-                                        />
                                     </Td>
                                     <Td>
                                         <Heading size="sm">
@@ -259,86 +246,17 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                             align={'flex-start'}
                                         >
                                             <Heading size="sm" color="green">
+                                                S{' '}
                                                 {formatAPY(
                                                     reserveIncentive.supplyAPY
                                                 )}
                                             </Heading>
                                             <Heading size="sm" color="orange">
+                                                B{' '}
                                                 {formatAPY(
                                                     reserveIncentive.variableBorrowAPY
                                                 )}
                                             </Heading>
-                                        </VStack>
-                                    </Td>
-                                    <Td>
-                                        <VStack
-                                            spacing={0}
-                                            justify={'flex-start'}
-                                            align={'flex-start'}
-                                        >
-                                            <Heading size="sm" color="green">
-                                                {reserveIncentive.supplyCap}
-                                            </Heading>
-                                            <Heading size="sm" color="orange">
-                                                {reserveIncentive.borrowCap}
-                                            </Heading>
-                                        </VStack>
-                                    </Td>
-
-                                    <Td>
-                                        <VStack
-                                            spacing={0}
-                                            justify={'flex-start'}
-                                            align={'flex-start'}
-                                        >
-                                            <HStack spacing={1}>
-                                                <Heading size="sm">
-                                                    {formatBalance(
-                                                        reserveIncentive.availableLiquidity
-                                                    )}
-                                                </Heading>
-                                                <Text size="sm" as="sub">
-                                                    {reserveIncentive.symbol}
-                                                </Text>
-                                            </HStack>
-                                            <HStack spacing={1}>
-                                                <Heading size="sm">
-                                                    {formatBalance(
-                                                        reserveIncentive.availableLiquidityUSD
-                                                    )}
-                                                </Heading>
-                                                <Text size="sm" as="sub">
-                                                    USD
-                                                </Text>
-                                            </HStack>
-                                        </VStack>
-                                    </Td>
-                                    <Td>
-                                        <VStack
-                                            spacing={0}
-                                            justify={'flex-start'}
-                                            align={'flex-start'}
-                                        >
-                                            <HStack spacing={1}>
-                                                <Heading size="sm">
-                                                    {formatBalance(
-                                                        reserveIncentive.totalDebt
-                                                    )}
-                                                </Heading>
-                                                <Text size="sm" as="sub">
-                                                    {reserveIncentive.symbol}
-                                                </Text>
-                                            </HStack>
-                                            <HStack spacing={1}>
-                                                <Heading size="sm">
-                                                    {formatBalance(
-                                                        reserveIncentive.totalDebtUSD
-                                                    )}
-                                                </Heading>
-                                                <Text size="sm" as="sub">
-                                                    USD
-                                                </Text>
-                                            </HStack>
                                         </VStack>
                                     </Td>
 
