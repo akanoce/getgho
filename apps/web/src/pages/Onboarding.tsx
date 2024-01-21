@@ -49,16 +49,30 @@ const OnboardingBody = () => {
     const [showGhost, setShowGhost] = useState(false);
 
     useEffect(() => {
-        window.addEventListener('keydown', (e) => {
+        const l1 = (e: KeyboardEvent) => {
+            if (step === 'createWallet' && e.code === 'Enter' && inputValue) {
+                signup(`LFGHO - ${inputValue}`);
+            }
+        };
+        window.addEventListener('keydown', l1);
+
+        const l2 = (e: KeyboardEvent) => {
             if (e.code === 'Space') {
                 setShowGhost(true);
             }
-        });
-        window.addEventListener('keyup', (e) => {
+        };
+        window.addEventListener('keydown', l2);
+        const l3 = (e: KeyboardEvent) => {
             if (e.code === 'Space') {
                 setShowGhost(false);
             }
-        });
+        };
+        window.addEventListener('keyup', l3);
+        return () => {
+            window.removeEventListener('keydown', l1);
+            window.removeEventListener('keydown', l2);
+            window.removeEventListener('keyup', l3);
+        };
     });
 
     if (walletCreationStep === WalletCreationStep.LoadingWallet) {
