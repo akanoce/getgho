@@ -11,6 +11,7 @@ import { useBalance } from 'wagmi';
 import { CryptoIconMap } from '@/const/icons';
 import { MergedTable } from '@/components/MergedTable';
 import { GetGho } from '@/components/GetGho';
+import { GhoData } from '@/components/GhoData';
 
 type Props = {
     wallet: Address;
@@ -67,6 +68,7 @@ export const Home = ({ wallet }: Props) => {
                 </HStack>
             </HStack>
             <GetGho />
+            <GhoData address={wallet} />
             <MergedTable address={wallet} />
             <SuppliedAssets address={wallet} />
             <BorrowedAssets address={wallet} />

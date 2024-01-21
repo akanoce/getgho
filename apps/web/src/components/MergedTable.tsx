@@ -38,7 +38,7 @@ export const MergedTable: React.FC<Props> = ({ address }) => {
             <Card>
                 <CardHeader>
                     <VStack spacing={0} justify={'flex-start'}>
-                        <Heading fontSize={'2xl'}>MERGED</Heading>
+                        <Heading fontSize={'2xl'}>Token Dashboard</Heading>
                     </VStack>
                 </CardHeader>
                 <CardBody>
@@ -56,7 +56,7 @@ export const MergedTable: React.FC<Props> = ({ address }) => {
                         justify={'flex-start'}
                         align={'flex-start'}
                     >
-                        <Heading fontSize={'2xl'}>MERGED</Heading>
+                        <Heading fontSize={'2xl'}>Token Dashboard</Heading>
                     </VStack>
                 </HStack>
             </CardHeader>
@@ -64,17 +64,16 @@ export const MergedTable: React.FC<Props> = ({ address }) => {
                 <TableContainer>
                     <Table variant="simple">
                         <TableCaption>
-                            {mergedData.length} reserves incentives
+                            {mergedData.length} elements
                         </TableCaption>
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
-                                <Th>Available</Th>
+                                <Th>wallet availability</Th>
                                 <Th>Supplied</Th>
                                 <Th>Borrowed</Th>
                                 <Th>Price</Th>
                                 <Th>APY</Th>
-                                <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>

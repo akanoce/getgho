@@ -126,10 +126,14 @@ export const useUserReservesIncentives = (user?: string) => {
 
 export const useMergedTableData = ({
     address,
-    showAll = false
+    showAll = false,
+    showIsolated = false,
+    showGho = false
 }: {
     address: string;
     showAll?: boolean;
+    showIsolated?: boolean;
+    showGho?: boolean;
 }) => {
     const { data: userReserves } = useUserReservesIncentives(address);
 
@@ -182,7 +186,8 @@ export const useMergedTableData = ({
                 suppliedBalanceUSD: assetData.underlyingBalanceUSD,
                 borrowAPY: asset.variableBorrowAPY,
                 borrowedBalance: assetData.totalBorrows,
-                borrowedBalanceUSD: assetData.totalBorrowsUSD
+                borrowedBalanceUSD: assetData.totalBorrowsUSD,
+                isIsolated: asset.isIsolated
             };
         })
         .filter(
@@ -191,5 +196,12 @@ export const useMergedTableData = ({
                 asset.availableBalance !== '0' ||
                 asset.suppliedBalance !== '0' ||
                 asset.borrowedBalance !== '0'
-        );
+        )
+        .filter((asset) => showIsolated || !asset.isIsolated)
+        .filter((asset) => showGho || !asset.symbol.includes('GHO'));
+};
+
+export const useGhoData = (address: string) => {
+    const mergeData = useMergedTableData({ address, showGho: true });
+    return mergeData.find((asset) => asset.symbol === 'GHO');
 };

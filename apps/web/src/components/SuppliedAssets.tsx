@@ -28,6 +28,8 @@ export const SuppliedAssets = ({ address }: Props) => {
     const { data: userReserves } = useUserReservesIncentives(address);
     const { data: reserves } = useReserves();
 
+    console.log(userReserves);
+
     const availableUnderlying =
         userReserves?.formattedUserSummary.userReservesData.filter(
             (reserve) => reserve.underlyingBalance !== '0'
