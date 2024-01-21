@@ -11,6 +11,9 @@ GetGho stands out with its cutting-edge approach:
 - **💡 Simplified Transactions:** Experience batched account abstraction transactions. Execute multiple transactions in a single step with sponsored gas fees. Say goodbye to gas complexities and hello to a smooth DeFi journey.
 
 
+<img width="1698" alt="image" src="https://github.com/akanoce/getgho/assets/64158778/1148783d-903f-49aa-bc2a-b57ea1e03650">
+
+
 ## 🛠️ Run the Project
 
 #### Generate the required api keys
