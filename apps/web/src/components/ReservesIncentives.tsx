@@ -2,7 +2,6 @@ import { useReservesIncentives, useUserReservesIncentives } from '@/api';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React, { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
-import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
