@@ -1,6 +1,7 @@
 import { createConfig } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
 import { getDefaultConfig } from 'connectkit';
+import { config as appConfig } from '@repo/config';
 
 declare module 'wagmi' {
     interface Register {
@@ -9,8 +10,8 @@ declare module 'wagmi' {
 }
 
 const envConfig = {
-    alchemyId: import.meta.env.VITE_ALCHEMY_KEY,
-    walletConnectProjectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
+    alchemyId: appConfig.alchemyApiKey,
+    walletConnectProjectId: appConfig.walletConnectProjectId
 };
 
 export const config = createConfig(
