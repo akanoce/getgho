@@ -1,5 +1,5 @@
 # GetGho Monorepo 🌐
-<img width="679" alt="projects_0ncgt_images_Screenshot 2024-01-19 alle 15 34 22" src="https://github.com/akanoce/getgho/assets/64158778/ee75a453-d714-46f8-826b-43b08817a08a">
+<img width="450" alt="projects_0ncgt_images_Screenshot 2024-01-19 alle 15 34 22" src="https://github.com/akanoce/getgho/assets/64158778/ee75a453-d714-46f8-826b-43b08817a08a">
 
 
 Welcome to the GetGho Monorepo, where we are at the forefront of decentralized finance accessibility. GetGho is designed to redefine your DeFi experience, offering unparalleled ease in onboarding and transaction efficiency.
