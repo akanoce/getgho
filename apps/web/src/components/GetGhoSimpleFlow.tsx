@@ -9,6 +9,7 @@ import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow
 import { formatBalance } from '@/util/formatting';
 import { Card, CardBody } from '@chakra-ui/card';
 import {
+    Button,
     CardHeader,
     HStack,
     Heading,
@@ -145,11 +146,17 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     );
 
     const tableCaption = useMemo(
-        () =>
-            `You could get an additional ${totalSupplyUsdSelected.toFixed(
-                2
-            )} GHO supplying the selected assets`,
-        [totalSupplyUsdSelected]
+        () => (
+            <Button
+                isDisabled={totalSupplyUsdSelected === 0}
+                onClick={() => multipleSupplyAndBorrow()}
+                isLoading={isSupplyTxLoading}
+            >
+                Get GHO using an additional {totalSupplyUsdSelected.toFixed(2)}{' '}
+                USD worth of assets
+            </Button>
+        ),
+        [totalSupplyUsdSelected, isSupplyTxLoading, multipleSupplyAndBorrow]
     );
 
     const assetsDataWithAvailableBalance = useMemo(

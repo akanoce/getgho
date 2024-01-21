@@ -23,7 +23,7 @@ type Props = {
     assets: ReturnType<typeof useMergedTableData>;
     selected: string[];
     setSelected: (selected: string[]) => void;
-    tableCaption?: string;
+    tableCaption?: React.ReactNode;
 };
 
 export const AssetsTableWithCheckBox: React.FC<Props> = ({
