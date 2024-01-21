@@ -4,7 +4,7 @@ import { WebauthnStamper } from '@turnkey/webauthn-stamper';
 import { config } from '@repo/config';
 
 const stamper = new WebauthnStamper({
-    rpId: 'localhost'
+    rpId: config.baseUrl || 'localhost'
 });
 
 export const passkeyHttpClient = new TurnkeyClient(
