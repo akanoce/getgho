@@ -16,7 +16,7 @@ import {
     PopoverTrigger,
     Portal
 } from '@chakra-ui/react';
-import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers';
+import { ReserveDataHumanized } from '@aave/aave-utilities';
 import {
     FormatReserveUSDResponse,
     FormatUserSummaryAndIncentivesResponse

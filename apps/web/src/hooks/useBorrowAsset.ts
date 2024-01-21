@@ -1,8 +1,8 @@
 import { useMutation } from 'wagmi';
 import { createBorrowTx } from '@/api';
-import { LPBorrowParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { LPBorrowParamsType } from '@aave/aave-utilities/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
-import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
+import { InterestRate } from '@aave/aave-utilities';
 import { useAccountAdapter } from './useAccountAdapter';
 
 type Props = {

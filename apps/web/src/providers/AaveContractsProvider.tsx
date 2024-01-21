@@ -2,7 +2,7 @@ import {
     Pool,
     UiIncentiveDataProvider,
     UiPoolDataProvider
-} from '@aave/aave-utilities/packages/contract-helpers';
+} from '@aave/aave-utilities';
 import { AaveV3Sepolia } from '@bgd-labs/aave-address-book';
 import { createContext, useContext, useMemo } from 'react';
 import { useLfghoClients } from '@repo/lfgho-sdk';
