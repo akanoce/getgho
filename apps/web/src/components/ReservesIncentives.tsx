@@ -186,7 +186,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 alt={reserveIncentive.symbol}
                                                 boxSize="30px"
                                             />
-                                            <Text>{reserveIncentive.name}</Text>
+                                            <Heading size="sm">
+                                                {reserveIncentive.name}
+                                            </Heading>
                                         </HStack>
                                     </Td>
                                     <Td>
@@ -198,12 +200,16 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         />
                                     </Td>
                                     <Td>
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(reserveIncentive.priceInUSD)
-                                        )}
+                                        <Heading size="sm">
+                                            {new Intl.NumberFormat('it-IT', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(
+                                                Number(
+                                                    reserveIncentive.priceInUSD
+                                                )
+                                            )}
+                                        </Heading>
                                     </Td>
                                     <Td>
                                         <VStack
