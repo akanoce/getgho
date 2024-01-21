@@ -2,6 +2,7 @@ import { createActivityPoller } from '@turnkey/http';
 import { ETHEREUM_WALLET_DEFAULT_PATH, turnkeyClient } from '../../const';
 import { CreateSubOrgWithPrivateKeyRequest } from './types';
 import { refineNonNull } from './helpers';
+import { config } from '@repo/config';
 
 export async function turnkeyCreateUser(
     subOrgRequest: CreateSubOrgWithPrivateKeyRequest
@@ -17,7 +18,7 @@ export async function turnkeyCreateUser(
         const completedActivity = await activityPoller({
             type: 'ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V4',
             timestampMs: String(Date.now()),
-            organizationId: import.meta.env.VITE_ORGANIZATION_ID!,
+            organizationId: config.turnkeyOrganizationId,
             parameters: {
                 subOrganizationName: subOrgRequest.subOrgName,
                 rootQuorumThreshold: 1,
