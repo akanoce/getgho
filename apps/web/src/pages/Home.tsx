@@ -1,5 +1,15 @@
 import { Address } from 'viem';
-import { Box, Button, HStack, Heading, Image, VStack } from '@chakra-ui/react';
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    HStack,
+    Heading,
+    Image,
+    Spacer,
+    Switch,
+    VStack
+} from '@chakra-ui/react';
 import { SuppliedAssets } from '@/components/SuppliedAssets';
 // import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 // import { ChangeEvent, useCallback } from 'react';
@@ -12,6 +22,8 @@ import { CryptoIconMap } from '@/const/icons';
 import { MergedTable } from '@/components/MergedTable';
 import { GetGho } from '@/components/GetGho';
 import { GhoData } from '@/components/GhoData';
+import { FinancialDashboard } from '@/components/FinancialDashboard';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 type Props = {
     wallet: Address;
@@ -28,11 +40,30 @@ export const Home = ({ wallet }: Props) => {
     //     [setIsSPonsored]
     // );
 
+    const [showAdvanced, setShowAdvanced] = useState(false);
+
+    const toggleShowAdvanced = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            setShowAdvanced(event.target.checked);
+        },
+        []
+    );
+
     const { data: balance } = useBalance({ address: wallet });
 
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
             <HStack justifyContent="space-between" w="full">
+                <FormControl display="flex" alignItems="center">
+                    <FormLabel htmlFor="advanced" mb="0">
+                        Advanced View
+                    </FormLabel>
+                    <Switch
+                        id="advanced"
+                        size="lg"
+                        onChange={toggleShowAdvanced}
+                    />
+                </FormControl>
                 {/* <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="sponsored" mb="0">
                         Enable ERC20 Sponsored Transactions
@@ -43,7 +74,6 @@ export const Home = ({ wallet }: Props) => {
                         onChange={handleOnChange}
                     />
                 </FormControl> */}
-                <Box />
                 <HStack spacing={8}>
                     <HStack spacing={2}>
                         <AddressButton address={wallet} withCopy={true} />
@@ -69,10 +99,17 @@ export const Home = ({ wallet }: Props) => {
             </HStack>
             <GetGho />
             <GhoData address={wallet} />
+            <FinancialDashboard address={wallet} />
             <MergedTable address={wallet} />
-            <SuppliedAssets address={wallet} />
-            <BorrowedAssets address={wallet} />
-            <ReservesIncentives address={wallet} />
+            {showAdvanced && (
+                <>
+                    <Spacer h={30} />
+                    <Heading size="md">Advanced View</Heading>
+                    <SuppliedAssets address={wallet} />
+                    <BorrowedAssets address={wallet} />
+                    <ReservesIncentives address={wallet} />
+                </>
+            )}
         </VStack>
     );
 };
