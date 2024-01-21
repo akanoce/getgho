@@ -12,11 +12,11 @@ import {
     CardHeader,
     HStack,
     Heading,
+    Image,
     Spinner,
     Table,
     TableCaption,
     TableContainer,
-    Tag,
     Tbody,
     Td,
     Text,
@@ -26,6 +26,8 @@ import {
     VStack
 } from '@chakra-ui/react';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
+import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
+
 import BigNumber from 'bignumber.js';
 
 const formatAPY = (apy?: number | string) => {
@@ -46,6 +48,7 @@ const formatBalance = (balance?: number | string) => {
 type Props = {
     address: string;
 };
+
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives } = useReservesIncentives();
 
@@ -173,9 +176,18 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                             {reservesWithBalance.map((reserveIncentive) => (
                                 <Tr key={reserveIncentive.id}>
                                     <Td>
-                                        <Tag colorScheme="blue">
-                                            {reserveIncentive.name}
-                                        </Tag>
+                                        <HStack spacing={2}>
+                                            <Image
+                                                src={
+                                                    CryptoIconMap[
+                                                        reserveIncentive.symbol.toUpperCase()
+                                                    ] ?? genericCryptoIcon
+                                                }
+                                                alt={reserveIncentive.symbol}
+                                                boxSize="30px"
+                                            />
+                                            <Text>{reserveIncentive.name}</Text>
+                                        </HStack>
                                     </Td>
                                     <Td>
                                         <AddressButton
