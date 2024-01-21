@@ -22,7 +22,6 @@ import { CryptoIconMap } from '@/const/icons';
 import { MergedTable } from '@/components/MergedTable';
 import { GetGho } from '@/components/GetGho';
 import { GhoData } from '@/components/GhoData';
-import { FinancialDashboard } from '@/components/FinancialDashboard';
 import { ChangeEvent, useCallback, useState } from 'react';
 
 type Props = {
@@ -99,7 +98,6 @@ export const Home = ({ wallet }: Props) => {
             </HStack>
             <GetGho />
             <GhoData address={wallet} />
-            <FinancialDashboard address={wallet} />
             <MergedTable address={wallet} />
             {showAdvanced && (
                 <>
