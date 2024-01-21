@@ -1,9 +1,9 @@
 import { useMutation } from 'wagmi';
 import { createSupplyTxs } from '@/api';
-import { LPSignERC20ApprovalType } from '@aave/aave-utilities/dist/esm/v3-pool-contract/lendingPoolTypes';
 import dayjs from 'dayjs';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
+import { LPSignERC20ApprovalType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 
 type Props = {
     amount: string;
