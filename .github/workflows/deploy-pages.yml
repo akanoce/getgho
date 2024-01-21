@@ -25,7 +25,7 @@ jobs:
     # Single deploy job since we're just deploying
     deploy:
         environment:
-            name: github-pages
+            name: dev-sepolia
             url: ${{ steps.deployment.outputs.page_url }}
         runs-on: ubuntu-latest
         steps:
@@ -39,12 +39,19 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
             - name: Build React App
-              run: yarn build
+              run: yarn build:ci
               env:
-                  REACT_APP_PUBLIC_PROJECT_ID: 8dfc5cac972ee656e6edeb8309ab30ec
-                  REACT_APP_RELAY_URL: wss://relay.walletconnect.com
-                  WALLET_CONNECT_DEBUGGER: true
+                  VITE_ALCHEMY_KEY: ${{env.VITE_ALCHEMY_KEY}}
+                  VITE_WALLET_CONNECT_PROJECT_ID: ${{env.VITE_WALLET_CONNECT_PROJECT_ID}}
+                  VITE_ORGANIZATION_ID: ${{env.VITE_ORGANIZATION_ID}}
+                  VITE_TURNKEY_API_BASE_URL: ${{env.VITE_TURNKEY_API_BASE_URL}}
+                  VITE_API_PUBLIC_KEY: ${{env.VITE_API_PUBLIC_KEY}}
+                  VITE_API_PRIVATE_KEY: ${{env.VITE_API_PRIVATE_KEY}}
+                  VITE_PIMLICO_API_KEY: ${{env.VITE_PIMLICO_API_KEY}}
 
             - name: Setup Pages
               uses: actions/configure-pages@v2

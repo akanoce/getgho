@@ -9,7 +9,7 @@
 
 "@aave/aave-utilities@https://github.com/grenos/aave-utilities.git#master":
   version "4.2.0"
-  resolved "https://github.com/grenos/aave-utilities.git#7e34aa47f6e5b4754e2aea74cee2d81ee157f998"
+  resolved "https://github.com/grenos/aave-utilities.git#33652ab057172087a0d2d2c85ca8bee04ed3d831"
 
 "@adraffy/ens-normalize@1.10.0":
   version "1.10.0"

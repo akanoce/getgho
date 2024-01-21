@@ -1,6 +1,5 @@
 import { Home } from './pages/Home';
 import { Onboarding } from './pages/Onboarding';
-import { useUserReservesIncentives } from './api';
 
 import {
     Box,
@@ -17,7 +16,6 @@ import { useAccountAdapter } from './hooks/useAccountAdapter';
 export const App = () => {
     const { account } = useAccountAdapter();
 
-    const { data: userReservesIncentives } = useUserReservesIncentives(account);
     const { toggleColorMode } = useColorMode();
 
     return (
