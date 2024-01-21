@@ -40,7 +40,7 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
             - name: Build React App
-              run: yarn build
+              run: yarn build:ci
               env:
                   VITE_ALCHEMY_KEY: ${{env.VITE_ALCHEMY_KEY}}
                   VITE_WALLET_CONNECT_PROJECT_ID: ${{env.VITE_WALLET_CONNECT_PROJECT_ID}}
