@@ -22,9 +22,27 @@ import {
     Text,
     Th,
     Thead,
-    Tr
+    Tr,
+    VStack
 } from '@chakra-ui/react';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
+import BigNumber from 'bignumber.js';
+
+const formatAPY = (apy?: number | string) => {
+    return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
+};
+
+const formatBalance = (balance?: number | string) => {
+    const bn = BigNumber(balance ?? 0);
+    if (bn.isZero()) return '0';
+    const isSmall = bn.lt(0.01);
+
+    if (isSmall) {
+        return `< 0.01`;
+    }
+    return `${Number(balance ?? 0).toFixed(2)}`;
+};
+
 type Props = {
     address: string;
 };
@@ -144,10 +162,10 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                 <Th>Address</Th>
                                 <Th>Price</Th>
                                 <Th>Balance</Th>
-                                <Th>Balance USDT</Th>
-                                <Th>Available liquidity</Th>
-                                <Th>Total debt</Th>
-                                <Th>SupplyCaP</Th>
+                                <Th>APY</Th>
+                                <Th>Caps</Th>
+                                <Th>Liquidity</Th>
+                                <Th>Debt</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
@@ -176,51 +194,123 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         )}
                                     </Td>
                                     <Td>
-                                        <Tag>
+                                        <VStack
+                                            spacing={0}
+                                            justify={'flex-start'}
+                                            align={'flex-start'}
+                                        >
                                             <HStack spacing={1}>
-                                                <Text fontWeight={'semibold'}>
-                                                    {reserveIncentive.balance}
-                                                </Text>
-                                                <Text>
+                                                <Heading size="sm">
+                                                    {formatBalance(
+                                                        reserveIncentive.balance
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
                                                     {reserveIncentive.symbol}
                                                 </Text>
                                             </HStack>
-                                        </Tag>
-                                    </Td>
-                                    <Td>
-                                        <Tag>
                                             <HStack spacing={1}>
-                                                <Text fontWeight={'semibold'}>
-                                                    {
+                                                <Heading size="sm">
+                                                    {formatBalance(
                                                         reserveIncentive.underlyingBalanceUSD
-                                                    }
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
+                                                    USD
                                                 </Text>
-                                                <Text>USD</Text>
                                             </HStack>
-                                        </Tag>
+                                        </VStack>
                                     </Td>
                                     <Td>
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(
-                                                reserveIncentive.availableLiquidityUSD
-                                            )
-                                        )}
+                                        <VStack
+                                            spacing={0}
+                                            justify={'flex-start'}
+                                            align={'flex-start'}
+                                        >
+                                            <Heading size="sm" color="green">
+                                                {formatAPY(
+                                                    reserveIncentive.supplyAPY
+                                                )}
+                                            </Heading>
+                                            <Heading size="sm" color="orange">
+                                                {formatAPY(
+                                                    reserveIncentive.variableBorrowAPY
+                                                )}
+                                            </Heading>
+                                        </VStack>
                                     </Td>
                                     <Td>
-                                        {new Intl.NumberFormat('it-IT', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(
-                                            Number(
-                                                reserveIncentive.totalDebtUSD
-                                            )
-                                        )}
+                                        <VStack
+                                            spacing={0}
+                                            justify={'flex-start'}
+                                            align={'flex-start'}
+                                        >
+                                            <Heading size="sm" color="green">
+                                                {reserveIncentive.supplyCap}
+                                            </Heading>
+                                            <Heading size="sm" color="orange">
+                                                {reserveIncentive.borrowCap}
+                                            </Heading>
+                                        </VStack>
                                     </Td>
 
-                                    <Td>{reserveIncentive.supplyCapUSD}</Td>
+                                    <Td>
+                                        <VStack
+                                            spacing={0}
+                                            justify={'flex-start'}
+                                            align={'flex-start'}
+                                        >
+                                            <HStack spacing={1}>
+                                                <Heading size="sm">
+                                                    {formatBalance(
+                                                        reserveIncentive.availableLiquidity
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
+                                                    {reserveIncentive.symbol}
+                                                </Text>
+                                            </HStack>
+                                            <HStack spacing={1}>
+                                                <Heading size="sm">
+                                                    {formatBalance(
+                                                        reserveIncentive.availableLiquidityUSD
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
+                                                    USD
+                                                </Text>
+                                            </HStack>
+                                        </VStack>
+                                    </Td>
+                                    <Td>
+                                        <VStack
+                                            spacing={0}
+                                            justify={'flex-start'}
+                                            align={'flex-start'}
+                                        >
+                                            <HStack spacing={1}>
+                                                <Heading size="sm">
+                                                    {formatBalance(
+                                                        reserveIncentive.totalDebt
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
+                                                    {reserveIncentive.symbol}
+                                                </Text>
+                                            </HStack>
+                                            <HStack spacing={1}>
+                                                <Heading size="sm">
+                                                    {formatBalance(
+                                                        reserveIncentive.totalDebtUSD
+                                                    )}
+                                                </Heading>
+                                                <Text size="sm" as="sub">
+                                                    USD
+                                                </Text>
+                                            </HStack>
+                                        </VStack>
+                                    </Td>
+
                                     <Td>
                                         <HStack spacing={2}>
                                             <SupplyUnderlyingAssetButton
