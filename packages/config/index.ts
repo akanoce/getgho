@@ -36,7 +36,6 @@ const getConfig = (): AppConfig => {
     if (!walletConnectProjectId)
         throw new Error('VITE_WALLET_CONNECT_PROJECT_ID is not defined');
     if (!pimlicoApiKey) throw new Error('VITE_PIMLICO_API_KEY is not defined');
-    if (!baseUrl) throw new Error('VITE_BASE_URL is not defined');
 
     return {
         turnkeyOrganizationId,

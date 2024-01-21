@@ -29,9 +29,9 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     const ghoReserve = useMemo(
         () =>
             reserves?.formattedReserves.find(
-                (reserve) => reserve.name === 'GHO'
+                (reserve) => reserve.symbol.toUpperCase() === 'GHO'
             ),
-        [userReserves]
+        [reserves?.formattedReserves]
     );
 
     const totalGhoBalance = useMemo(
@@ -96,7 +96,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             toSupply: selectedAssets.map((asset) => ({
                 reserve: reserves?.formattedReserves.find(
                     (reserve) => reserve.id === asset.id
-                )?.underlyingAsset,
+                ),
                 amount: asset.availableBalance,
                 amountInUsd: asset.availableBalanceUSD
             }))

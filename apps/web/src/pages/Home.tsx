@@ -1,14 +1,12 @@
 import { Address } from 'viem';
 import {
     Button,
-    FormControl,
-    FormLabel,
     HStack,
     Heading,
     Image,
     Spacer,
-    Switch,
-    VStack
+    VStack,
+    useDisclosure
 } from '@chakra-ui/react';
 import { SuppliedAssets } from '@/components/SuppliedAssets';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
@@ -17,7 +15,6 @@ import { AddressButton } from '@/components';
 import { BorrowedAssets } from '@/components/BorrowedAssets';
 import { useBalance } from 'wagmi';
 import { CryptoIconMap } from '@/const/icons';
-import { ChangeEvent, useCallback, useState } from 'react';
 import { GetGhoSimpleFlow } from '@/components/GetGhoSimpleFlow';
 import { motion } from 'framer-motion';
 
@@ -57,14 +54,11 @@ export const Home = ({ wallet }: Props) => {
     //     [setIsSPonsored]
     // );
 
-    const [showAdvanced, setShowAdvanced] = useState(false);
-
-    const toggleShowAdvanced = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => {
-            setShowAdvanced(event.target.checked);
-        },
-        []
-    );
+    const {
+        isOpen: isShowAdvanced,
+        onOpen: showAdvanced,
+        onClose: hideAdvanced
+    } = useDisclosure();
 
     const { data: balance } = useBalance({ address: wallet });
 
@@ -78,16 +72,6 @@ export const Home = ({ wallet }: Props) => {
         >
             <VStack spacing={4} alignItems={'stretch'} w="full">
                 <HStack justifyContent="space-between" w="full">
-                    <FormControl display="flex" alignItems="center">
-                        <FormLabel htmlFor="advanced" mb="0">
-                            Advanced View
-                        </FormLabel>
-                        <Switch
-                            id="advanced"
-                            size="lg"
-                            onChange={toggleShowAdvanced}
-                        />
-                    </FormControl>
                     {/* <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="sponsored" mb="0">
                         Enable ERC20 Sponsored Transactions
@@ -122,9 +106,14 @@ export const Home = ({ wallet }: Props) => {
                     </HStack>
                 </HStack>
                 <GetGhoSimpleFlow address={wallet} />
+                {!isShowAdvanced && (
+                    <Button variant="link" onClick={showAdvanced} size="lg">
+                        Feelin' advanced?
+                    </Button>
+                )}
                 {/* <GhoData address={wallet} />
             <MergedTable address={wallet} /> */}
-                {showAdvanced && (
+                {isShowAdvanced && (
                     <motion.div
                         initial="initial"
                         animate="animate"
@@ -134,7 +123,12 @@ export const Home = ({ wallet }: Props) => {
                     >
                         <VStack spacing={4} alignItems={'stretch'} w="full">
                             <Spacer h={30} />
-                            <Heading size="md">Advanced View</Heading>
+                            <HStack justifyContent="space-between" w="full">
+                                <Heading size="md">Advanced View</Heading>
+                                <Button variant="link" onClick={hideAdvanced}>
+                                    Hide advanced view
+                                </Button>
+                            </HStack>
                             <SuppliedAssets address={wallet} />
                             <BorrowedAssets address={wallet} />
                             <ReservesIncentives address={wallet} />
