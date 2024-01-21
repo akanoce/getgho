@@ -2,9 +2,7 @@ import { useReservesIncentives, useUserReservesIncentives } from '@/api';
 import { erc20ABI, useContractReads } from 'wagmi';
 import React, { useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
-import { AddressButton } from '.';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
-import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
     Button,
     Card,
@@ -68,15 +66,15 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
 
     const reservesWithBalance = useMemo(
         () =>
-            reservesIncentives?.formattedReservesIncentives.map(
-                (reserve, index) => ({
+            reservesIncentives?.formattedReservesIncentives
+                .map((reserve, index) => ({
                     ...reserve,
                     balance: getUserBalance(index, reserve.decimals ?? 18),
                     underlyingBalanceUSD:
                         Number(reserve.priceInUSD) *
                         Number(getUserBalance(index, reserve.decimals ?? 18))
-                })
-            ) ?? [],
+                }))
+                .filter((reserve) => reserve.balance !== '0') ?? [],
         [reservesIncentives, getUserBalance]
     );
 
@@ -162,7 +160,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                         isLoading={isSupplyTxLoading}
                         onClick={() => multipleSupplyAndBorrow()}
                     >
-                        Supply all & Borrow
+                        Supply all & Borrow Gho
                     </Button>
                 </HStack>
             </CardHeader>
@@ -175,13 +173,9 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
-                                <Th>Address</Th>
-                                <Th>Price</Th>
                                 <Th>Balance</Th>
+                                <Th>Price</Th>
                                 <Th>APY</Th>
-                                <Th>Caps</Th>
-                                <Th>Liquidity</Th>
-                                <Th>Debt</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
@@ -203,26 +197,6 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 {reserveIncentive.name}
                                             </Heading>
                                         </HStack>
-                                    </Td>
-                                    <Td>
-                                        <AddressButton
-                                            address={
-                                                reserveIncentive.underlyingAsset
-                                            }
-                                            withCopy={true}
-                                        />
-                                    </Td>
-                                    <Td>
-                                        <Heading size="sm">
-                                            {new Intl.NumberFormat('it-IT', {
-                                                style: 'currency',
-                                                currency: 'USD'
-                                            }).format(
-                                                Number(
-                                                    reserveIncentive.priceInUSD
-                                                )
-                                            )}
-                                        </Heading>
                                     </Td>
                                     <Td>
                                         <VStack
@@ -253,6 +227,19 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                         </VStack>
                                     </Td>
                                     <Td>
+                                        <Heading size="sm">
+                                            {new Intl.NumberFormat('it-IT', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(
+                                                Number(
+                                                    reserveIncentive.priceInUSD
+                                                )
+                                            )}
+                                        </Heading>
+                                    </Td>
+
+                                    <Td>
                                         <VStack
                                             spacing={0}
                                             justify={'flex-start'}
@@ -270,7 +257,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                             </Heading>
                                         </VStack>
                                     </Td>
-                                    <Td>
+                                    {/*<Td>
                                         <VStack
                                             spacing={0}
                                             justify={'flex-start'}
@@ -341,7 +328,7 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                             </HStack>
                                         </VStack>
                                     </Td>
-
+ */}
                                     <Td>
                                         <HStack spacing={2}>
                                             <SupplyUnderlyingAssetButton
@@ -353,12 +340,12 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                                 }
                                             />
 
-                                            <BorrowUnderlyingAssetButton
+                                            {/* <BorrowUnderlyingAssetButton
                                                 reserve={reserveIncentive}
                                                 formattedUserSummary={
                                                     formattedUserSummary
                                                 }
-                                            />
+                                            /> */}
                                         </HStack>
                                     </Td>
                                 </Tr>
