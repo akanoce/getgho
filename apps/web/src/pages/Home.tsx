@@ -55,12 +55,10 @@ export const Home = ({ wallet }: Props) => {
     // );
 
     const {
-        isOpen,
+        isOpen: isShowAdvanced,
         onOpen: showAdvanced,
         onClose: hideAdvanced
     } = useDisclosure();
-
-    const isShowAdvanced = true;
 
     const { data: balance } = useBalance({ address: wallet });
 
