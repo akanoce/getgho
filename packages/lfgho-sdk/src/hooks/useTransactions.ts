@@ -1,4 +1,4 @@
-import { Address, Hex, encodeFunctionData } from 'viem';
+import { Address, Address, Hex, encodeFunctionData } from 'viem';
 import { useCounterFactualAddress, useLfghoClients } from '..';
 import {
     UserOperation,
@@ -17,13 +17,16 @@ import {
     EthereumTransactionTypeExtended,
     transactionType
 } from '@aave/aave-utilities/packages/contract-helpers';
+import { ethers } from 'ethers';
+import { CCIP } from '../const';
 
 export const useTransactions = () => {
     const {
         pimlicoBundler,
         viemPublicClient,
         getViemInstance,
-        pimlicoPaymaster
+        pimlicoPaymaster,
+        ethersProvider
     } = useLfghoClients();
     const { addressRecords } = useCounterFactualAddress();
     const sender = addressRecords?.[sepolia.id] as Address;
@@ -524,7 +527,7 @@ export const useTransactions = () => {
             initCode: '0x',
             callData,
             bundlerClient: pimlicoBundler,
-            publicClient: viemPublicClient,
+            publicClient: viemPublicClient
         })) as UserOperation;
 
         console.log('Built userOperation:', userOperation);
@@ -571,12 +574,168 @@ export const useTransactions = () => {
         console.log(`Transaction hash: ${txHash}`);
     };
 
+    /**
+     * Send a CCIP transfer.  This is a transfer of a token from one chain to another.
+     * The token must be a CCIP token (https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet)
+     *
+     * @note This is a sponsored transaction, so the user does not need to pay gas fees.
+     *
+     * @param param0 - sourceChain, destinationChain, destinationAccount, tokenToTransfer, amount
+     */
+    const sendCCIPtransferSponsored = async ({
+        sourceChain,
+        destinationChain,
+        destinationAccount,
+        tokenToTransfer,
+        amount
+    }: {
+        sourceChain: string;
+        destinationChain: string;
+        destinationAccount: Address;
+        tokenToTransfer: Address;
+        amount: bigint;
+    }) => {
+        const entryPoint = (await pimlicoBundler.supportedEntryPoints())?.[0];
+        const { account: localAccount } = await getViemInstance();
+
+        // Create a contract instance for the router using its ABI and address
+        const sourceRouter = new ethers.Contract(
+            CCIP.getRouterConfig(sourceChain).address,
+            CCIP.RouterABI,
+            ethersProvider
+        );
+
+        // Get the chain selector for the target chain
+        const destinationChainSelector =
+            CCIP.getRouterConfig(destinationChain).chainSelector;
+
+        // build message
+        const tokenAmounts = [
+            {
+                token: tokenToTransfer,
+                amount: amount
+            }
+        ];
+
+        // Encoding the data
+
+        const functionSelector = ethers.utils
+            .id('CCIP EVMExtraArgsV1')
+            .slice(0, 10);
+
+        //  "extraArgs" is a structure that can be represented as [ 'uint256']
+        // extraArgs are { gasLimit: 0 }
+        // we set gasLimit specifically to 0 because we are not sending any data so we are not expecting a receiving contract to handle data
+
+        const extraArgs = ethers.utils.defaultAbiCoder.encode(['uint256'], [0]);
+
+        const encodedExtraArgs = functionSelector + extraArgs.slice(2);
+
+        const message = {
+            receiver: ethers.utils.defaultAbiCoder.encode(
+                ['address'],
+                [destinationAccount]
+            ),
+            data: '0x', // no data
+            tokenAmounts: tokenAmounts,
+            feeToken: "0x779877A7B0D9E8603169DdbD7836e478b4624789", // This is the address of LINK. Check fee tokens: https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet#arbitrum-sepolia-ethereum-sepolia
+            extraArgs: encodedExtraArgs
+        };
+
+        const fees = await sourceRouter.getFee(
+            destinationChainSelector,
+            message
+        );
+        console.log(`Estimated fees (wei): ${fees}`);
+
+        const erc20Iface = new ethers.utils.Interface(erc20abi);
+
+        const approvalData = erc20Iface.encodeFunctionData('approve', [
+            destinationAccount,
+            fees
+        ]) as Hex;
+
+        const routerIface = new ethers.utils.Interface(CCIP.RouterABI);
+
+        const ccipSendData = routerIface.encodeFunctionData('ccipSend', [
+            destinationChainSelector,
+            message
+        ]) as Hex;
+
+        const callData = encodeFunctionData({
+            abi: simpleAccountABI,
+            functionName: 'executeBatch',
+            args: [
+                [
+                    "0x779877A7B0D9E8603169DdbD7836e478b4624789", // LINK address
+                    CCIP.getRouterConfig(sourceChain).address as Hex
+                ],
+                [approvalData, ccipSendData]
+            ]
+        });
+
+        const userOperation: UserOperation = (await buildUserOperation({
+            sender,
+            entryPoint,
+            initCode: '0x',
+            callData,
+            bundlerClient: pimlicoBundler,
+            publicClient: viemPublicClient
+        })) as UserOperation;
+
+        console.log('Built userOperation:', userOperation);
+        const gasStimate = await pimlicoBundler.estimateUserOperationGas({
+            userOperation: userOperation,
+            entryPoint
+        });
+
+        userOperation.callGasLimit = gasStimate.callGasLimit;
+        userOperation.verificationGasLimit = gasStimate.verificationGasLimit;
+        userOperation.preVerificationGas = gasStimate.preVerificationGas;
+
+        console.log('Sponsored userOperation:', userOperation);
+
+        if (!localAccount) {
+            throw new Error('No local account found');
+        }
+
+        if (!localAccount.signMessage) {
+            throw new Error('No signMessage method found on local account');
+        }
+
+
+        const signature = await signUserOperationWithPasskey({
+            viemAccount: localAccount,
+            userOperation,
+            entryPoint,
+            chain: sepolia
+        });
+
+        userOperation.signature = signature;
+        console.log('Signed userOperation:', userOperation);
+
+        // Send the useroperation
+        const hash = await pimlicoBundler.sendUserOperation({
+            userOperation,
+            entryPoint
+        });
+        console.log('Sent userOperation:', hash);
+
+        console.log('Querying for receipts...');
+        const receipt = await pimlicoBundler.waitForUserOperationReceipt({
+            hash
+        });
+        const txHash = receipt.receipt.transactionHash;
+        console.log(`Transaction hash: ${txHash}`);
+    };
+
     return {
         sendTransaction,
         sponsoredTransaction,
         sendERC20Transaction,
         sponsoredERC20Transaction,
         sendAaveBatchTransactions,
-        sendSponsoredERC20AaveBatchTransactions
+        sendSponsoredERC20AaveBatchTransactions,
+        sendCCIPtransferSponsored
     };
 };
