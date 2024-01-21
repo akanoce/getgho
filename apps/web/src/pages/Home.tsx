@@ -11,18 +11,14 @@ import {
     VStack
 } from '@chakra-ui/react';
 import { SuppliedAssets } from '@/components/SuppliedAssets';
-// import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
-// import { ChangeEvent, useCallback } from 'react';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { AddressButton } from '@/components';
 import { BorrowedAssets } from '@/components/BorrowedAssets';
 import { useBalance } from 'wagmi';
 import { CryptoIconMap } from '@/const/icons';
-import { MergedTable } from '@/components/MergedTable';
-import { GetGho } from '@/components/GetGho';
-import { GhoData } from '@/components/GhoData';
 import { ChangeEvent, useCallback, useState } from 'react';
+import { GetGhoSimpleFlow } from '@/components/GetGhoSimpleFlow';
 
 type Props = {
     wallet: Address;
@@ -96,9 +92,9 @@ export const Home = ({ wallet }: Props) => {
                     </Button>
                 </HStack>
             </HStack>
-            <GetGho address={wallet} />
-            <GhoData address={wallet} />
-            <MergedTable address={wallet} />
+            <GetGhoSimpleFlow address={wallet} />
+            {/* <GhoData address={wallet} />
+            <MergedTable address={wallet} /> */}
             {showAdvanced && (
                 <>
                     <Spacer h={30} />
