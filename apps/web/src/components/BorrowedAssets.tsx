@@ -16,9 +16,9 @@ import {
     Tr,
     VStack
 } from '@chakra-ui/react';
-import { WithdrawAssetButton } from './WithdrawAssetButton';
 import BigNumber from 'bignumber.js';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
+import { RepayAssetButton } from './RepayAssetButton';
 
 const formatAPY = (apy?: number | string) => {
     return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
@@ -129,9 +129,9 @@ export const BorrowedAssets = ({ address }: Props) => {
                                             </Heading>
                                         </Td>
                                         <Td>
-                                            <WithdrawAssetButton
+                                            <RepayAssetButton
                                                 amount={
-                                                    userReserve.underlyingBalance
+                                                    userReserve.totalBorrows
                                                 }
                                                 reserveAddress={
                                                     userReserve.reserve
