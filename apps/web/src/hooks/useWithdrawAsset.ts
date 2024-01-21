@@ -19,9 +19,8 @@ type Props = {
 export const useWithdrawAsset = ({ amount, reserve }: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
 
-    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
-
     const { poolContract } = useAaveContracts();
+    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
 
     const withdrawAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');

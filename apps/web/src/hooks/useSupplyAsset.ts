@@ -1,5 +1,5 @@
 import { useMutation } from 'wagmi';
-import { createSupplyTxs } from '@/api';
+import { createSupplyTxs, useActionWithToastAndRefresh } from '@/api';
 import dayjs from 'dayjs';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
@@ -19,6 +19,7 @@ type Props = {
 export const useSupplyAsset = ({ amount, reserve }: Props) => {
     const { poolContract } = useAaveContracts();
     const { sendTransaction, account } = useAccountAdapter();
+    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
 
     const supplyAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
@@ -37,7 +38,29 @@ export const useSupplyAsset = ({ amount, reserve }: Props) => {
             ...data
         });
         console.log('Submitting txs...');
-        await sendTransaction({ txs });
+        return sendTransaction({ txs });
+    };
+
+    const supplywWithToast = async () => {
+        await actionWithToastAndRefresh(supplyAsset, {
+            success: {
+                title: 'Supply Successful',
+                description: (tx) =>
+                    `Your assets have been supplied with transaction ${tx}`
+            },
+            error: {
+                title: 'Error Supplying',
+                description: 'Retry later'
+            },
+            loadingTransactionCreation: {
+                title: 'Supply in progress',
+                description: `Creating transaction...`
+            },
+            loadingReciptConfirmation: {
+                title: 'Supply in progress',
+                description: (tx) => `waiting for transaction ${tx}`
+            }
+        });
     };
 
     const {
@@ -46,7 +69,7 @@ export const useSupplyAsset = ({ amount, reserve }: Props) => {
         error: supplyTxError,
         mutate: supply
     } = useMutation({
-        mutationFn: supplyAsset
+        mutationFn: supplywWithToast
     });
 
     return {

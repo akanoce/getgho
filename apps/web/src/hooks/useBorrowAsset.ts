@@ -1,5 +1,5 @@
 import { useMutation } from 'wagmi';
-import { createBorrowTx } from '@/api';
+import { createBorrowTx, useActionWithToastAndRefresh } from '@/api';
 import { LPBorrowParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
 import { InterestRate } from '@aave/aave-utilities';
@@ -20,6 +20,7 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
 
     const { poolContract } = useAaveContracts();
+    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
 
     const borrowAsset = async () => {
         if (!poolContract) throw new Error('no poolContract');
@@ -44,7 +45,29 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
 
         console.log({ txs });
         console.log('Submitting txs...');
-        await sendTransaction({ txs });
+        return await sendTransaction({ txs });
+    };
+
+    const withdrawWithToast = async () => {
+        await actionWithToastAndRefresh(borrowAsset, {
+            success: {
+                title: 'Borrow Successful',
+                description: (tx) =>
+                    `Your assets have been borrow with transaction ${tx}`
+            },
+            error: {
+                title: 'Error Borrowing',
+                description: 'Retry later'
+            },
+            loadingTransactionCreation: {
+                title: 'Borrow in progress',
+                description: `Creating transaction...`
+            },
+            loadingReciptConfirmation: {
+                title: 'Borrow in progress',
+                description: (tx) => `waiting for transaction ${tx}`
+            }
+        });
     };
 
     const {
@@ -53,7 +76,7 @@ export const useBorrowAsset = ({ amount, reserve }: Props) => {
         error: supplyTxError,
         mutate: borrow
     } = useMutation({
-        mutationFn: borrowAsset
+        mutationFn: withdrawWithToast
     });
 
     return {
