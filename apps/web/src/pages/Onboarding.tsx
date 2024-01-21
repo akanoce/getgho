@@ -23,6 +23,20 @@ import {
 } from '@repo/lfgho-sdk';
 import Lottie from 'react-lottie';
 import ghostAnimation from '../assets/ghost-lottie.json';
+import { motion } from 'framer-motion';
+
+// Animation variants
+const leftToRight = {
+    initial: { opacity: 0, x: 50 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -50 }
+};
+
+const bottomToUp = {
+    initial: { opacity: 0, y: 50 }, // Start from below
+    animate: { opacity: 1, y: 0 }, // Animate to original position
+    exit: { opacity: 0, y: -50 } // Exit to above
+};
 
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
 
@@ -83,6 +97,7 @@ const OnboardingBody = () => {
                         <strong>'space' </strong> to reveal
                     </Text>
                 </VStack>
+                <div style={{ height: '200px', position: 'relative' }}> {/* Set a fixed height */}
                 <Lottie
                     style={{
                         position: 'absolute',
@@ -98,84 +113,103 @@ const OnboardingBody = () => {
                     height={200}
                     width={200}
                 />
+                </div>
             </VStack>
         );
     }
 
     if (step === 'alreadyHaveWallet') {
         return (
-            <ConnectKitButton.Custom>
-                {({ isConnected, isConnecting, show, address }) => {
-                    if (isConnecting) {
-                        return <Loading text={'Loading wallet...'} />;
-                    }
-                    return (
-                        <HStack>
-                            <IconButton
-                                size="sm"
-                                aria-label="Go back"
-                                variant={'ghost'}
-                                icon={<Icon as={FaArrowLeft} />}
-                                onClick={() => setStep('main')}
-                            />
-                            <HStack spacing={4}>
-                                <Button
-                                    colorScheme="black"
-                                    variant={'outline'}
-                                    size={'lg'}
-                                    onClick={login}
-                                    leftIcon={<Icon as={FaKey} />}
-                                >
-                                    Passkey
-                                </Button>
-                                <Text>or</Text>
+            <motion.div
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={leftToRight}
+                transition={{ duration: 0.5 }}
+            >
+                <ConnectKitButton.Custom>
+                    {({ isConnected, isConnecting, show, address }) => {
+                        if (isConnecting) {
+                            return <Loading text={'Loading wallet...'} />;
+                        }
+                        return (
+                            <HStack>
+                                <IconButton
+                                    size="sm"
+                                    aria-label="Go back"
+                                    variant={'ghost'}
+                                    icon={<Icon as={FaArrowLeft} />}
+                                    onClick={() => setStep('main')}
+                                />
+                                <HStack spacing={4}>
+                                    <Button
+                                        colorScheme="black"
+                                        variant={'outline'}
+                                        size={'lg'}
+                                        onClick={login}
+                                        leftIcon={<Icon as={FaKey} />}
+                                    >
+                                        Passkey
+                                    </Button>
+                                    <Text>or</Text>
 
-                                <Button
-                                    colorScheme="black"
-                                    variant={'outline'}
-                                    size={'lg'}
-                                    onClick={show}
-                                >
-                                    {isConnected ? address : 'Connect Wallet'}
-                                </Button>
+                                    <Button
+                                        colorScheme="black"
+                                        variant={'outline'}
+                                        size={'lg'}
+                                        onClick={show}
+                                    >
+                                        {isConnected
+                                            ? address
+                                            : 'Connect Wallet'}
+                                    </Button>
+                                </HStack>
                             </HStack>
-                        </HStack>
-                    );
-                }}
-            </ConnectKitButton.Custom>
+                        );
+                    }}
+                </ConnectKitButton.Custom>
+            </motion.div>
         );
     }
 
     if (step === 'createWallet') {
         return (
-            <HStack>
-                <IconButton
-                    size="sm"
-                    aria-label="Go back"
-                    variant={'ghost'}
-                    icon={<Icon as={FaArrowLeft} />}
-                    onClick={() => setStep('main')}
-                />
-                <Input
-                    variant="outline"
-                    type="text"
-                    placeholder="Wallet name ..."
-                    onChange={handleInputChange}
-                    value={inputValue}
-                    borderColor={borderColor}
-                    _placeholder={{ color: borderColor, opacity: 0.5 }}
-                    _hover={{ borderColor: { borderColor } }}
-                />
-                <IconButton
-                    size="sm"
-                    variant={'ghost'}
-                    aria-label="Confirm"
-                    colorScheme="green"
-                    icon={<Icon as={FaCheck} />}
-                    isDisabled={!inputValue}
-                    onClick={() => signup(`LFGHO - ${inputValue}`)}
-                />
-            </HStack>
+            <motion.div
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={leftToRight}
+                transition={{ duration: 0.5 }}
+            >
+                <HStack>
+                    <IconButton
+                        size="sm"
+                        aria-label="Go back"
+                        variant={'ghost'}
+                        icon={<Icon as={FaArrowLeft} />}
+                        onClick={() => setStep('main')}
+                    />
+                    <Input
+                        variant="outline"
+                        type="text"
+                        placeholder="Wallet name ..."
+                        onChange={handleInputChange}
+                        value={inputValue}
+                        borderColor={borderColor}
+                        _placeholder={{ color: borderColor, opacity: 0.5 }}
+                        _hover={{ borderColor: { borderColor } }}
+                    />
+                    <IconButton
+                        size="sm"
+                        variant={'ghost'}
+                        aria-label="Confirm"
+                        colorScheme="green"
+                        icon={<Icon as={FaCheck} />}
+                        isDisabled={!inputValue}
+                        onClick={() => signup(`LFGHO - ${inputValue}`)}
+                    />
+                </HStack>
+            </motion.div>
         );
     }
 
@@ -215,7 +249,15 @@ export const Onboarding = () => {
                 </HStack>
             </VStack>
             <Box minH={100}>
-                <OnboardingBody />
+                <motion.div
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={bottomToUp}
+                    transition={{ duration: 0.5 }}
+                >
+                    <OnboardingBody />
+                </motion.div>
             </Box>
         </VStack>
     );
