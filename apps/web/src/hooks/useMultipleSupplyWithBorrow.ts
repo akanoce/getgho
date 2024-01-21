@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 
 type TAmountAndReserve = {
     amountInUsd: number | string;
-    reserve: ReserveDataHumanized & FormatReserveUSDResponse;
+    reserve?: ReserveDataHumanized & FormatReserveUSDResponse;
     amount: string;
 };
 
@@ -35,6 +35,7 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
         const allTxs: EthereumTransactionTypeExtended[] = [];
         let totalEstimatedAvailableUsdToBorrow: number = 0;
         for (const { amount, reserve, amountInUsd } of toSupply) {
+            if (!reserve) throw new Error('no reserve');
             const supplyData: LPSupplyParamsType = {
                 amount: amount,
                 user: account,
