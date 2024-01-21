@@ -38,7 +38,7 @@ export const BorrowedAssets = ({ address }: Props) => {
             <CardHeader>
                 <HStack w="full" justify="space-between">
                     <Heading fontSize={'2xl'}>Borrowed Assets</Heading>
-                    <Box>
+                    <Box textAlign={'right'}>
                         <Heading size="xs" color="orange">
                             Total borrowed
                         </Heading>

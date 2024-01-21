@@ -40,7 +40,7 @@ export const SuppliedAssets = ({ address }: Props) => {
             <CardHeader>
                 <HStack w="full" justify="space-between">
                     <Heading fontSize={'2xl'}>Supplied Assets</Heading>
-                    <Box>
+                    <Box textAlign={'right'}>
                         <Heading size="xs" color="green">
                             Total collateral
                         </Heading>

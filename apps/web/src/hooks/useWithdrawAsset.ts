@@ -1,5 +1,5 @@
 import { useMutation } from 'wagmi';
-import { createWithdrawTx } from '@/api';
+import { createWithdrawTx, useActionWithToastAndRefresh } from '@/api';
 import { LPWithdrawParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
@@ -18,6 +18,8 @@ type Props = {
  */
 export const useWithdrawAsset = ({ amount, reserve }: Props) => {
     const { sendTransaction, account } = useAccountAdapter();
+
+    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
 
     const { poolContract } = useAaveContracts();
 
@@ -38,7 +40,29 @@ export const useWithdrawAsset = ({ amount, reserve }: Props) => {
 
         console.log({ txs });
         console.log('Submitting txs...');
-        await sendTransaction({ txs });
+        return await sendTransaction({ txs });
+    };
+
+    const withdrawWithToast = async () => {
+        await actionWithToastAndRefresh(withdrawAsset, {
+            success: {
+                title: 'Withdraw Successful',
+                description: (tx) =>
+                    `Your assets have been withdrawn with transaction ${tx}`
+            },
+            error: {
+                title: 'Error Withdrawing',
+                description: 'Retry later'
+            },
+            loadingTransactionCreation: {
+                title: 'Withdraw in progress',
+                description: `Creating transaction...`
+            },
+            loadingReciptConfirmation: {
+                title: 'Withdraw in progress',
+                description: (tx) => `waiting for transaction ${tx}`
+            }
+        });
     };
 
     const {
@@ -47,7 +71,7 @@ export const useWithdrawAsset = ({ amount, reserve }: Props) => {
         error,
         mutate: withdraw
     } = useMutation({
-        mutationFn: withdrawAsset
+        mutationFn: withdrawWithToast
     });
 
     return {
