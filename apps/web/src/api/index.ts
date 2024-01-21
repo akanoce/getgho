@@ -22,7 +22,7 @@ export const submitTransaction = async ({
         const extendedTxData = await tx.tx();
         const txData = extendedTxData;
 
-        //@ts-ignore
+        //@ts-expect-error - boh
         const txResponse = await signer.sendTransaction({
             ...txData,
             value: BigNumber.from(txData.value).toBigInt()
