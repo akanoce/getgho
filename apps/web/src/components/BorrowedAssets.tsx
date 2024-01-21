@@ -16,9 +16,9 @@ import {
     Tr,
     VStack
 } from '@chakra-ui/react';
-import { WithdrawAssetButton } from './WithdrawAssetButton';
 import BigNumber from 'bignumber.js';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
+import { RepayAssetButton } from './RepayAssetButton';
 
 const formatAPY = (apy?: number | string) => {
     return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
@@ -36,19 +36,19 @@ const formatBalance = (balance?: number | string) => {
 type Props = {
     address: string;
 };
-export const SuppliedAssets = ({ address }: Props) => {
+export const BorrowedAssets = ({ address }: Props) => {
     const { data: userReserves } = useUserReservesIncentives(address);
     const { data: reserves } = useReserves();
 
-    const availableUnderlying =
+    const borrowedReserves =
         userReserves?.formattedUserSummary.userReservesData.filter(
-            (reserve) => reserve.underlyingBalance !== '0'
+            (reserve) => reserve.totalBorrows !== '0'
         );
 
     return (
         <Card>
             <CardHeader>
-                <Heading fontSize={'2xl'}>Supplied Assets</Heading>
+                <Heading fontSize={'2xl'}>Borrowed Assets</Heading>
             </CardHeader>
             <CardBody>
                 <TableContainer>
@@ -56,13 +56,13 @@ export const SuppliedAssets = ({ address }: Props) => {
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
-                                <Th>Underlying Balance</Th>
-                                <Th>Supply APY</Th>
+                                <Th>Borrowed</Th>
+                                <Th>Borrow APY</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {availableUnderlying?.map((userReserve) => {
+                            {borrowedReserves?.map((userReserve) => {
                                 const reserve =
                                     reserves?.formattedReserves.find(
                                         (reserve) =>
@@ -98,7 +98,7 @@ export const SuppliedAssets = ({ address }: Props) => {
                                                 <HStack spacing={1}>
                                                     <Heading size="sm">
                                                         {formatBalance(
-                                                            userReserve.underlyingBalance
+                                                            userReserve.totalBorrows
                                                         )}
                                                     </Heading>
                                                     <Text size="sm" as="sub">
@@ -111,7 +111,7 @@ export const SuppliedAssets = ({ address }: Props) => {
                                                 <HStack spacing={1}>
                                                     <Heading size="sm">
                                                         {formatBalance(
-                                                            userReserve.underlyingBalanceUSD
+                                                            userReserve.totalBorrowsUSD
                                                         )}
                                                     </Heading>
                                                     <Text size="sm" as="sub">
@@ -122,14 +122,16 @@ export const SuppliedAssets = ({ address }: Props) => {
                                         </Td>
 
                                         <Td>
-                                            <Heading size="sm" color="green">
-                                                {formatAPY(reserve?.supplyAPY)}
+                                            <Heading size="sm" color="orange">
+                                                {formatAPY(
+                                                    reserve?.variableBorrowAPY
+                                                )}
                                             </Heading>
                                         </Td>
                                         <Td>
-                                            <WithdrawAssetButton
+                                            <RepayAssetButton
                                                 amount={
-                                                    userReserve.underlyingBalance
+                                                    userReserve.totalBorrows
                                                 }
                                                 reserveAddress={
                                                     userReserve.reserve

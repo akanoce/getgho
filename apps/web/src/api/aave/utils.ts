@@ -7,6 +7,8 @@ import {
 } from '@aave/aave-utilities/packages/contract-helpers';
 import {
     LPBorrowParamsType,
+    LPRepayParamsType,
+    LPRepayWithATokensType,
     LPSupplyParamsType,
     LPSupplyWithPermitType,
     LPWithdrawParamsType
@@ -67,6 +69,36 @@ export const createWithdrawTx = async (
     data: LPWithdrawParamsType
 ): Promise<EthereumTransactionTypeExtended[]> => {
     const txs = await pool.withdraw(data);
+    return txs;
+};
+
+/**
+ * Create repay txs for Aave V3 pool
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ *
+ */
+export const createRepayTx = async (
+    pool: Pool,
+    data: LPRepayParamsType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    const txs = await pool.repay(data);
+    return txs;
+};
+
+/**
+ * Create repay txs for Aave V3 pool using aTokens (using supplied assets)
+ * @param provider
+ * @param data  {user, amount, interestRateMode, onBehalfOf, referralCode}
+ * @returns  EthereumTransactionTypeExtended[]
+ *
+ */
+export const createRepayWithATokens = async (
+    pool: Pool,
+    data: LPRepayWithATokensType
+): Promise<EthereumTransactionTypeExtended[]> => {
+    const txs = await pool.repayWithATokens(data);
     return txs;
 };
 
