@@ -1,9 +1,15 @@
 import { useMutation } from 'wagmi';
-import { createSupplyTxs } from '@/api';
+import { createBorrowTx, createSupplyTxs } from '@/api';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
-import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
-import { LPSupplyParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import {
+    EthereumTransactionTypeExtended,
+    InterestRate
+} from '@aave/aave-utilities/packages/contract-helpers';
+import {
+    LPBorrowParamsType,
+    LPSupplyParamsType
+} from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { ReserveDataHumanized } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-UiPoolDataProvider-contract/types';
 import { FormatReserveUSDResponse } from '@aave/aave-utilities/packages/math-utils';
 import BigNumber from 'bignumber.js';
@@ -42,15 +48,23 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
                 reserve: reserve.underlyingAsset
             };
 
-            console.log('TX', supplyData);
+            console.log({ reserve });
+
+            console.log({
+                ...supplyData,
+                amountInUsd,
+                ltv: reserve.formattedBaseLTVasCollateral
+            });
             console.log('Creating supply with permit txs...');
             const supplyTxs = await createSupplyTxs(poolContract, {
                 ...supplyData
             });
 
-            totalEstimatedAvailableUsdToBorrow +=
-                BigNumber(amountInUsd).toNumber() *
-                Number(reserve.baseLTVasCollateral);
+            totalEstimatedAvailableUsdToBorrow += new BigNumber(amountInUsd)
+                .multipliedBy(
+                    new BigNumber(reserve.formattedBaseLTVasCollateral)
+                )
+                .toNumber();
 
             allTxs.push(...supplyTxs);
         }
@@ -65,17 +79,17 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
             maxAmountBorrowable
         });
 
-        // const borrowData: LPBorrowParamsType = {
-        //     amount: maxAmountBorrowable.toString(),
-        //     user: account,
-        //     reserve: toBorrow.underlyingAsset,
-        //     interestRateMode: InterestRate.Variable
-        // };
+        const borrowData: LPBorrowParamsType = {
+            amount: maxAmountBorrowable.toString(),
+            user: account,
+            reserve: toBorrow.underlyingAsset,
+            interestRateMode: InterestRate.Variable
+        };
 
-        // const borrowTxs = await createBorrowTx(poolContract, {
-        //     ...borrowData
-        // });
-        // allTxs.push(...borrowTxs);
+        const borrowTxs = await createBorrowTx(poolContract, {
+            ...borrowData
+        });
+        allTxs.push(...borrowTxs);
         console.log('Submitting txs...');
         await sendTransaction({ txs: allTxs });
     };

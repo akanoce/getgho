@@ -507,7 +507,6 @@ export const useTransactions = () => {
             const txGas = await tx.gas();
             console.log('txGas', txGas);
             const extendedTxData = await tx.tx();
-            extendedTxData.to;
             extendedTxs.push(extendedTxData);
         }
 
