@@ -12,6 +12,7 @@ import {
     CardHeader,
     HStack,
     Heading,
+    Image,
     Spinner,
     Table,
     TableCaption,
@@ -25,9 +26,12 @@ import {
     Tr
 } from '@chakra-ui/react';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
+import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
+
 type Props = {
     address: string;
 };
+
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives } = useReservesIncentives();
 
@@ -155,9 +159,18 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                             {reservesWithBalance.map((reserveIncentive) => (
                                 <Tr key={reserveIncentive.id}>
                                     <Td>
-                                        <Tag colorScheme="blue">
-                                            {reserveIncentive.name}
-                                        </Tag>
+                                        <HStack spacing={2}>
+                                            <Image
+                                                src={
+                                                    CryptoIconMap[
+                                                        reserveIncentive.symbol.toUpperCase()
+                                                    ] ?? genericCryptoIcon
+                                                }
+                                                alt={reserveIncentive.symbol}
+                                                boxSize="30px"
+                                            />
+                                            <Text>{reserveIncentive.name}</Text>
+                                        </HStack>
                                     </Td>
                                     <Td>
                                         <AddressButton
