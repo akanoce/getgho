@@ -78,7 +78,7 @@ export const useAuth = () => {
             const attestation = await getWebAuthnAttestation({
                 publicKey: {
                     rp: {
-                        id: 'localhost', // TODO - cahnge with url when deployed
+                        id: config.baseUrl || 'localhost',
                         name: 'LFGHO SDK'
                     },
                     challenge,

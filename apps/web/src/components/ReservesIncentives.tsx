@@ -35,7 +35,6 @@ type Props = {
 
 export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     const { data: reservesIncentives } = useReservesIncentives();
-
     const formattedReservesIncentives =
         reservesIncentives?.formattedReservesIncentives;
 

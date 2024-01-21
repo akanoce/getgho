@@ -19,9 +19,31 @@ import { useBalance } from 'wagmi';
 import { CryptoIconMap } from '@/const/icons';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { GetGhoSimpleFlow } from '@/components/GetGhoSimpleFlow';
+import { motion } from 'framer-motion';
 
 type Props = {
     wallet: Address;
+};
+
+const bottomToUp = {
+    initial: {
+        opacity: 0,
+        y: 50,
+        scale: 0.95,
+        rotate: -10 // Slightly rotated when starting
+    },
+    animate: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotate: 0 // Return to normal state
+    },
+    exit: {
+        opacity: 0,
+        y: -50,
+        scale: 0.95,
+        rotate: 10 // Rotate in opposite direction when exiting
+    }
 };
 
 export const Home = ({ wallet }: Props) => {
@@ -47,19 +69,26 @@ export const Home = ({ wallet }: Props) => {
     const { data: balance } = useBalance({ address: wallet });
 
     return (
-        <VStack spacing={4} alignItems={'stretch'} w="full">
-            <HStack justifyContent="space-between" w="full">
-                <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor="advanced" mb="0">
-                        Advanced View
-                    </FormLabel>
-                    <Switch
-                        id="advanced"
-                        size="lg"
-                        onChange={toggleShowAdvanced}
-                    />
-                </FormControl>
-                {/* <FormControl display="flex" alignItems="center">
+        <motion.div
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={bottomToUp}
+            transition={{ duration: 0.5 }}
+        >
+            <VStack spacing={4} alignItems={'stretch'} w="full">
+                <HStack justifyContent="space-between" w="full">
+                    <FormControl display="flex" alignItems="center">
+                        <FormLabel htmlFor="advanced" mb="0">
+                            Advanced View
+                        </FormLabel>
+                        <Switch
+                            id="advanced"
+                            size="lg"
+                            onChange={toggleShowAdvanced}
+                        />
+                    </FormControl>
+                    {/* <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="sponsored" mb="0">
                         Enable ERC20 Sponsored Transactions
                     </FormLabel>
@@ -69,41 +98,48 @@ export const Home = ({ wallet }: Props) => {
                         onChange={handleOnChange}
                     />
                 </FormControl> */}
-                <HStack spacing={8}>
-                    <HStack spacing={2}>
-                        <AddressButton address={wallet} withCopy={true} />
+                    <HStack spacing={8}>
                         <HStack spacing={2}>
-                            <Image
-                                src={CryptoIconMap['WETH']}
-                                boxSize="1.5rem"
-                            />
-                            <Heading size="xs">
-                                {Number(balance?.formatted ?? 0).toFixed(4)}
-                            </Heading>
+                            <AddressButton address={wallet} withCopy={true} />
+                            <HStack spacing={2}>
+                                <Image
+                                    src={CryptoIconMap['WETH']}
+                                    boxSize="1.5rem"
+                                />
+                                <Heading size="xs">
+                                    {Number(balance?.formatted ?? 0).toFixed(4)}
+                                </Heading>
+                            </HStack>
                         </HStack>
+                        <Button
+                            variant={'solid'}
+                            colorScheme="purple"
+                            onClick={logout}
+                            size="sm"
+                        >
+                            Logout
+                        </Button>
                     </HStack>
-                    <Button
-                        variant={'solid'}
-                        colorScheme="purple"
-                        onClick={logout}
-                        size="sm"
-                    >
-                        Logout
-                    </Button>
                 </HStack>
-            </HStack>
-            <GetGhoSimpleFlow address={wallet} />
-            {/* <GhoData address={wallet} />
+                <GetGhoSimpleFlow address={wallet} />
+                {/* <GhoData address={wallet} />
             <MergedTable address={wallet} /> */}
-            {showAdvanced && (
-                <>
-                    <Spacer h={30} />
-                    <Heading size="md">Advanced View</Heading>
-                    <SuppliedAssets address={wallet} />
-                    <BorrowedAssets address={wallet} />
-                    <ReservesIncentives address={wallet} />
-                </>
-            )}
-        </VStack>
+                {showAdvanced && (
+                    <motion.div
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        variants={bottomToUp}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <Spacer h={30} />
+                        <Heading size="md">Advanced View</Heading>
+                        <SuppliedAssets address={wallet} />
+                        <BorrowedAssets address={wallet} />
+                        <ReservesIncentives address={wallet} />
+                    </motion.div>
+                )}
+            </VStack>
+        </motion.div>
     );
 };
