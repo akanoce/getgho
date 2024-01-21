@@ -1,5 +1,6 @@
 import { useReserves, useUserReservesIncentives } from '@/api';
 import {
+    Box,
     Card,
     CardBody,
     CardHeader,
@@ -16,22 +17,9 @@ import {
     Tr,
     VStack
 } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
 import { RepayAssetButton } from './RepayAssetButton';
-
-const formatAPY = (apy?: number | string) => {
-    return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
-};
-
-const formatBalance = (balance?: number | string) => {
-    const bn = BigNumber(balance ?? 0);
-    const isSmall = bn.lt(0.01);
-    if (isSmall) {
-        return `< 0.01`;
-    }
-    return `${Number(balance ?? 0).toFixed(2)}`;
-};
+import { formatAPY, formatBalance } from '@/util/formatting';
 
 type Props = {
     address: string;
@@ -48,7 +36,21 @@ export const BorrowedAssets = ({ address }: Props) => {
     return (
         <Card>
             <CardHeader>
-                <Heading fontSize={'2xl'}>Borrowed Assets</Heading>
+                <HStack w="full" justify="space-between">
+                    <Heading fontSize={'2xl'}>Borrowed Assets</Heading>
+                    <Box>
+                        <Heading size="xs" color="orange">
+                            Total borrowed
+                        </Heading>
+                        <Heading size="sm">
+                            {formatBalance(
+                                userReserves?.formattedUserSummary
+                                    .totalBorrowsUSD,
+                                'USD'
+                            )}
+                        </Heading>
+                    </Box>
+                </HStack>
             </CardHeader>
             <CardBody>
                 <TableContainer>

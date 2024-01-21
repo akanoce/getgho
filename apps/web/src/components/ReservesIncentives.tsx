@@ -27,23 +27,7 @@ import {
 } from '@chakra-ui/react';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
-
-import BigNumber from 'bignumber.js';
-
-const formatAPY = (apy?: number | string) => {
-    return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
-};
-
-const formatBalance = (balance?: number | string) => {
-    const bn = BigNumber(balance ?? 0);
-    if (bn.isZero()) return '0';
-    const isSmall = bn.lt(0.01);
-
-    if (isSmall) {
-        return `< 0.01`;
-    }
-    return `${Number(balance ?? 0).toFixed(2)}`;
-};
+import { formatAPY, formatBalance } from '@/util/formatting';
 
 type Props = {
     address: string;
@@ -130,7 +114,18 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         return (
             <Card>
                 <CardHeader>
-                    <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+                    <VStack spacing={0} justify={'flex-start'}>
+                        <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+                        <HStack spacing={2}>
+                            <Heading size="sm">Available to borrow</Heading>
+                            <Heading size="sm">
+                                {formatBalance(
+                                    formattedUserSummary?.availableBorrowsUSD ??
+                                        0
+                                )}
+                            </Heading>
+                        </HStack>
+                    </VStack>
                 </CardHeader>
                 <CardBody>
                     <Spinner />
@@ -142,7 +137,25 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
         <Card>
             <CardHeader>
                 <HStack justify={'space-between'} alignItems={'center'}>
-                    <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+                    <VStack
+                        spacing={0}
+                        justify={'flex-start'}
+                        align={'flex-start'}
+                    >
+                        <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
+                        <HStack spacing={2}>
+                            <Heading size="sm" color="orange">
+                                Available to borrow
+                            </Heading>
+                            <Heading size="sm">
+                                {formatBalance(
+                                    formattedUserSummary?.availableBorrowsUSD ??
+                                        0,
+                                    'USD'
+                                )}
+                            </Heading>
+                        </HStack>
+                    </VStack>
                     <Button
                         size={'sm'}
                         colorScheme={'purple'}
