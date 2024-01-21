@@ -1,31 +1,17 @@
-## GetGho Monorepo
+# GetGho Monorepo 🌐
+<img width="679" alt="projects_0ncgt_images_Screenshot 2024-01-19 alle 15 34 22" src="https://github.com/akanoce/getgho/assets/64158778/ee75a453-d714-46f8-826b-43b08817a08a">
 
-```
-          _____                    _____                _____                    _____                    _____                   _______
-         /\    \                  /\    \              /\    \                  /\    \                  /\    \                 /::\    \
-        /::\    \                /::\    \            /::\    \                /::\    \                /::\____\               /::::\    \
-       /::::\    \              /::::\    \           \:::\    \              /::::\    \              /:::/    /              /::::::\    \
-      /::::::\    \            /::::::\    \           \:::\    \            /::::::\    \            /:::/    /              /::::::::\    \
-     /:::/\:::\    \          /:::/\:::\    \           \:::\    \          /:::/\:::\    \          /:::/    /              /:::/~~\:::\    \
-    /:::/  \:::\    \        /:::/__\:::\    \           \:::\    \        /:::/  \:::\    \        /:::/____/              /:::/    \:::\    \
-   /:::/    \:::\    \      /::::\   \:::\    \          /::::\    \      /:::/    \:::\    \      /::::\    \             /:::/    / \:::\    \
-  /:::/    / \:::\    \    /::::::\   \:::\    \        /::::::\    \    /:::/    / \:::\    \    /::::::\    \   _____   /:::/____/   \:::\____\
- /:::/    /   \:::\ ___\  /:::/\:::\   \:::\    \      /:::/\:::\    \  /:::/    /   \:::\ ___\  /:::/\:::\    \ /\    \ |:::|    |     |:::|    |
-/:::/____/  ___\:::|    |/:::/__\:::\   \:::\____\    /:::/  \:::\____\/:::/____/  ___\:::|    |/:::/  \:::\    /::\____\|:::|____|     |:::|    |
-\:::\    \ /\  /:::|____|\:::\   \:::\   \::/    /   /:::/    \::/    /\:::\    \ /\  /:::|____|\::/    \:::\  /:::/    / \:::\    \   /:::/    /
- \:::\    /::\ \::/    /  \:::\   \:::\   \/____/   /:::/    / \/____/  \:::\    /::\ \::/    /  \/____/ \:::\/:::/    /   \:::\    \ /:::/    /
-  \:::\   \:::\ \/____/    \:::\   \:::\    \      /:::/    /            \:::\   \:::\ \/____/            \::::::/    /     \:::\    /:::/    /
-   \:::\   \:::\____\       \:::\   \:::\____\    /:::/    /              \:::\   \:::\____\               \::::/    /       \:::\__/:::/    /
-    \:::\  /:::/    /        \:::\   \::/    /    \::/    /                \:::\  /:::/    /               /:::/    /         \::::::::/    /
-     \:::\/:::/    /          \:::\   \/____/      \/____/                  \:::\/:::/    /               /:::/    /           \::::::/    /
-      \::::::/    /            \:::\    \                                    \::::::/    /               /:::/    /             \::::/    /
-       \::::/    /              \:::\____\                                    \::::/    /               /:::/    /               \::/____/
-        \::/____/                \::/    /                                     \::/____/                \::/    /                 ~~
-                                  \/____/                                                                \/____/
 
-```
+Welcome to the GetGho Monorepo, where we are at the forefront of decentralized finance accessibility. GetGho is designed to redefine your DeFi experience, offering unparalleled ease in onboarding and transaction efficiency.
 
-### Run the project
+## 🚀 Innovative Onboarding and Transactional Features
+GetGho stands out with its cutting-edge approach:
+
+- **🔐 Wallet-Free Onboarding:** Engage with GetGho without a pre-existing crypto wallet. Utilizing advanced account abstraction and passkeys, we eliminate traditional barriers like mnemonic phrases.
+- **💡 Simplified Transactions:** Experience batched account abstraction transactions. Execute multiple transactions in a single step with sponsored gas fees. Say goodbye to gas complexities and hello to a smooth DeFi journey.
+
+
+## 🛠️ Run the Project
 
 #### Generate the required api keys
 
