@@ -1,5 +1,5 @@
 import { submitTransaction } from '@/api';
-import { EthereumTransactionTypeExtended } from '@aave/aave-utilities/packages/contract-helpers';
+import { EthereumTransactionTypeExtended } from '@aave/aave-utilities';
 import {
     useAuth,
     useCounterFactualAddress,
