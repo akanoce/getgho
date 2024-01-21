@@ -96,7 +96,7 @@ export const Home = ({ wallet }: Props) => {
                     </Button>
                 </HStack>
             </HStack>
-            <GetGho />
+            <GetGho address={wallet} />
             <GhoData address={wallet} />
             <MergedTable address={wallet} />
             {showAdvanced && (
