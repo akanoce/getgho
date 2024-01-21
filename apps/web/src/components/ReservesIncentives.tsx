@@ -84,13 +84,11 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
 
     const availableReservesWithBalance = useMemo(
         () =>
-            reservesWithBalance
-                ?.filter((reserve) => reserve.balance !== '0')
-                .map((reserve) => ({
-                    reserve,
-                    amount: reserve.balance,
-                    amountInUsd: reserve.underlyingBalanceUSD
-                })) ?? [],
+            reservesWithBalance.map((reserve) => ({
+                reserve,
+                amount: reserve.balance,
+                amountInUsd: reserve.underlyingBalanceUSD
+            })) ?? [],
         [reservesWithBalance]
     );
 
