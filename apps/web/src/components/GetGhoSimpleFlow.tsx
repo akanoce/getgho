@@ -1,11 +1,10 @@
 import {
     useGhoData,
     useMergedTableData,
-    useReservesIncentives,
+    useReserves,
     useUserReservesIncentives
 } from '@/api';
 import { CryptoIconMap } from '@/const/icons';
-import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 import { formatBalance } from '@/util/formatting';
 import { Card, CardBody } from '@chakra-ui/card';
 import {
@@ -17,80 +16,23 @@ import {
     Text,
     VStack
 } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
-import { erc20ABI, useContractReads } from 'wagmi';
+import { useMemo, useState } from 'react';
 import { AssetsTableWithCheckBox } from './AssetsTableWithCheckBox';
+import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
-    const { data: reservesIncentives } = useReservesIncentives();
     const { data: userReserves } = useUserReservesIncentives(address);
-
-    const ghoReserve = reservesIncentives?.formattedReservesIncentives.find(
-        (reserve) => reserve.symbol === 'GHO'
-    );
-
-    const { data: userBalances } = useContractReads({
-        allowFailure: false,
-        contracts: reservesIncentives?.formattedReservesIncentives.map(
-            (reserveIncentive) => ({
-                address: reserveIncentive.underlyingAsset as `0x${string}`,
-                abi: erc20ABI,
-                functionName: 'balanceOf',
-                args: [address]
-            })
-        )
-    });
-    const getUserBalance = useCallback(
-        (assetIndex: number, decimals: number) => {
-            const balance = userBalances?.[assetIndex] as bigint;
-            if (!balance) return '0';
-
-            const parsedBalance = formatUnits(balance, decimals);
-
-            return parsedBalance;
-        },
-        [userBalances]
-    );
-    const reservesWithBalance = useMemo(
-        () =>
-            reservesIncentives?.formattedReservesIncentives.map(
-                (reserve, index) => ({
-                    ...reserve,
-                    balance: getUserBalance(index, reserve.decimals ?? 18),
-                    underlyingBalanceUSD:
-                        Number(reserve.priceInUSD) *
-                        Number(getUserBalance(index, reserve.decimals ?? 18))
-                })
-            ) ?? [],
-        [reservesIncentives, getUserBalance]
-    );
-    const availableReservesWithBalance = useMemo(
-        () =>
-            reservesWithBalance
-                ?.filter((reserve) => reserve.balance !== '0')
-                .map((reserve) => ({
-                    reserve,
-                    amount: reserve.balance,
-                    amountInUsd: reserve.underlyingBalanceUSD
-                })) ?? [],
-        [reservesWithBalance]
-    );
-
-    const availableSuppliableReservesWithBalance = useMemo(
-        () =>
-            availableReservesWithBalance.filter(
-                (reserve) => reserve.reserve.supplyCap !== '0'
-            ),
-        [availableReservesWithBalance]
-    );
-    const { mutate: multipleSupplyAndBorrow, isSupplyTxLoading } =
-        useMultipleSupplyWithBorrow({
-            toBorrow: ghoReserve,
-            toSupply: availableSuppliableReservesWithBalance
-        });
+    const { data: reserves } = useReserves();
 
     const ghoData = useGhoData(address);
+
+    const ghoReserve = useMemo(
+        () =>
+            reserves?.formattedReserves.find(
+                (reserve) => reserve.name === 'GHO'
+            ),
+        [userReserves]
+    );
 
     const totalGhoBalance = useMemo(
         () => ghoData?.borrowedBalanceUSD,
@@ -129,21 +71,36 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         [assetsData]
     );
 
-    const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
+    const [selectedAssetsId, setSelectedAssetsId] = useState<string[]>([]);
+
+    const selectedAssets = useMemo(
+        () =>
+            assetsData?.filter((asset) =>
+                selectedAssetsId.includes(asset.id)
+            ) ?? [],
+        [assetsData, selectedAssetsId]
+    );
 
     const totalSupplyUsdSelected = useMemo(
         () =>
             selectedAssets.reduce(
-                (acc, asset) =>
-                    acc +
-                    Number(
-                        assetsData?.find((data) => data.id === asset)
-                            ?.availableBalanceUSD ?? 0
-                    ),
+                (acc, asset) => acc + Number(asset?.availableBalanceUSD ?? 0),
                 0
             ),
-        [selectedAssets, assetsData]
+        [selectedAssets]
     );
+
+    const { mutate: multipleSupplyAndBorrow, isSupplyTxLoading } =
+        useMultipleSupplyWithBorrow({
+            toBorrow: ghoReserve,
+            toSupply: selectedAssets.map((asset) => ({
+                reserve: reserves?.formattedReserves.find(
+                    (reserve) => reserve.id === asset.id
+                )?.underlyingAsset,
+                amount: asset.availableBalance,
+                amountInUsd: asset.availableBalanceUSD
+            }))
+        });
 
     const tableCaption = useMemo(
         () => (
@@ -191,8 +148,8 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                 </Heading>
                 <AssetsTableWithCheckBox
                     assets={assetsDataWithAvailableBalance}
-                    selected={selectedAssets}
-                    setSelected={setSelectedAssets}
+                    selected={selectedAssetsId}
+                    setSelected={setSelectedAssetsId}
                     tableCaption={tableCaption}
                 />
             </CardBody>
