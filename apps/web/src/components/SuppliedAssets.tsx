@@ -132,7 +132,7 @@ export const SuppliedAssets = ({ address }: Props) => {
                                         </Td>
                                         <Td>
                                             <WithdrawAssetButton
-                                                amount={
+                                                maxAmount={
                                                     userReserve.underlyingBalance
                                                 }
                                                 reserveAddress={
