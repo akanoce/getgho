@@ -5,7 +5,7 @@ import {
     UiIncentiveDataProvider,
     UiPoolDataProvider,
     UserReserveDataHumanized
-} from '@aave/aave-utilities/packages/contract-helpers';
+} from '@aave/aave-utilities';
 import {
     FormatReserveUSDResponse,
     FormatUserSummaryResponse,

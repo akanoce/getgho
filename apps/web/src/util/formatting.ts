@@ -6,11 +6,10 @@ export const formatAPY = (apy?: number | string) => {
 
 export const formatBalance = (balance?: number | string, currency?: string) => {
     const bn = BigNumber(balance ?? 0);
+    if (bn.isNaN()) return 'NaN';
     if (bn.isZero()) return '0';
-    const isSmall = bn.lt(0.01);
-    if (isSmall) {
-        return `< 0.01`;
-    }
+    if (bn.lt(0.01)) return `< 0.01`;
+
     const fixedDecimals = `${Number(balance ?? 0).toFixed(2)}`;
 
     if (currency)

@@ -4,7 +4,7 @@ import {
     BaseDebtToken,
     ERC20Service,
     ApproveDelegationType
-} from '@aave/aave-utilities/packages/contract-helpers';
+} from '@aave/aave-utilities';
 import {
     LPBorrowParamsType,
     LPRepayParamsType,
