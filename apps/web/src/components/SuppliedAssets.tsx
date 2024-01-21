@@ -5,9 +5,9 @@ import {
     CardHeader,
     HStack,
     Heading,
+    Image,
     Table,
     TableContainer,
-    Tag,
     Tbody,
     Td,
     Text,
@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { WithdrawAssetButton } from './WithdrawAssetButton';
 import BigNumber from 'bignumber.js';
+import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
 
 const formatAPY = (apy?: number | string) => {
     return `${(Number(apy ?? 0) * 100).toFixed(2)}%`;
@@ -72,9 +73,22 @@ export const SuppliedAssets = ({ address }: Props) => {
                                 return (
                                     <Tr key={userReserve.underlyingAsset}>
                                         <Td>
-                                            <Tag colorScheme="blue">
-                                                {userReserve.reserve.name}
-                                            </Tag>
+                                            <HStack spacing={2}>
+                                                <Image
+                                                    src={
+                                                        reserve
+                                                            ? CryptoIconMap[
+                                                                  reserve.symbol.toUpperCase()
+                                                              ]
+                                                            : genericCryptoIcon
+                                                    }
+                                                    alt={reserve?.symbol}
+                                                    boxSize="30px"
+                                                />
+                                                <Heading size="sm">
+                                                    {reserve?.name}
+                                                </Heading>
+                                            </HStack>
                                         </Td>
                                         <Td>
                                             <VStack
@@ -108,7 +122,30 @@ export const SuppliedAssets = ({ address }: Props) => {
                                             </VStack>
                                         </Td>
 
-                                        <Td>{formatAPY(reserve?.supplyAPY)}</Td>
+                                        <Td>
+                                            <VStack
+                                                spacing={0}
+                                                justify={'flex-start'}
+                                                align={'flex-start'}
+                                            >
+                                                <Heading
+                                                    size="sm"
+                                                    color="green"
+                                                >
+                                                    {formatAPY(
+                                                        reserve?.supplyAPY
+                                                    )}
+                                                </Heading>
+                                                <Heading
+                                                    size="sm"
+                                                    color="orange"
+                                                >
+                                                    {formatAPY(
+                                                        reserve?.variableBorrowAPY
+                                                    )}
+                                                </Heading>
+                                            </VStack>
+                                        </Td>
                                         <Td>
                                             <WithdrawAssetButton
                                                 amount={

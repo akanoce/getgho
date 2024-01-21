@@ -77,7 +77,7 @@ export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
         <Popover>
             <PopoverTrigger>
                 <Button
-                    colorScheme="green"
+                    colorScheme="orange"
                     variant="outline"
                     size="sm"
                     isDisabled={

@@ -14,7 +14,6 @@ import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { UserSummary } from '@/components/UserSummary';
 import { AddressButton } from '@/components';
-import { SuppliedTokens } from '@/components/SuppliedTokens';
 
 type Props = {
     wallet: Address;
@@ -64,7 +63,6 @@ export const Home = ({ wallet }: Props) => {
                 </HStack>
             </HStack>
             <SuppliedAssets address={wallet} />
-            <SuppliedTokens address={wallet} />
             <ReservesIncentives address={wallet} />
             <UserSummary address={wallet} />
         </VStack>
