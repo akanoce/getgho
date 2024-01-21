@@ -39,6 +39,9 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
             - name: Build React App
               run: yarn build:ci
               env:
