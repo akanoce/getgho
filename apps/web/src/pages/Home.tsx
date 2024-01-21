@@ -4,6 +4,8 @@ import {
     FormControl,
     FormLabel,
     HStack,
+    Heading,
+    Image,
     Switch,
     VStack
 } from '@chakra-ui/react';
@@ -12,9 +14,10 @@ import { useSponsoredTxFlag } from '@repo/lfgho-sdk';
 import { ChangeEvent, useCallback } from 'react';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 import { ReservesIncentives } from '@/components/ReservesIncentives';
-import { UserSummary } from '@/components/UserSummary';
 import { AddressButton } from '@/components';
 import { BorrowedAssets } from '@/components/BorrowedAssets';
+import { useBalance } from 'wagmi';
+import { CryptoIconMap } from '@/const/icons';
 
 type Props = {
     wallet: Address;
@@ -30,6 +33,8 @@ export const Home = ({ wallet }: Props) => {
         },
         [setIsSPonsored]
     );
+
+    const { data: balance } = useBalance({ address: wallet });
 
     return (
         <VStack spacing={4} alignItems={'stretch'} w="full">
@@ -51,8 +56,19 @@ export const Home = ({ wallet }: Props) => {
                         onChange={handleOnChange}
                     />
                 </FormControl>
-                <HStack spacing={4}>
-                    <AddressButton address={wallet} withCopy={true} />
+                <HStack spacing={8}>
+                    <HStack spacing={2}>
+                        <AddressButton address={wallet} withCopy={true} />
+                        <HStack spacing={2}>
+                            <Image
+                                src={CryptoIconMap['WETH']}
+                                boxSize="1.5rem"
+                            />
+                            <Heading size="xs">
+                                {Number(balance?.formatted ?? 0).toFixed(4)}
+                            </Heading>
+                        </HStack>
+                    </HStack>
                     <Button
                         variant={'solid'}
                         colorScheme="purple"
@@ -66,7 +82,6 @@ export const Home = ({ wallet }: Props) => {
             <SuppliedAssets address={wallet} />
             <BorrowedAssets address={wallet} />
             <ReservesIncentives address={wallet} />
-            <UserSummary address={wallet} />
         </VStack>
     );
 };
