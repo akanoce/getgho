@@ -13,7 +13,9 @@ import {
     Divider,
     HStack,
     Heading,
+    Icon,
     Image,
+    Link,
     Spacer,
     Text,
     VStack,
@@ -24,6 +26,7 @@ import { AssetsTableWithCheckBox } from './AssetsTableWithCheckBox';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import { AssetToSupplySimpleClickableCard } from '@/AssetToSupplySimpleClickableCard';
+import { FaLink } from 'react-icons/fa6';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     const [isDesktop] = useMediaQuery('(min-width: 768px)');
@@ -198,32 +201,64 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                 </HStack>
             </CardHeader>
             <CardBody w="full" display="flex" flexDir={'column'} gap={4}>
-                <Heading size={['sm']}>
-                    You could get up to{' '}
-                    <Text as="u">{availableBalance.toFixed(2)} GHO</Text>
-                    {` `}
-                    supplying more assets
-                </Heading>
-                {isDesktop ? (
-                    <AssetsTableWithCheckBox
-                        assets={assetsDataWithAvailableBalance}
-                        selected={selectedAssetsId}
-                        toggleSelectedAsset={toggleSelectedAsset}
-                        tableCaption={tableCaption}
-                    />
-                ) : (
-                    <VStack spacing={2} w="full">
-                        {assetsDataWithAvailableBalance?.map((asset) => (
-                            <AssetToSupplySimpleClickableCard
-                                key={asset.id}
-                                asset={asset}
-                                isSelected={selectedAssetsId.includes(asset.id)}
-                                toggleSelected={toggleSelectedAsset(asset.id)}
-                            />
-                        ))}
-                        <Spacer h={4} />
-                        {tableCaption}
+                {assetsDataWithAvailableBalance?.length === 0 ? (
+                    <VStack spacing={1} divider={<Divider />}>
+                        <VStack spacing={1}>
+                            <Heading size={'sm'}>
+                                You don't have any assets to supply
+                            </Heading>
+                            <Link
+                                fontSize={'sm'}
+                                textAlign={'center'}
+                                href="https://staging.aave.com/faucet/"
+                                isExternal
+                            >
+                                <Icon as={FaLink} mx="2px" />
+                                Get some of these using the official faucet{' '}
+                            </Link>
+                        </VStack>
+                        <Text fontSize={'xs'}>
+                            Fiat on-ramp coming soon on mainnet
+                        </Text>
                     </VStack>
+                ) : (
+                    <>
+                        <Heading size={['sm']}>
+                            You could get up to{' '}
+                            <Text as="u">
+                                {availableBalance.toFixed(2)} GHO
+                            </Text>
+                            {` `}
+                            supplying more assets
+                        </Heading>
+                        {isDesktop ? (
+                            <AssetsTableWithCheckBox
+                                assets={assetsDataWithAvailableBalance}
+                                selected={selectedAssetsId}
+                                toggleSelectedAsset={toggleSelectedAsset}
+                                tableCaption={tableCaption}
+                            />
+                        ) : (
+                            <VStack spacing={2} w="full">
+                                {assetsDataWithAvailableBalance?.map(
+                                    (asset) => (
+                                        <AssetToSupplySimpleClickableCard
+                                            key={asset.id}
+                                            asset={asset}
+                                            isSelected={selectedAssetsId.includes(
+                                                asset.id
+                                            )}
+                                            toggleSelected={toggleSelectedAsset(
+                                                asset.id
+                                            )}
+                                        />
+                                    )
+                                )}
+                                <Spacer h={4} />
+                                {tableCaption}
+                            </VStack>
+                        )}
+                    </>
                 )}
             </CardBody>
         </Card>
