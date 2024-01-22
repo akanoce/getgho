@@ -39,12 +39,6 @@ const rightToLeft = {
     exit: { opacity: 0, x: 50 }
 };
 
-const bottomToUp = {
-    initial: { opacity: 0, y: 50 }, // Start from below
-    animate: { opacity: 1, y: 0 }, // Animate to original position
-    exit: { opacity: 0, y: -50 } // Exit to above
-};
-
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
 
 const Loading = ({ text }: { text: string }) => {
