@@ -202,24 +202,35 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             </CardHeader>
             <CardBody w="full" display="flex" flexDir={'column'} gap={4}>
                 {assetsDataWithAvailableBalance?.length === 0 ? (
-                    <VStack spacing={1} divider={<Divider />}>
-                        <VStack spacing={1}>
-                            <Heading size={'sm'}>
-                                You don't have any assets to supply
-                            </Heading>
-                            <Link
-                                fontSize={'sm'}
-                                textAlign={'center'}
-                                href="https://staging.aave.com/faucet/"
-                                isExternal
-                            >
-                                <Icon as={FaLink} mx="2px" />
-                                Get some of these using the official faucet{' '}
-                            </Link>
+                    <VStack spacing={4}>
+                        <Button
+                            size="sm"
+                            colorScheme="purple"
+                            isDisabled={availableToBorrowInGho <= 0}
+                            onClick={() => borrowGho()}
+                            isLoading={isBorrowGhoLoading}
+                        >
+                            Get GHO using your available collateral
+                        </Button>
+                        <VStack spacing={1} divider={<Divider />}>
+                            <VStack spacing={1}>
+                                <Heading size={'sm'}>
+                                    You don't have any assets to supply
+                                </Heading>
+                                <Link
+                                    fontSize={'sm'}
+                                    textAlign={'center'}
+                                    href="https://staging.aave.com/faucet/"
+                                    isExternal
+                                >
+                                    <Icon as={FaLink} mx="2px" />
+                                    Get some of these using the official faucet{' '}
+                                </Link>
+                            </VStack>
+                            <Text fontSize={'xs'}>
+                                Fiat on-ramp coming soon on mainnet
+                            </Text>
                         </VStack>
-                        <Text fontSize={'xs'}>
-                            Fiat on-ramp coming soon on mainnet
-                        </Text>
                     </VStack>
                 ) : (
                     <>
