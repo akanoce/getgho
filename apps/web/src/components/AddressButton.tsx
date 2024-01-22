@@ -1,5 +1,5 @@
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
-import { Button } from '@chakra-ui/react';
+import { Button, Icon } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaCheck, FaCopy } from 'react-icons/fa6';
 
@@ -19,13 +19,20 @@ export const AddressButton = ({ address, onClick, withCopy = true }: Props) => {
     const handleOnClick = () => (withCopy ? copy(address) : onClick?.());
 
     const icon = useMemo(() => {
-        if (!isCopied) return <FaCopy />;
-        return <FaCheck />;
+        if (!isCopied) return <Icon as={FaCheck} />;
+        return <Icon as={FaCopy} />;
     }, [isCopied]);
+
     return (
-        <Button onClick={handleOnClick} size="sm" display={'flex'} gap={2}>
+        <Button
+            onClick={handleOnClick}
+            size="sm"
+            display={'flex'}
+            gap={2}
+            colorScheme="purple"
+        >
             {humanizeAddress(address)}
-            {icon}
+            {withCopy && icon}
         </Button>
     );
 };

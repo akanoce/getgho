@@ -1,17 +1,20 @@
-import { CryptoIconMap } from '@/const/icons';
-import { HStack, Heading, Button, Image, Tag, Text } from '@chakra-ui/react';
+import {
+    HStack,
+    IconButton,
+    useColorMode,
+    useColorModeValue,
+    useDisclosure
+} from '@chakra-ui/react';
 import { AddressButton } from '.';
-import { useBalance } from 'wagmi';
+import { ConnectedAddressModal } from './ConnectedAddressModal';
+import { FaMoon, FaSun } from 'react-icons/fa6';
+import { GhostBusters } from './GhostBusters';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
 
-type Props = {
-    address: `0x${string}`;
-};
-export const Navbar: React.FC<Props> = ({ address }) => {
-    const { logout, chain } = useAccountAdapter();
-    const { data: balance } = useBalance({ address });
-
-    console.log({ chain });
+export const Navbar: React.FC = () => {
+    const { isOpen, onClose, onOpen } = useDisclosure();
+    const { toggleColorMode } = useColorMode();
+    const { account } = useAccountAdapter();
 
     // const { setIsSPonsored } = useSponsoredTxFlag();
 
@@ -22,7 +25,15 @@ export const Navbar: React.FC<Props> = ({ address }) => {
     //     [setIsSPonsored]
     // );
     return (
-        <HStack justifyContent="space-between" w="full">
+        <HStack
+            justifyContent="space-between"
+            w="full"
+            position={'sticky'}
+            top={0}
+            left={0}
+            py={2}
+            px={1}
+        >
             {/* <FormControl display="flex" alignItems="center">
         <FormLabel htmlFor="sponsored" mb="0">
             Enable ERC20 Sponsored Transactions
@@ -34,35 +45,29 @@ export const Navbar: React.FC<Props> = ({ address }) => {
         />
     </FormControl> */}
 
-            <HStack spacing={4}>
-                <AddressButton address={address} withCopy={true} />
-                <Tag size="md" variant="solid" colorScheme="purple">
-                    <HStack w="full" alignItems="center" spacing={1}>
-                        <Heading size="xs"> {chain?.name}</Heading>
-                        {chain?.testnet && <Text as="sub">Testnet</Text>}
-                    </HStack>
-                </Tag>
-                <HStack spacing={2}>
-                    <Image src={CryptoIconMap['WETH']} boxSize="1.5rem" />
-                    <HStack alignItems="center" spacing={1}>
-                        <Heading size="xs">
-                            {Number(balance?.formatted ?? 0).toFixed(4)}
-                        </Heading>
-                        <Text as="sub" fontSize="2xs">
-                            {chain?.nativeCurrency.symbol}
-                        </Text>
-                    </HStack>
-                </HStack>
+            <GhostBusters />
+            <HStack spacing={1}>
+                {account && (
+                    <>
+                        <ConnectedAddressModal
+                            isOpen={isOpen}
+                            onClose={onClose}
+                        />
+                        <AddressButton
+                            onClick={onOpen}
+                            address={account}
+                            withCopy={false}
+                        />
+                    </>
+                )}
+                <IconButton
+                    variant={'empty'}
+                    aria-label="Mode Change"
+                    size="lg"
+                    icon={useColorModeValue(<FaMoon />, <FaSun />)}
+                    onClick={toggleColorMode}
+                />
             </HStack>
-
-            <Button
-                onClick={logout}
-                size="sm"
-                colorScheme="purple"
-                variant={'outline'}
-            >
-                Logout
-            </Button>
         </HStack>
     );
 };

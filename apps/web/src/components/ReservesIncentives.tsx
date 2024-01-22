@@ -257,32 +257,34 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                         </Table>
                     </TableContainer>
                 ) : (
-                    reservesWithBalance.map((reserveWithBalance) => (
-                        <AssetCard
-                            asset={reserveWithBalance}
-                            key={reserveWithBalance.reserve.id}
-                            variant="reserves"
-                            actionButton={
-                                <SupplyUnderlyingAssetButton
-                                    reserveAddress={
-                                        reserveWithBalance.reserve
-                                            .underlyingAsset
-                                    }
-                                    maxAmount={reserveWithBalance.balance}
-                                />
-                            }
-                            actionButton2={
-                                <BorrowUnderlyingAssetButton
-                                    userReserve={reserveWithBalance}
-                                    availableToBorrowUsd={
-                                        userReservesIncentives
-                                            ?.formattedUserSummary
-                                            .availableBorrowsUSD
-                                    }
-                                />
-                            }
-                        />
-                    ))
+                    <VStack spacing={2}>
+                        {reservesWithBalance.map((reserveWithBalance) => (
+                            <AssetCard
+                                asset={reserveWithBalance}
+                                key={reserveWithBalance.reserve.id}
+                                variant="reserves"
+                                actionButton={
+                                    <SupplyUnderlyingAssetButton
+                                        reserveAddress={
+                                            reserveWithBalance.reserve
+                                                .underlyingAsset
+                                        }
+                                        maxAmount={reserveWithBalance.balance}
+                                    />
+                                }
+                                actionButton2={
+                                    <BorrowUnderlyingAssetButton
+                                        userReserve={reserveWithBalance}
+                                        availableToBorrowUsd={
+                                            userReservesIncentives
+                                                ?.formattedUserSummary
+                                                .availableBorrowsUSD
+                                        }
+                                    />
+                                }
+                            />
+                        ))}
+                    </VStack>
                 )}
             </CardBody>
         </Card>

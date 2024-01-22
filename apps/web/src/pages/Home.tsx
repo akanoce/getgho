@@ -13,7 +13,6 @@ import { ReservesIncentives } from '@/components/ReservesIncentives';
 import { BorrowedAssets } from '@/components/BorrowedAssets';
 import { GetGhoSimpleFlow } from '@/components/GetGhoSimpleFlow';
 import { motion } from 'framer-motion';
-import { Navbar } from '@/components/Navbar';
 
 type Props = {
     wallet: Address;
@@ -57,7 +56,6 @@ export const Home = ({ wallet }: Props) => {
             initial="initial"
         >
             <VStack spacing={4} alignItems={'stretch'} w="full">
-                <Navbar address={wallet} />
                 <GetGhoSimpleFlow address={wallet} />
                 {!isShowAdvanced && (
                     <Button variant="link" onClick={showAdvanced} size="lg">

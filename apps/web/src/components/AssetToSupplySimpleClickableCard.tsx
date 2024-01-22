@@ -25,6 +25,7 @@ export const AssetToSupplySimpleClickableCard = ({
     return (
         <Fade in={true} style={{ width: '100%' }}>
             <Card
+                variant={'outline'}
                 w="full"
                 p={4}
                 rounded="md"

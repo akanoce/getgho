@@ -39,7 +39,7 @@ type Props =
 export const AssetCard = (props: Props) => {
     return (
         <Fade in={true} style={{ width: '100%' }}>
-            <Card w="full" p={4} rounded="md" shadow="md">
+            <Card variant="outline" w="full" p={4} rounded="md" shadow="md">
                 <AssetCardContent {...props} />
             </Card>
         </Fade>

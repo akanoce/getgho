@@ -170,21 +170,25 @@ export const SuppliedAssets = ({ address }: Props) => {
                         </Table>
                     </TableContainer>
                 ) : (
-                    availableUnderlying?.map((userReserve) => (
-                        <AssetCard
-                            key={userReserve.underlyingAsset}
-                            asset={userReserve}
-                            variant={'supplied'}
-                            actionButton={
-                                <WithdrawAssetButton
-                                    maxAmount={userReserve.underlyingBalance}
-                                    reserveAddress={
-                                        userReserve.reserve.underlyingAsset
-                                    }
-                                />
-                            }
-                        />
-                    ))
+                    <VStack spacing={2} w="full">
+                        {availableUnderlying?.map((userReserve) => (
+                            <AssetCard
+                                key={userReserve.underlyingAsset}
+                                asset={userReserve}
+                                variant={'supplied'}
+                                actionButton={
+                                    <WithdrawAssetButton
+                                        maxAmount={
+                                            userReserve.underlyingBalance
+                                        }
+                                        reserveAddress={
+                                            userReserve.reserve.underlyingAsset
+                                        }
+                                    />
+                                }
+                            />
+                        ))}
+                    </VStack>
                 )}
             </CardBody>
         </Card>
