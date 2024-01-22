@@ -16,7 +16,9 @@ import {
     Icon,
     Image,
     Link,
+    Skeleton,
     Spacer,
+    Spinner,
     Text,
     VStack,
     useMediaQuery
@@ -30,7 +32,9 @@ import { FaLink } from 'react-icons/fa6';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     const [isDesktop] = useMediaQuery('(min-width: 768px)');
-    const { data: userReserves } = useUserReservesIncentives(address);
+    const { data: userReserves, isPending: userReservesPending } =
+        useUserReservesIncentives(address);
+
     const { data: reserves } = useReserves();
 
     const ghoData = useGhoData(address);
@@ -56,15 +60,19 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         return (
             <VStack spacing={1} align={'flex-end'}>
                 <Heading size={'sm'}>Available collateral</Heading>
-                <HStack spacing={1}>
-                    <Heading size="md">{formattedAvailableToBorrow}</Heading>
-                    <Text as="sub" size="sm">
-                        USD
-                    </Text>
-                </HStack>
+                <Skeleton isLoaded={!userReservesPending}>
+                    <HStack spacing={1}>
+                        <Heading size="md">
+                            {formattedAvailableToBorrow}
+                        </Heading>
+                        <Text as="sub" size="sm">
+                            USD
+                        </Text>
+                    </HStack>
+                </Skeleton>
             </VStack>
         );
-    }, [userReserves]);
+    }, [userReserves, userReservesPending]);
 
     const { data: assetsData } = useMergedTableData({ address });
 
@@ -188,9 +196,11 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                     <VStack spacing={1} align="flex-start">
                         <Heading size={'md'}>Your GHO</Heading>
                         <HStack spacing={2}>
-                            <Heading size="lg">
-                                {Number(totalGhoBalance ?? '0').toFixed(2)}
-                            </Heading>
+                            <Skeleton isLoaded={totalGhoBalance !== undefined}>
+                                <Heading size="lg">
+                                    {Number(totalGhoBalance ?? '0').toFixed(2)}
+                                </Heading>
+                            </Skeleton>
                             <Image src={CryptoIconMap['GHO']} boxSize="2rem" />
                         </HStack>
                     </VStack>
@@ -198,7 +208,9 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                 </HStack>
             </CardHeader>
             <CardBody w="full" display="flex" flexDir={'column'} gap={4}>
-                {assetsDataWithAvailableBalance?.length === 0 ? (
+                {userReservesPending ? (
+                    <Spinner size={'lg'} alignSelf={'center'} />
+                ) : assetsDataWithAvailableBalance?.length === 0 ? (
                     <VStack spacing={4}>
                         <Button
                             size="sm"
