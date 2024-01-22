@@ -56,6 +56,7 @@ export const AssetCardContent = ({ asset, variant, actionButton }: Props) => {
                     </Box>
                 </HStack>
                 <Box>
+                    <Text fontSize={'xs'}>{'Supplied'}</Text>
                     <HStack spacing={1}>
                         <Heading size="xs">
                             {formatBalance(asset.underlyingBalance)}
@@ -94,6 +95,7 @@ export const AssetCardContent = ({ asset, variant, actionButton }: Props) => {
                     </Box>
                 </HStack>
                 <Box>
+                    <Text fontSize={'xs'}>{'Borrowed'}</Text>
                     <HStack spacing={1}>
                         <Heading size="xs">
                             {formatBalance(asset.totalBorrows)}
