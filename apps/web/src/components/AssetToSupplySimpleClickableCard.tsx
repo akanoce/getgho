@@ -8,9 +8,9 @@ import {
     Image,
     Text
 } from '@chakra-ui/react';
-import { MergedAsset } from './api';
-import { CryptoIconMap } from './const/icons';
-import { formatAPY, formatBalance } from './util/formatting';
+import { MergedAsset } from '../api';
+import { CryptoIconMap } from '../const/icons';
+import { formatAPY, formatBalance } from '../util/formatting';
 
 type Props = {
     asset: MergedAsset;

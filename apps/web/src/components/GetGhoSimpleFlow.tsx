@@ -27,7 +27,7 @@ import { useMemo, useState } from 'react';
 import { AssetsTableWithCheckBox } from './AssetsTableWithCheckBox';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
-import { AssetToSupplySimpleClickableCard } from '@/AssetToSupplySimpleClickableCard';
+import { AssetToSupplySimpleClickableCard } from '@/components/AssetToSupplySimpleClickableCard';
 import { FaLink } from 'react-icons/fa6';
 import BigNumber from 'bignumber.js';
 
