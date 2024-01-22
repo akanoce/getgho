@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ethers } from 'ethers';
 import {
     USDC_SEPOLIA_ADDRESS,
@@ -7,7 +7,6 @@ import {
 } from '@repo/lfgho-sdk';
 import { Address } from 'viem';
 import { useToast } from '@chakra-ui/toast';
-import { useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { usePublicClient } from 'wagmi';
 

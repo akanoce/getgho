@@ -1,5 +1,9 @@
 import { useMutation } from 'wagmi';
-import { createBorrowTx, createSupplyTxs } from '@/api';
+import {
+    createBorrowTx,
+    createSupplyTxs,
+    useActionWithToastAndRefresh
+} from '@/api';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
 import {
@@ -32,7 +36,9 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
     const { poolContract } = useAaveContracts();
     const { sendTransaction, account } = useAccountAdapter();
 
-    const supplyAsset = async () => {
+    const actionWithToastAndRefresh = useActionWithToastAndRefresh();
+
+    const multipleSupplyWithBorrow = async () => {
         if (!poolContract) throw new Error('no poolContract');
         if (!account) throw new Error('no account found');
 
@@ -91,7 +97,29 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
         });
         allTxs.push(...borrowTxs);
         console.log('Submitting txs...');
-        await sendTransaction({ txs: allTxs });
+        return await sendTransaction({ txs: allTxs });
+    };
+
+    const multipleSupplyWithBorrowWithToast = async () => {
+        await actionWithToastAndRefresh(multipleSupplyWithBorrow, {
+            success: {
+                title: 'Borrow Successful',
+                description: (tx) =>
+                    `Your assets have been borrow with transaction ${tx}`
+            },
+            error: {
+                title: 'Error Borrowing',
+                description: 'Retry later'
+            },
+            loadingTransactionCreation: {
+                title: 'Borrow in progress',
+                description: `Creating transaction...`
+            },
+            loadingReciptConfirmation: {
+                title: 'Borrow in progress',
+                description: (tx) => `waiting for transaction ${tx}`
+            }
+        });
     };
 
     const {
@@ -100,7 +128,7 @@ export const useMultipleSupplyWithBorrow = ({ toSupply, toBorrow }: Props) => {
         error: supplyTxError,
         mutate: supply
     } = useMutation({
-        mutationFn: supplyAsset
+        mutationFn: multipleSupplyWithBorrowWithToast
     });
 
     return {
