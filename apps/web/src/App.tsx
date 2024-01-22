@@ -41,7 +41,7 @@ export const App = () => {
                 onClick={toggleColorMode}
             />
             <GhostBusters />
-            <Container maxW={'8xl'} py={[2, 4, 8]} px={[4, 8, 16]}>
+            <Container maxW={'6xl'} py={[16]} px={[4, 8, 16]}>
                 <VStack
                     minH="100vh"
                     alignItems={'center'}
