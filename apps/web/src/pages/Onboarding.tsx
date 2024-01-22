@@ -32,6 +32,13 @@ const leftToRight = {
     exit: { opacity: 0, x: -50 }
 };
 
+// Animation variants
+const rightToLeft = {
+    initial: { opacity: 0, x: -50 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 50 }
+};
+
 const bottomToUp = {
     initial: { opacity: 0, y: 50 }, // Start from below
     animate: { opacity: 1, y: 0 }, // Animate to original position
@@ -150,7 +157,7 @@ const OnboardingBody = () => {
                             return <Loading text={'Loading wallet...'} />;
                         }
                         return (
-                            <HStack w="full">
+                            <HStack w="full" justify={'center'}>
                                 <IconButton
                                     size="sm"
                                     aria-label="Go back"
@@ -158,11 +165,11 @@ const OnboardingBody = () => {
                                     icon={<Icon as={FaArrowLeft} />}
                                     onClick={() => setStep('main')}
                                 />
-                                <HStack spacing={4}>
+                                <HStack spacing={4} w="full">
                                     <Button
                                         colorScheme="black"
                                         variant={'outline'}
-                                        size={'lg'}
+                                        size={['md', 'lg']}
                                         onClick={login}
                                         leftIcon={<Icon as={FaKey} />}
                                     >
@@ -173,7 +180,7 @@ const OnboardingBody = () => {
                                     <Button
                                         colorScheme="black"
                                         variant={'outline'}
-                                        size={'lg'}
+                                        size={['md', 'lg']}
                                         onClick={show}
                                     >
                                         {isConnected
@@ -199,7 +206,7 @@ const OnboardingBody = () => {
                 exit="exit"
                 initial="initial"
             >
-                <HStack>
+                <HStack w="full">
                     <IconButton
                         size="sm"
                         aria-label="Go back"
@@ -232,7 +239,15 @@ const OnboardingBody = () => {
     }
 
     return (
-        <VStack spacing={4}>
+        <VStack
+            spacing={4}
+            w="full"
+            as={motion.div}
+            variants={rightToLeft}
+            animate="animate"
+            exit="exit"
+            initial="initial"
+        >
             <Button
                 colorScheme="black"
                 variant={'outline'}
@@ -254,30 +269,18 @@ const OnboardingBody = () => {
 
 export const Onboarding = () => {
     return (
-        <VStack spacing={70}>
-            <VStack>
-                <HStack>
-                    <Image src={ghost} w={100} />
-                    <VStack alignItems={'flex-start'}>
-                        <Heading fontSize={30}>GetGho</Heading>
-                        <Text fontSize={13}>
-                            Owning Gho has never been so easy
-                        </Text>
-                    </VStack>
-                </HStack>
-            </VStack>
+        <VStack spacing={70} w="full">
+            <HStack>
+                <Image src={ghost} w={100} />
+                <VStack alignItems={'flex-start'} spacing={1}>
+                    <Heading size={'lg'}>GetGho</Heading>
+                    <Text fontSize={'sm'} fontWeight={'medium'}>
+                        Owning Gho has never been so easy
+                    </Text>
+                </VStack>
+            </HStack>
             <Box minH={100}>
-                <Box
-                    w="full"
-                    as={motion.div}
-                    variants={bottomToUp}
-                    animate="animate"
-                    exit="exit"
-                    initial="initial"
-                    transition={'0.5s linear'}
-                >
-                    <OnboardingBody />
-                </Box>
+                <OnboardingBody />
             </Box>
         </VStack>
     );
