@@ -7,6 +7,7 @@ import {
     HStack,
     Heading,
     Image,
+    Stack,
     Table,
     TableContainer,
     Tbody,
@@ -38,9 +39,14 @@ export const BorrowedAssets = ({ address }: Props) => {
     return (
         <Card>
             <CardHeader>
-                <HStack w="full" justify="space-between">
+                <Stack
+                    direction={['column', 'row']}
+                    w="full"
+                    justify="space-between"
+                    spacing={1}
+                >
                     <Heading fontSize={'2xl'}>Borrowed Assets</Heading>
-                    <Box textAlign={'right'}>
+                    <Box>
                         <Heading size="xs" color="orange">
                             Total borrowed
                         </Heading>
@@ -52,7 +58,7 @@ export const BorrowedAssets = ({ address }: Props) => {
                             )}
                         </Heading>
                     </Box>
-                </HStack>
+                </Stack>
             </CardHeader>
             <CardBody>
                 {isDesktop ? (

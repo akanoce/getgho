@@ -5,7 +5,6 @@ import { formatUnits } from 'viem';
 import { SupplyUnderlyingAssetButton } from './SupplyUnderlyingAssetButton';
 import { BorrowUnderlyingAssetButton } from './BorrowUnderlyingAssetButton';
 import {
-    Box,
     Card,
     CardBody,
     CardHeader,
