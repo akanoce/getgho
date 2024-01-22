@@ -17,10 +17,10 @@ import {
 } from '@chakra-ui/react';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
 import { formatAPY, formatBalance } from '@/util/formatting';
-import { useMergedTableData } from '@/api';
+import { MergedAsset } from '@/api';
 
 type Props = {
-    assets: ReturnType<typeof useMergedTableData>;
+    assets: MergedAsset[];
     selected: string[];
     setSelected: (selected: string[]) => void;
     tableCaption?: React.ReactNode;

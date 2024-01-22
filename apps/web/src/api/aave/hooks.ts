@@ -124,6 +124,22 @@ export const useUserReservesIncentives = (user?: string) => {
     });
 };
 
+export type MergedAsset = {
+    id: string;
+    symbol: string;
+    name: string;
+    tokenImage: string;
+    price: string;
+    availableBalance: string;
+    availableBalanceUSD: number;
+    supplyAPY: string;
+    suppliedBalance: string;
+    suppliedBalanceUSD: string;
+    borrowAPY: string;
+    borrowedBalance: string;
+    borrowedBalanceUSD: string;
+    isIsolated: boolean;
+};
 export const useMergedTableData = ({
     address,
     showAll = false,
@@ -135,7 +151,8 @@ export const useMergedTableData = ({
     showIsolated?: boolean;
     showGho?: boolean;
 }) => {
-    const { data: userReserves } = useUserReservesIncentives(address);
+    const { data: userReserves, ...otherResultProps } =
+        useUserReservesIncentives(address);
 
     const assetsData =
         userReserves?.formattedUserSummary.userReservesData || [];
@@ -162,11 +179,7 @@ export const useMergedTableData = ({
         [userBalances]
     );
 
-    if (!assetsData) {
-        return [];
-    }
-
-    return assetsData
+    const mergedAssets: MergedAsset[] = assetsData
         .map((assetData, index) => {
             const asset = assetData.reserve;
             return {
@@ -199,13 +212,15 @@ export const useMergedTableData = ({
         )
         .filter((asset) => showIsolated || !asset.isIsolated)
         .filter((asset) => showGho || !asset.symbol.includes('GHO'));
+
+    return { data: mergedAssets, ...otherResultProps };
 };
 
 export const useGhoData = (address: string) => {
-    const mergeData = useMergedTableData({
+    const { data } = useMergedTableData({
         address,
         showAll: true,
         showGho: true
     });
-    return mergeData.find((asset) => asset.symbol === 'GHO');
+    return data.find((asset) => asset.symbol === 'GHO');
 };

@@ -10,18 +10,23 @@ import { Card, CardBody } from '@chakra-ui/card';
 import {
     Button,
     CardHeader,
+    Divider,
     HStack,
     Heading,
     Image,
+    Spacer,
     Text,
-    VStack
+    VStack,
+    useMediaQuery
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { AssetsTableWithCheckBox } from './AssetsTableWithCheckBox';
 import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
+import { AssetToSupplySimpleClickableCard } from '@/AssetToSupplySimpleClickableCard';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
+    const [isDesktop] = useMediaQuery('(min-width: 768px)');
     const { data: userReserves } = useUserReservesIncentives(address);
     const { data: reserves } = useReserves();
 
@@ -61,7 +66,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             );
     }, [userReserves]);
 
-    const assetsData = useMergedTableData({ address });
+    const { data: assetsData } = useMergedTableData({ address });
 
     const availableBalance = useMemo(
         () =>
@@ -119,17 +124,49 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             amount: availableToBorrowInGho.toString()
         });
 
-    const tableCaption = useMemo(
-        () => (
-            <VStack spacing={1} justifyContent={'center'}>
-                <Button
-                    isDisabled={totalSupplyUsdSelected === 0}
-                    onClick={() => multipleSupplyAndBorrow()}
-                    isLoading={isSupplyTxLoading}
-                >
-                    Get GHO using an additional{' '}
-                    {totalSupplyUsdSelected.toFixed(2)} USD worth of assets
-                </Button>
+    const tableCaption = useMemo(() => {
+        if (isDesktop)
+            return (
+                <VStack spacing={1} justifyContent={'center'}>
+                    <Button
+                        isDisabled={totalSupplyUsdSelected === 0}
+                        onClick={() => multipleSupplyAndBorrow()}
+                        isLoading={isSupplyTxLoading}
+                    >
+                        Get GHO using an additional{' '}
+                        {totalSupplyUsdSelected.toFixed(2)} USD worth of assets
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant={'link'}
+                        isDisabled={availableToBorrowInGho <= 0}
+                        onClick={() => borrowGho()}
+                        isLoading={isBorrowGhoLoading}
+                    >
+                        Get GHO using your available collateral
+                    </Button>
+                </VStack>
+            );
+        return (
+            <VStack spacing={1} justifyContent={'center'} divider={<Divider />}>
+                <VStack spacing={1}>
+                    <Button
+                        colorScheme="purple"
+                        isDisabled={totalSupplyUsdSelected === 0}
+                        onClick={() => multipleSupplyAndBorrow()}
+                        isLoading={isSupplyTxLoading}
+                    >
+                        Get GHO
+                    </Button>
+                    <HStack spacing={1}>
+                        <Text fontSize={'xs'}>using an additional</Text>
+
+                        <Heading size="xs">
+                            {totalSupplyUsdSelected.toFixed(2)}
+                        </Heading>
+                        <Text fontSize={'xs'}>USD</Text>
+                    </HStack>
+                </VStack>
                 <Button
                     size="sm"
                     variant={'link'}
@@ -140,16 +177,16 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                     Get GHO using your available collateral
                 </Button>
             </VStack>
-        ),
-        [
-            totalSupplyUsdSelected,
-            isSupplyTxLoading,
-            multipleSupplyAndBorrow,
-            borrowGho,
-            isBorrowGhoLoading,
-            availableToBorrowInGho
-        ]
-    );
+        );
+    }, [
+        totalSupplyUsdSelected,
+        isSupplyTxLoading,
+        multipleSupplyAndBorrow,
+        borrowGho,
+        isBorrowGhoLoading,
+        availableToBorrowInGho,
+        isDesktop
+    ]);
 
     const assetsDataWithAvailableBalance = useMemo(
         () =>
@@ -158,6 +195,14 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
             ),
         [assetsData]
     );
+
+    const toggleSelectedAsset = (assetId: string) => () => {
+        setSelectedAssetsId((prev) =>
+            prev.includes(assetId)
+                ? prev.filter((id) => id !== assetId)
+                : [...prev, assetId]
+        );
+    };
 
     return (
         <Card>
@@ -176,18 +221,33 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                 </HStack>
             </CardHeader>
             <CardBody w="full" display="flex" flexDir={'column'} gap={4}>
-                <Heading size="md">
+                <Heading size={['sm', 'md']}>
                     You could get up to{' '}
                     <Text as="u">{availableBalance.toFixed(2)} GHO</Text>
                     {` `}
                     supplying more assets
                 </Heading>
-                <AssetsTableWithCheckBox
-                    assets={assetsDataWithAvailableBalance}
-                    selected={selectedAssetsId}
-                    setSelected={setSelectedAssetsId}
-                    tableCaption={tableCaption}
-                />
+                {isDesktop ? (
+                    <AssetsTableWithCheckBox
+                        assets={assetsDataWithAvailableBalance}
+                        selected={selectedAssetsId}
+                        setSelected={setSelectedAssetsId}
+                        tableCaption={tableCaption}
+                    />
+                ) : (
+                    <VStack spacing={2} w="full">
+                        {assetsDataWithAvailableBalance?.map((asset) => (
+                            <AssetToSupplySimpleClickableCard
+                                key={asset.id}
+                                asset={asset}
+                                isSelected={selectedAssetsId.includes(asset.id)}
+                                toggleSelected={toggleSelectedAsset(asset.id)}
+                            />
+                        ))}
+                        <Spacer h={4} />
+                        {tableCaption}
+                    </VStack>
+                )}
             </CardBody>
         </Card>
     );
