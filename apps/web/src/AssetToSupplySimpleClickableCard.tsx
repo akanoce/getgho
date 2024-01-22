@@ -28,7 +28,6 @@ export const AssetToSupplySimpleClickableCard = ({
                 w="full"
                 p={4}
                 rounded="md"
-                bg="white"
                 shadow="md"
                 cursor="pointer"
                 _hover={{ shadow: 'lg' }}
