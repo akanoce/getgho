@@ -1,5 +1,6 @@
 import { Address } from 'viem';
 import {
+    Box,
     Button,
     HStack,
     Heading,
@@ -63,12 +64,14 @@ export const Home = ({ wallet }: Props) => {
     const { data: balance } = useBalance({ address: wallet });
 
     return (
-        <motion.div
-            initial="initial"
+        <Box
+            w="full"
+            as={motion.div}
+            variants={bottomToUp}
             animate="animate"
             exit="exit"
-            variants={bottomToUp}
-            transition={{ duration: 0.5 }}
+            initial="initial"
+            transitionDuration={'0.5s'}
         >
             <VStack spacing={4} alignItems={'stretch'} w="full">
                 <HStack justifyContent="space-between" w="full">
@@ -106,15 +109,16 @@ export const Home = ({ wallet }: Props) => {
                         Feeling advanced?
                     </Button>
                 )}
-                {/* <GhoData address={wallet} />
-            <MergedTable address={wallet} /> */}
+
                 {isShowAdvanced && (
-                    <motion.div
-                        initial="initial"
+                    <Box
+                        w="full"
+                        as={motion.div}
+                        variants={bottomToUp}
                         animate="animate"
                         exit="exit"
-                        variants={bottomToUp}
-                        transition={{ duration: 0.5 }}
+                        initial="initial"
+                        transitionDuration={'0.5s'}
                     >
                         <VStack spacing={4} alignItems={'stretch'} w="full">
                             <Spacer h={30} />
@@ -128,9 +132,9 @@ export const Home = ({ wallet }: Props) => {
                             <BorrowedAssets address={wallet} />
                             <ReservesIncentives address={wallet} />
                         </VStack>
-                    </motion.div>
+                    </Box>
                 )}
             </VStack>
-        </motion.div>
+        </Box>
     );
 };
