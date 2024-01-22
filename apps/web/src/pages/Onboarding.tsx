@@ -9,9 +9,9 @@ import {
     IconButton,
     Image,
     Text,
-    Box,
     useColorModeValue,
-    Spinner
+    Spinner,
+    Box
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
@@ -111,22 +111,24 @@ const OnboardingBody = () => {
                         <strong>'space' </strong> to reveal
                     </Text>
                 </VStack>
-                <div style={{ height: '200px', position: 'relative' }}> {/* Set a fixed height */}
-                <Lottie
-                    style={{
-                        position: 'absolute',
-                        pointerEvents: 'none',
-                        opacity: showGhost ? 1 : 0,
-                        transition: 'opacity 0.5s ease-in-out'
-                    }}
-                    options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: ghostAnimation
-                    }}
-                    height={200}
-                    width={200}
-                />
+                <div style={{ height: '200px', position: 'relative' }}>
+                    {' '}
+                    {/* Set a fixed height */}
+                    <Lottie
+                        style={{
+                            position: 'absolute',
+                            pointerEvents: 'none',
+                            opacity: showGhost ? 1 : 0,
+                            transition: 'opacity 0.5s ease-in-out'
+                        }}
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: ghostAnimation
+                        }}
+                        height={200}
+                        width={200}
+                    />
                 </div>
             </VStack>
         );
@@ -134,12 +136,13 @@ const OnboardingBody = () => {
 
     if (step === 'alreadyHaveWallet') {
         return (
-            <motion.div
-                initial="initial"
+            <Box
+                w="full"
+                as={motion.div}
+                variants={leftToRight}
                 animate="animate"
                 exit="exit"
-                variants={leftToRight}
-                transition={{ duration: 0.5 }}
+                initial="initial"
             >
                 <ConnectKitButton.Custom>
                     {({ isConnected, isConnecting, show, address }) => {
@@ -147,7 +150,7 @@ const OnboardingBody = () => {
                             return <Loading text={'Loading wallet...'} />;
                         }
                         return (
-                            <HStack>
+                            <HStack w="full">
                                 <IconButton
                                     size="sm"
                                     aria-label="Go back"
@@ -182,18 +185,19 @@ const OnboardingBody = () => {
                         );
                     }}
                 </ConnectKitButton.Custom>
-            </motion.div>
+            </Box>
         );
     }
 
     if (step === 'createWallet') {
         return (
-            <motion.div
-                initial="initial"
+            <Box
+                w="full"
+                as={motion.div}
+                variants={leftToRight}
                 animate="animate"
                 exit="exit"
-                variants={leftToRight}
-                transition={{ duration: 0.5 }}
+                initial="initial"
             >
                 <HStack>
                     <IconButton
@@ -223,7 +227,7 @@ const OnboardingBody = () => {
                         onClick={() => signup(`LFGHO - ${inputValue}`)}
                     />
                 </HStack>
-            </motion.div>
+            </Box>
         );
     }
 
@@ -263,15 +267,17 @@ export const Onboarding = () => {
                 </HStack>
             </VStack>
             <Box minH={100}>
-                <motion.div
-                    initial="initial"
+                <Box
+                    w="full"
+                    as={motion.div}
+                    variants={bottomToUp}
                     animate="animate"
                     exit="exit"
-                    variants={bottomToUp}
-                    transition={{ duration: 0.5 }}
+                    initial="initial"
+                    transition={'0.5s linear'}
                 >
                     <OnboardingBody />
-                </motion.div>
+                </Box>
             </Box>
         </VStack>
     );

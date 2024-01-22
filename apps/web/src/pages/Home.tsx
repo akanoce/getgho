@@ -71,7 +71,6 @@ export const Home = ({ wallet }: Props) => {
             animate="animate"
             exit="exit"
             initial="initial"
-            transitionDuration={'0.5s'}
         >
             <VStack spacing={4} alignItems={'stretch'} w="full">
                 <HStack justifyContent="space-between" w="full">
@@ -123,7 +122,6 @@ export const Home = ({ wallet }: Props) => {
                         animate="animate"
                         exit="exit"
                         initial="initial"
-                        transitionDuration={'0.5s'}
                     >
                         <VStack spacing={4} alignItems={'stretch'} w="full">
                             <Spacer h={30} />
