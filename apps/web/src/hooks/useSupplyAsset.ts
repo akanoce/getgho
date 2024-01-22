@@ -1,9 +1,10 @@
 import { useMutation } from 'wagmi';
-import { createSupplyTxs, useActionWithToastAndRefresh } from '@/api';
+import { createSupplyTxs } from '@/api';
 import dayjs from 'dayjs';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
 import { LPSignERC20ApprovalType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
+import { useActionWithToastAndRefresh } from './useActionWithToastAndRefresh';
 
 type Props = {
     amount: string;
