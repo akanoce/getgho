@@ -139,6 +139,7 @@ export type MergedAsset = {
     borrowedBalance: string;
     borrowedBalanceUSD: string;
     isIsolated: boolean;
+    ltv: string;
 };
 export const useMergedTableData = ({
     address,
@@ -200,7 +201,8 @@ export const useMergedTableData = ({
                 borrowAPY: asset.variableBorrowAPY,
                 borrowedBalance: assetData.totalBorrows,
                 borrowedBalanceUSD: assetData.totalBorrowsUSD,
-                isIsolated: asset.isIsolated
+                isIsolated: asset.isIsolated,
+                ltv: asset.formattedBaseLTVasCollateral
             };
         })
         .filter(

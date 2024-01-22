@@ -29,6 +29,7 @@ import { useMultipleSupplyWithBorrow } from '@/hooks/useMultipleSupplyWithBorrow
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import { AssetToSupplySimpleClickableCard } from '@/AssetToSupplySimpleClickableCard';
 import { FaLink } from 'react-icons/fa6';
+import BigNumber from 'bignumber.js';
 
 export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
     const [isDesktop] = useMediaQuery('(min-width: 768px)');
@@ -53,6 +54,15 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         [ghoData]
     );
 
+    const borrowableGhoWithAvailableCollateral = useMemo(() => {
+        if (!userReserves || !ghoReserve) return BigNumber(0);
+        return BigNumber(userReserves?.formattedUserSummary.availableBorrowsUSD)
+            .multipliedBy(
+                BigNumber(userReserves?.formattedUserSummary.currentLoanToValue)
+            )
+            .dividedBy(BigNumber(ghoReserve?.priceInUSD));
+    }, [userReserves, ghoReserve]);
+
     const renderAvailableCollateral = useMemo(() => {
         const formattedAvailableToBorrow = formatBalance(
             userReserves?.formattedUserSummary.availableBorrowsUSD ?? '0'
@@ -76,10 +86,14 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
 
     const { data: assetsData } = useMergedTableData({ address });
 
-    const availableBalance = useMemo(
+    const maxGhoWithAvailableBalance = useMemo(
         () =>
             assetsData?.reduce(
-                (acc, asset) => acc + Number(asset.availableBalanceUSD),
+                (acc, asset) =>
+                    acc +
+                    BigNumber(asset.availableBalanceUSD)
+                        .multipliedBy(BigNumber(asset.ltv))
+                        .toNumber(),
                 0
             ),
         [assetsData]
@@ -99,6 +113,19 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         () =>
             selectedAssets.reduce(
                 (acc, asset) => acc + Number(asset?.availableBalanceUSD ?? 0),
+                0
+            ),
+        [selectedAssets]
+    );
+
+    const borrowableGhoWithSelectedAssets = useMemo(
+        () =>
+            selectedAssets.reduce(
+                (acc, asset) =>
+                    acc +
+                    BigNumber(asset.availableBalanceUSD)
+                        .multipliedBy(BigNumber(asset.ltv))
+                        .toNumber(),
                 0
             ),
         [selectedAssets]
@@ -142,7 +169,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                         onClick={() => multipleSupplyAndBorrow()}
                         isLoading={isSupplyTxLoading}
                     >
-                        Get GHO
+                        Get {borrowableGhoWithSelectedAssets} GHO
                     </Button>
                     <HStack spacing={1}>
                         <Text fontSize={'xs'}>using an additional</Text>
@@ -160,11 +187,17 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                     onClick={() => borrowGho()}
                     isLoading={isBorrowGhoLoading}
                 >
-                    Get GHO using your available collateral
+                    Get{' '}
+                    {formatBalance(
+                        borrowableGhoWithAvailableCollateral.toNumber()
+                    )}{' '}
+                    GHO using your available collateral
                 </Button>
             </VStack>
         );
     }, [
+        borrowableGhoWithAvailableCollateral,
+        borrowableGhoWithSelectedAssets,
         totalSupplyUsdSelected,
         isSupplyTxLoading,
         multipleSupplyAndBorrow,
@@ -219,7 +252,11 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                             onClick={() => borrowGho()}
                             isLoading={isBorrowGhoLoading}
                         >
-                            Get GHO using your available collateral
+                            Get{' '}
+                            {formatBalance(
+                                borrowableGhoWithAvailableCollateral.toNumber()
+                            )}{' '}
+                            GHO using your available collateral
                         </Button>
                         <VStack spacing={1} divider={<Divider />}>
                             <VStack spacing={1}>
@@ -246,7 +283,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                         <Heading size={['sm']}>
                             You could get up to{' '}
                             <Text as="u">
-                                {availableBalance.toFixed(2)} GHO
+                                {maxGhoWithAvailableBalance.toFixed(2)} GHO
                             </Text>
                             {` `}
                             supplying more assets
