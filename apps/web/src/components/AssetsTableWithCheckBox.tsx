@@ -13,7 +13,8 @@ import {
     Th,
     Thead,
     Tr,
-    VStack
+    VStack,
+    useColorModeValue
 } from '@chakra-ui/react';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
 import { formatAPY, formatBalance } from '@/util/formatting';
@@ -32,6 +33,7 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
     toggleSelectedAsset,
     tableCaption
 }) => {
+    const grayHover = useColorModeValue('gray.100', 'gray.600');
     return (
         <TableContainer>
             <Table variant="simple">
@@ -53,7 +55,8 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
                             key={asset.id}
                             onClick={toggleSelectedAsset(asset.id)}
                             cursor="pointer"
-                            _hover={{ bg: 'gray.100' }}
+                            _hover={{ bg: grayHover }}
+                            transition={'all 0.2s ease-in-out'}
                         >
                             <Td>
                                 <Checkbox
