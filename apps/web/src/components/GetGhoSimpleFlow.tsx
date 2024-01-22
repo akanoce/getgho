@@ -125,28 +125,6 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         });
 
     const tableCaption = useMemo(() => {
-        if (isDesktop)
-            return (
-                <VStack spacing={1} justifyContent={'center'}>
-                    <Button
-                        isDisabled={totalSupplyUsdSelected === 0}
-                        onClick={() => multipleSupplyAndBorrow()}
-                        isLoading={isSupplyTxLoading}
-                    >
-                        Get GHO using an additional{' '}
-                        {totalSupplyUsdSelected.toFixed(2)} USD worth of assets
-                    </Button>
-                    <Button
-                        size="sm"
-                        variant={'link'}
-                        isDisabled={availableToBorrowInGho <= 0}
-                        onClick={() => borrowGho()}
-                        isLoading={isBorrowGhoLoading}
-                    >
-                        Get GHO using your available collateral
-                    </Button>
-                </VStack>
-            );
         return (
             <VStack spacing={1} justifyContent={'center'} divider={<Divider />}>
                 <VStack spacing={1}>
@@ -184,8 +162,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         multipleSupplyAndBorrow,
         borrowGho,
         isBorrowGhoLoading,
-        availableToBorrowInGho,
-        isDesktop
+        availableToBorrowInGho
     ]);
 
     const assetsDataWithAvailableBalance = useMemo(
@@ -221,7 +198,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                 </HStack>
             </CardHeader>
             <CardBody w="full" display="flex" flexDir={'column'} gap={4}>
-                <Heading size={['sm', 'md']}>
+                <Heading size={['sm']}>
                     You could get up to{' '}
                     <Text as="u">{availableBalance.toFixed(2)} GHO</Text>
                     {` `}

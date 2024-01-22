@@ -99,7 +99,12 @@ export const Home = ({ wallet }: Props) => {
                         </HStack>
                     </HStack>
 
-                    <Button onClick={logout} size="sm" colorScheme="purple">
+                    <Button
+                        onClick={logout}
+                        size="sm"
+                        colorScheme="purple"
+                        variant={'outline'}
+                    >
                         Logout
                     </Button>
                 </HStack>
