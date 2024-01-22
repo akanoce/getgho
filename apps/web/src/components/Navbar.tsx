@@ -1,13 +1,5 @@
 import { CryptoIconMap } from '@/const/icons';
-import {
-    HStack,
-    Heading,
-    Button,
-    Image,
-    Tag,
-    VStack,
-    Text
-} from '@chakra-ui/react';
+import { HStack, Heading, Button, Image, Tag, Text } from '@chakra-ui/react';
 import { AddressButton } from '.';
 import { useBalance } from 'wagmi';
 import { useAccountAdapter } from '@/hooks/useAccountAdapter';
@@ -52,9 +44,14 @@ export const Navbar: React.FC<Props> = ({ address }) => {
                 </Tag>
                 <HStack spacing={2}>
                     <Image src={CryptoIconMap['WETH']} boxSize="1.5rem" />
-                    <Heading size="xs">
-                        {Number(balance?.formatted ?? 0).toFixed(4)}
-                    </Heading>
+                    <HStack alignItems="center" spacing={1}>
+                        <Heading size="xs">
+                            {Number(balance?.formatted ?? 0).toFixed(4)}
+                        </Heading>
+                        <Text as="sub" fontSize="2xs">
+                            {chain?.nativeCurrency.symbol}
+                        </Text>
+                    </HStack>
                 </HStack>
             </HStack>
 
