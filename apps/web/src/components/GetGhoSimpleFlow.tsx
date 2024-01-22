@@ -208,7 +208,7 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
                     <AssetsTableWithCheckBox
                         assets={assetsDataWithAvailableBalance}
                         selected={selectedAssetsId}
-                        setSelected={setSelectedAssetsId}
+                        toggleSelectedAsset={toggleSelectedAsset}
                         tableCaption={tableCaption}
                     />
                 ) : (

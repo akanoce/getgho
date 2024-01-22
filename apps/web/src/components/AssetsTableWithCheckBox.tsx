@@ -22,14 +22,14 @@ import { MergedAsset } from '@/api';
 type Props = {
     assets: MergedAsset[];
     selected: string[];
-    setSelected: (selected: string[]) => void;
+    toggleSelectedAsset: (assetId: string) => () => void;
     tableCaption?: React.ReactNode;
 };
 
 export const AssetsTableWithCheckBox: React.FC<Props> = ({
     assets,
     selected,
-    setSelected,
+    toggleSelectedAsset,
     tableCaption
 }) => {
     return (
@@ -49,25 +49,16 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
                 </Thead>
                 <Tbody>
                     {assets.map((asset) => (
-                        <Tr key={asset.id}>
+                        <Tr
+                            key={asset.id}
+                            onClick={toggleSelectedAsset(asset.id)}
+                            cursor="pointer"
+                            _hover={{ bg: 'gray.100' }}
+                        >
                             <Td>
                                 <Checkbox
                                     colorScheme="purple"
-                                    checked={selected.includes(asset.id)}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelected([
-                                                ...selected,
-                                                asset.id
-                                            ]);
-                                        } else {
-                                            setSelected(
-                                                selected.filter(
-                                                    (id) => id !== asset.id
-                                                )
-                                            );
-                                        }
-                                    }}
+                                    isChecked={selected.includes(asset.id)}
                                 />
                             </Td>
                             <Td>
