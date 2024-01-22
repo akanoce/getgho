@@ -53,20 +53,17 @@ export const GetGhoSimpleFlow = ({ address }: { address: string }) => {
         const formattedAvailableToBorrow = formatBalance(
             userReserves?.formattedUserSummary.availableBorrowsUSD ?? '0'
         );
-        if (formattedAvailableToBorrow !== '0')
-            return (
-                <VStack spacing={1} align={'flex-end'}>
-                    <Heading size={'sm'}>Available collateral</Heading>
-                    <HStack spacing={1}>
-                        <Heading size="md">
-                            {formattedAvailableToBorrow}
-                        </Heading>
-                        <Text as="sub" size="sm">
-                            USD
-                        </Text>
-                    </HStack>
-                </VStack>
-            );
+        return (
+            <VStack spacing={1} align={'flex-end'}>
+                <Heading size={'sm'}>Available collateral</Heading>
+                <HStack spacing={1}>
+                    <Heading size="md">{formattedAvailableToBorrow}</Heading>
+                    <Text as="sub" size="sm">
+                        USD
+                    </Text>
+                </HStack>
+            </VStack>
+        );
     }, [userReserves]);
 
     const { data: assetsData } = useMergedTableData({ address });
