@@ -3,6 +3,7 @@ import { EthereumTransactionTypeExtended } from '@aave/aave-utilities';
 import {
     useAuth,
     useCounterFactualAddress,
+    useLfghoClients,
     useSponsoredTxFlag,
     useTransactions
 } from '@repo/lfgho-sdk';
@@ -11,29 +12,39 @@ import {
     sepolia,
     useAccount,
     useDisconnect,
+    useNetwork,
     usePublicClient,
     useWalletClient
 } from 'wagmi';
 
 export const useAccountAdapter = () => {
+    //SCA
     const { addressRecords } = useCounterFactualAddress();
     const smartAccountWallet = addressRecords?.[sepolia.id];
-    const { address } = useAccount();
-    const { data: walletClient } = useWalletClient();
-    const publicClient = usePublicClient();
     const { isSponsoredTx } = useSponsoredTxFlag();
+    const { logout: logoutSmartAccount } = useAuth();
+    const { viemPublicClient } = useLfghoClients();
 
     const {
         sendAaveBatchTransactions,
         sendSponsoredERC20AaveBatchTransactions
     } = useTransactions();
 
-    const { logout: logoutSmartAccount } = useAuth();
+    //EOA
+    const { chain } = useNetwork();
+    const { address } = useAccount();
+    const { data: walletClient } = useWalletClient();
+    const publicClient = usePublicClient();
     const { disconnect } = useDisconnect();
 
     const account = useMemo(
         () => address ?? smartAccountWallet,
         [address, smartAccountWallet]
+    );
+
+    const connectedChain = useMemo(
+        () => chain ?? viemPublicClient.chain,
+        [chain, viemPublicClient.chain]
     );
 
     const logout = useCallback(() => {
@@ -70,5 +81,5 @@ export const useAccountAdapter = () => {
         }
     };
 
-    return { sendTransaction, account, logout };
+    return { sendTransaction, account, logout, chain: connectedChain };
 };
