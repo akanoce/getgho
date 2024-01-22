@@ -13,6 +13,7 @@ import {
     Heading,
     Image,
     Skeleton,
+    Stack,
     Table,
     TableCaption,
     TableContainer,
@@ -88,17 +89,20 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
     return (
         <Card>
             <CardHeader>
-                <HStack justify={'space-between'} alignItems={'center'}>
+                <Stack
+                    direction={['column', 'row']}
+                    justify={'space-between'}
+                    alignItems={['flex-start', 'center']}
+                    spacing={0}
+                >
+                    <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
                     <VStack
+                        alignItems={['flex-start', 'flex-end']}
                         spacing={0}
-                        justify={'flex-start'}
-                        align={'flex-start'}
+                        justify={'space-between'}
                     >
-                        <Heading fontSize={'2xl'}>Reserves Incentives</Heading>
-                    </VStack>
-                    <Box textAlign={'right'}>
-                        <Heading size="xs" color="green">
-                            Available collateral
+                        <Heading size="sm" color="green">
+                            Available to borrow
                         </Heading>
                         <Skeleton isLoaded={!isLoading}>
                             <Heading size="sm">
@@ -109,8 +113,8 @@ export const ReservesIncentives: React.FC<Props> = ({ address }) => {
                                 )}
                             </Heading>
                         </Skeleton>
-                    </Box>
-                </HStack>
+                    </VStack>
+                </Stack>
             </CardHeader>
             <CardBody>
                 {isDesktop ? (
