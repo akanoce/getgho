@@ -11,6 +11,7 @@ import { theme } from './theme';
 import '@fontsource/roboto/300.css';
 import '@fontsource/montserrat/600.css';
 import { config as appConfig } from '@repo/config';
+import { AnalyticsUtils } from '@repo/utils';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -26,7 +27,7 @@ const queryClient = new QueryClient({
     }
 });
 
-console.log({ appConfig });
+AnalyticsUtils.initialise(appConfig.mixpanelToken);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

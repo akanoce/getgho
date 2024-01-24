@@ -7,6 +7,7 @@ export type AppConfig = {
     walletConnectProjectId: string;
     pimlicoApiKey: string;
     baseUrl: string;
+    mixpanelToken?: string;
 };
 
 /**
@@ -23,6 +24,7 @@ const getConfig = (): AppConfig => {
     const walletConnectProjectId = import.meta.env
         .VITE_WALLET_CONNECT_PROJECT_ID;
     const pimlicoApiKey = import.meta.env.VITE_PIMLICO_API_KEY;
+    const mixpanelToken = import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN;
 
     if (!turnkeyOrganizationId)
         throw new Error('VITE_ORGANIZATION_ID is not defined');
@@ -36,6 +38,8 @@ const getConfig = (): AppConfig => {
     if (!walletConnectProjectId)
         throw new Error('VITE_WALLET_CONNECT_PROJECT_ID is not defined');
     if (!pimlicoApiKey) throw new Error('VITE_PIMLICO_API_KEY is not defined');
+    if (!mixpanelToken)
+        throw new Error('VITE_MIXPANEL_PROJECT_TOKEN is not defined');
 
     return {
         turnkeyOrganizationId,
@@ -45,7 +49,8 @@ const getConfig = (): AppConfig => {
         alchemyApiKey,
         walletConnectProjectId,
         pimlicoApiKey,
-        baseUrl
+        baseUrl,
+        mixpanelToken
     };
 };
 
