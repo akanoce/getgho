@@ -38,8 +38,6 @@ const getConfig = (): AppConfig => {
     if (!walletConnectProjectId)
         throw new Error('VITE_WALLET_CONNECT_PROJECT_ID is not defined');
     if (!pimlicoApiKey) throw new Error('VITE_PIMLICO_API_KEY is not defined');
-    if (!mixpanelToken)
-        throw new Error('VITE_MIXPANEL_PROJECT_TOKEN is not defined');
 
     return {
         turnkeyOrganizationId,
