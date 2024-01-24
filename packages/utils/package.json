@@ -14,5 +14,9 @@
     "license": "ISC",
     "dependencies": {
         "mixpanel-browser": "^2.48.1"
+    },
+    "devDependencies": {
+        "@types/mixpanel-browser": "^2.48.1",
+        "@types/uuid": "^9.0.7"
     }
 }
