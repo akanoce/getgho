@@ -18,9 +18,6 @@ export const GhostBusters = () => {
     return (
         <>
             <IconButton
-                position={'absolute'}
-                top={4}
-                left={4}
                 variant={'empty'}
                 aria-label="Mode Change"
                 size="lg"

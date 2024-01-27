@@ -1,9 +1,5 @@
 import { useMutation } from 'wagmi';
-import {
-    createRepayTx,
-    createRepayWithATokens,
-    useActionWithToastAndRefresh
-} from '@/api';
+import { createRepayTx, createRepayWithATokens } from '@/api';
 import {
     LPRepayParamsType,
     LPRepayWithATokensType
@@ -11,6 +7,7 @@ import {
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
 import { InterestRate } from '@aave/aave-utilities/packages/contract-helpers';
+import { useActionWithToastAndRefresh } from './useActionWithToastAndRefresh';
 
 type Props = {
     amount: string;

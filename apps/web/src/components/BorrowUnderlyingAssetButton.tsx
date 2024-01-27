@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useBorrowAsset } from '@/hooks/useBorrowAsset';
 import {
     Button,
@@ -18,54 +18,50 @@ import {
 } from '@chakra-ui/react';
 import { ReserveDataHumanized } from '@aave/aave-utilities';
 import {
-    FormatReserveUSDResponse,
-    FormatUserSummaryAndIncentivesResponse
+    ComputedUserReserve,
+    FormatReserveUSDResponse
 } from '@aave/aave-utilities/packages/math-utils';
 import { BigNumber } from 'bignumber.js';
 import { useBorrowAssetOnBehalf } from '@/hooks/useBorrowAssetOnBehalf';
 
 type Props = {
-    reserve: ReserveDataHumanized & FormatReserveUSDResponse;
-    formattedUserSummary?: FormatUserSummaryAndIncentivesResponse<
+    userReserve: ComputedUserReserve<
         ReserveDataHumanized & FormatReserveUSDResponse
     >;
+    availableToBorrowUsd?: string;
 };
 export const BorrowUnderlyingAssetButton: React.FC<Props> = ({
-    reserve,
-    formattedUserSummary
+    userReserve,
+    availableToBorrowUsd
 }) => {
-    const availableToBorrowUsd = new BigNumber(
-        formattedUserSummary?.availableBorrowsUSD ?? 0
+    const availableToBorrowUsdBn = new BigNumber(availableToBorrowUsd ?? 0);
+    const reservePriceInUsdBn = new BigNumber(
+        userReserve?.reserve.priceInUSD ?? 0
     );
-    const reservePriceInUsd = new BigNumber(reserve.priceInUSD ?? 0);
     const availableToBorrowInReserve = useMemo(() => {
-        if (!availableToBorrowUsd || !reservePriceInUsd) return 0;
-        return availableToBorrowUsd.div(reservePriceInUsd);
-    }, [availableToBorrowUsd, reservePriceInUsd]);
+        if (!availableToBorrowUsdBn || !availableToBorrowUsdBn) return 0;
+        return availableToBorrowUsdBn.div(reservePriceInUsdBn);
+    }, [availableToBorrowUsdBn, reservePriceInUsdBn]);
 
     const [amount, setAmount] = useState('0');
 
     const {
         isSupplyTxLoading,
-        mutate: borrow,
-        supplyTxResult,
-        supplyTxError
+        mutate: borrow
+        // supplyTxResult,
+        // supplyTxError
     } = useBorrowAsset({
-        reserve: reserve.underlyingAsset,
+        reserve: userReserve?.underlyingAsset,
         amount: amount.toString()
     });
 
     const { mutate: borrowOnBehalf } = useBorrowAssetOnBehalf({
-        reserve: reserve.underlyingAsset,
+        reserve: userReserve.underlyingAsset,
         amount: '10', // TODO: ADD MODAL TO SPECIFY AMOUNT
         onBehalfOf: '0x97b465c1869819282e9728E6D9d8Fd56deA8FBee' // TODO: ADD MODAL TO SPECIFY DELERGATOR ADDRESS
     });
 
     const isLoading = isSupplyTxLoading;
-
-    useEffect(() => {
-        console.log({ supplyTxResult, supplyTxError });
-    }, [supplyTxError, supplyTxResult]);
 
     const isDisabled =
         !Number(amount) ||

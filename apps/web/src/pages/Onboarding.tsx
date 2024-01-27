@@ -9,9 +9,9 @@ import {
     IconButton,
     Image,
     Text,
-    Box,
     useColorModeValue,
-    Spinner
+    Spinner,
+    Box
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { FaArrowLeft, FaCheck, FaKey } from 'react-icons/fa6';
@@ -32,10 +32,11 @@ const leftToRight = {
     exit: { opacity: 0, x: -50 }
 };
 
-const bottomToUp = {
-    initial: { opacity: 0, y: 50 }, // Start from below
-    animate: { opacity: 1, y: 0 }, // Animate to original position
-    exit: { opacity: 0, y: -50 } // Exit to above
+// Animation variants
+const rightToLeft = {
+    initial: { opacity: 0, x: -50 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 50 }
 };
 
 type Steps = 'main' | 'alreadyHaveWallet' | 'createWallet' | 'connectWallet';
@@ -111,22 +112,24 @@ const OnboardingBody = () => {
                         <strong>'space' </strong> to reveal
                     </Text>
                 </VStack>
-                <div style={{ height: '200px', position: 'relative' }}> {/* Set a fixed height */}
-                <Lottie
-                    style={{
-                        position: 'absolute',
-                        pointerEvents: 'none',
-                        opacity: showGhost ? 1 : 0,
-                        transition: 'opacity 0.5s ease-in-out'
-                    }}
-                    options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: ghostAnimation
-                    }}
-                    height={200}
-                    width={200}
-                />
+                <div style={{ height: '200px', position: 'relative' }}>
+                    {' '}
+                    {/* Set a fixed height */}
+                    <Lottie
+                        style={{
+                            position: 'absolute',
+                            pointerEvents: 'none',
+                            opacity: showGhost ? 1 : 0,
+                            transition: 'opacity 0.5s ease-in-out'
+                        }}
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: ghostAnimation
+                        }}
+                        height={200}
+                        width={200}
+                    />
                 </div>
             </VStack>
         );
@@ -134,12 +137,13 @@ const OnboardingBody = () => {
 
     if (step === 'alreadyHaveWallet') {
         return (
-            <motion.div
-                initial="initial"
+            <Box
+                w="full"
+                as={motion.div}
+                variants={leftToRight}
                 animate="animate"
                 exit="exit"
-                variants={leftToRight}
-                transition={{ duration: 0.5 }}
+                initial="initial"
             >
                 <ConnectKitButton.Custom>
                     {({ isConnected, isConnecting, show, address }) => {
@@ -147,7 +151,7 @@ const OnboardingBody = () => {
                             return <Loading text={'Loading wallet...'} />;
                         }
                         return (
-                            <HStack>
+                            <HStack w="full" justify={'center'}>
                                 <IconButton
                                     size="sm"
                                     aria-label="Go back"
@@ -155,11 +159,11 @@ const OnboardingBody = () => {
                                     icon={<Icon as={FaArrowLeft} />}
                                     onClick={() => setStep('main')}
                                 />
-                                <HStack spacing={4}>
+                                <HStack spacing={4} w="full">
                                     <Button
                                         colorScheme="black"
                                         variant={'outline'}
-                                        size={'lg'}
+                                        size={['md', 'lg']}
                                         onClick={login}
                                         leftIcon={<Icon as={FaKey} />}
                                     >
@@ -170,7 +174,7 @@ const OnboardingBody = () => {
                                     <Button
                                         colorScheme="black"
                                         variant={'outline'}
-                                        size={'lg'}
+                                        size={['md', 'lg']}
                                         onClick={show}
                                     >
                                         {isConnected
@@ -182,20 +186,21 @@ const OnboardingBody = () => {
                         );
                     }}
                 </ConnectKitButton.Custom>
-            </motion.div>
+            </Box>
         );
     }
 
     if (step === 'createWallet') {
         return (
-            <motion.div
-                initial="initial"
+            <Box
+                w="full"
+                as={motion.div}
+                variants={leftToRight}
                 animate="animate"
                 exit="exit"
-                variants={leftToRight}
-                transition={{ duration: 0.5 }}
+                initial="initial"
             >
-                <HStack>
+                <HStack w="full">
                     <IconButton
                         size="sm"
                         aria-label="Go back"
@@ -223,12 +228,20 @@ const OnboardingBody = () => {
                         onClick={() => signup(`LFGHO - ${inputValue}`)}
                     />
                 </HStack>
-            </motion.div>
+            </Box>
         );
     }
 
     return (
-        <VStack spacing={4}>
+        <VStack
+            spacing={4}
+            w="full"
+            as={motion.div}
+            variants={rightToLeft}
+            animate="animate"
+            exit="exit"
+            initial="initial"
+        >
             <Button
                 colorScheme="black"
                 variant={'outline'}
@@ -250,28 +263,18 @@ const OnboardingBody = () => {
 
 export const Onboarding = () => {
     return (
-        <VStack spacing={70}>
-            <VStack>
-                <HStack>
-                    <Image src={ghost} w={100} />
-                    <VStack alignItems={'flex-start'}>
-                        <Heading fontSize={30}>GetGho</Heading>
-                        <Text fontSize={13}>
-                            Owning Gho has never been so easy
-                        </Text>
-                    </VStack>
-                </HStack>
-            </VStack>
+        <VStack spacing={70} w="full">
+            <HStack>
+                <Image src={ghost} w={100} />
+                <VStack alignItems={'flex-start'} spacing={1}>
+                    <Heading size={'lg'}>GetGho</Heading>
+                    <Text fontSize={'sm'} fontWeight={'medium'}>
+                        Owning Gho has never been so easy
+                    </Text>
+                </VStack>
+            </HStack>
             <Box minH={100}>
-                <motion.div
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    variants={bottomToUp}
-                    transition={{ duration: 0.5 }}
-                >
-                    <OnboardingBody />
-                </motion.div>
+                <OnboardingBody />
             </Box>
         </VStack>
     );

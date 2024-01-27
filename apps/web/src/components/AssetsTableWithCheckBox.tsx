@@ -13,25 +13,27 @@ import {
     Th,
     Thead,
     Tr,
-    VStack
+    VStack,
+    useColorModeValue
 } from '@chakra-ui/react';
 import { CryptoIconMap, genericCryptoIcon } from '@/const/icons';
 import { formatAPY, formatBalance } from '@/util/formatting';
-import { useMergedTableData } from '@/api';
+import { MergedAsset } from '@/api';
 
 type Props = {
-    assets: ReturnType<typeof useMergedTableData>;
+    assets: MergedAsset[];
     selected: string[];
-    setSelected: (selected: string[]) => void;
+    toggleSelectedAsset: (assetId: string) => () => void;
     tableCaption?: React.ReactNode;
 };
 
 export const AssetsTableWithCheckBox: React.FC<Props> = ({
     assets,
     selected,
-    setSelected,
+    toggleSelectedAsset,
     tableCaption
 }) => {
+    const grayHover = useColorModeValue('gray.100', 'gray.600');
     return (
         <TableContainer>
             <Table variant="simple">
@@ -49,25 +51,17 @@ export const AssetsTableWithCheckBox: React.FC<Props> = ({
                 </Thead>
                 <Tbody>
                     {assets.map((asset) => (
-                        <Tr key={asset.id}>
+                        <Tr
+                            key={asset.id}
+                            onClick={toggleSelectedAsset(asset.id)}
+                            cursor="pointer"
+                            _hover={{ bg: grayHover }}
+                            transition={'all 0.2s ease-in-out'}
+                        >
                             <Td>
                                 <Checkbox
                                     colorScheme="purple"
-                                    checked={selected.includes(asset.id)}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelected([
-                                                ...selected,
-                                                asset.id
-                                            ]);
-                                        } else {
-                                            setSelected(
-                                                selected.filter(
-                                                    (id) => id !== asset.id
-                                                )
-                                            );
-                                        }
-                                    }}
+                                    isChecked={selected.includes(asset.id)}
                                 />
                             </Td>
                             <Td>

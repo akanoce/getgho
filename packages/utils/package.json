@@ -1,0 +1,22 @@
+{
+    "name": "@repo/utils",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "main": "index.js",
+    "exports": {
+        ".": "./index.ts"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "mixpanel-browser": "^2.48.1"
+    },
+    "devDependencies": {
+        "@types/mixpanel-browser": "^2.48.1",
+        "@types/uuid": "^9.0.7"
+    }
+}

@@ -1,8 +1,9 @@
 import { useMutation } from 'wagmi';
-import { createWithdrawTx, useActionWithToastAndRefresh } from '@/api';
+import { createWithdrawTx } from '@/api';
 import { LPWithdrawParamsType } from '@aave/aave-utilities/packages/contract-helpers/dist/esm/v3-pool-contract/lendingPoolTypes';
 import { useAaveContracts } from '@/providers';
 import { useAccountAdapter } from './useAccountAdapter';
+import { useActionWithToastAndRefresh } from './useActionWithToastAndRefresh';
 
 type Props = {
     amount: string;

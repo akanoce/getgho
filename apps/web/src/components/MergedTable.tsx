@@ -27,13 +27,9 @@ type Props = {
 };
 
 export const MergedTable: React.FC<Props> = ({ address }) => {
-    const mergedData = useMergedTableData({ address, showAll: false });
+    const { data } = useMergedTableData({ address, showAll: false });
 
-    console.log({
-        mergedData
-    });
-
-    if (!mergedData)
+    if (!data)
         return (
             <Card>
                 <CardHeader>
@@ -63,9 +59,7 @@ export const MergedTable: React.FC<Props> = ({ address }) => {
             <CardBody>
                 <TableContainer>
                     <Table variant="simple">
-                        <TableCaption>
-                            {mergedData.length} elements
-                        </TableCaption>
+                        <TableCaption>{data.length} elements</TableCaption>
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
@@ -77,7 +71,7 @@ export const MergedTable: React.FC<Props> = ({ address }) => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {mergedData.map((asset) => (
+                            {data.map((asset) => (
                                 <Tr key={asset.id}>
                                     <Td>
                                         <HStack spacing={2}>
